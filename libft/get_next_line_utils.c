@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "gnl.h"
 
 void	*ft_strncpy(char *dst, const char *src, size_t n)
 {

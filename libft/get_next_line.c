@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "gnl.h"
 
 void	create_context(t_context *ctx)
 {

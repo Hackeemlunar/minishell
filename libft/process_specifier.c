@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "ft_printf.h"
 
 t_fdata	*process_specifier(t_modinfo *modinfo, va_list args)
 {

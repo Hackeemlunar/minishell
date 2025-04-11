@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "ft_printf.h"
 
 void	apply_left_justify(char *fstring, int width, t_fdata *fdata)
 {

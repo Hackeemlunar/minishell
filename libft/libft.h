@@ -6,7 +6,7 @@
 /*   By: hmensah- <hmensah-@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 18:32:15 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/02/15 18:14:03 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/04/11 00:00:00 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,50 +29,17 @@
 #  define BUFFER_SIZE 1024
 # endif
 
-// ******* Data Structures *****************
+/**
+ * @brief Forward declarations of internal data structures
+ * Internal implementation details are hidden in private headers
+ */
+typedef struct s_list t_list;
+typedef struct s_arena t_arena;
 
-typedef struct s_list
-{
-	void			*content;
-	struct s_list	*next;
-}	t_list;
-
-typedef struct s_context
-{
-	int		err;
-	int		nl;
-	size_t	buf_cap;
-	size_t	buf_pos;
-	size_t	buf_pos_prv;
-	size_t	stash_len;
-	size_t	stash_st;
-	char	stash[BUFFER_SIZE];
-	char	buffer[4096];
-}			t_context;
-
-typedef struct s_formated_data
-{
-	int		count;
-	char	*fstring;
-}				t_fdata;
-
-typedef struct s_modifiers_info
-{
-	char	flags[5];
-	int		width;
-	int		precision;
-	char	specifier;
-	int		flags_count;
-}				t_modinfo;
-
-typedef struct s_arena
-{
-	size_t	size;
-	size_t	used;
-	char	*buffer;
-}			t_arena;
-
-// ************** Part 1 - Libc functions **************
+/**
+ * ************** Part 1 - Libc functions **************
+ * These functions provide core C library functionality
+ */
 int		ft_isalpha(int c);
 int		ft_isdigit(int c);
 int		ft_isalnum(int c);
@@ -100,6 +67,11 @@ long	ft_atol(const char *str);
 double	ft_atod(const char *str);
 void	*ft_calloc(size_t count, size_t size);
 char	*ft_strdup(const char *s1);
+
+/**
+ * ************** Part 2 - Additional functions **************
+ * These functions extend the core library with useful utilities
+ */
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 char	*ft_strjoin(char const *s1, char const *s2);
 char	*ft_strtrim(char const *s1, char const *set);
@@ -111,51 +83,31 @@ void	ft_putchar_fd(char c, int fd);
 void	ft_putstr_fd(char *s, int fd);
 void	ft_putendl_fd(char *s, int fd);
 void	ft_putnbr_fd(int n, int fd);
+
+/**
+ * ************** List manipulation functions **************
+ * Functions for creating and managing linked lists
+ */
 t_list	*ft_lstnew(void *content);
-void	ft_lstadd_front(t_list **lst, t_list *new);
+void	ft_lstadd_front(t_list **lst, t_list *new_node);
 int		ft_lstsize(t_list *lst);
 t_list	*ft_lstlast(t_list *lst);
-void	ft_lstadd_back(t_list **lst, t_list *new);
+void	ft_lstadd_back(t_list **lst, t_list *new_node);
 void	ft_lstdelone(t_list *lst, void (*del)(void *));
 void	ft_lstclear(t_list **lst, void (*del)(void *));
 void	ft_lstiter(t_list *lst, void (*f)(void *));
 t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 
-// ************** GNL functions **************
+/**
+ * ************** Get Next Line function **************
+ * Function for reading lines from file descriptors
+ */
 char	*get_next_line(int fd);
-void	cleanup_context(t_context *ctx);
-void	*ft_strncpy(char *dst, const char *src, size_t n);
-char	*handle_eof_err(t_context *ctx, ssize_t byt_read);
-void	handle_stash(t_context *ctx, char **line);
 
-// ************** Ft_printf Functions **************
+/**
+ * ************** Printf function **************
+ * Function for formatted printing to stdout
+ */
 int		ft_printf(const char *format, ...);
-void	parse_format(const char *fmt, t_modinfo *modinfo);
-void	apply_precision(t_modinfo *modinfo, t_fdata *fdata);
-void	apply_prefix(const char *str, t_modinfo *info, t_fdata *fdata);
-void	ft_putstr_pf(t_fdata *data);
-void	apply_minus_flag(t_modinfo *info, t_fdata *data);
-t_fdata	*process_specifier(t_modinfo *modinfo, va_list args);
-t_fdata	*handle_char(t_modinfo *modinfo, va_list args);
-t_fdata	*handle_string(t_modinfo *modinfo, va_list args);
-t_fdata	*handle_pointer(t_modinfo *modinfo, va_list args);
-t_fdata	*handle_num_int(t_modinfo *modinfo, va_list args);
-t_fdata	*handle_num_long(t_modinfo *modinfo, va_list args);
-t_fdata	*handle_uns(t_modinfo *modinfo, va_list args);
-t_fdata	*handle_hex(t_modinfo *modinfo, va_list args);
-t_fdata	*handle_percent(t_modinfo *info);
-t_fdata	*create_number_data(t_modinfo *modinfo, long nbr, int base);
-char	*ft_itoa_base(long nbr, int base, int uppercase);
-void	apply_left_justify(char *fstring, int width, t_fdata *fdata);
-void	apply_r_justify(char *fstring, int width, char pad, t_fdata *fdata);
-void	apply_r_justify(char *fstring, int width, char pad, t_fdata *fdata);
-void	handle_string_size(char *fstring, int size, t_fdata *data);
-void	handle_int_size(char *fstring, char pad, int size, t_fdata *data);
-void	apply_plus_space_flag(t_modinfo *info, t_fdata *data);
 
-// ************** Arena Functions **************
-void	arena_destroy(t_arena *arena);
-void	*arena_alloc(t_arena *arena, size_t size);
-void	arena_reset(t_arena *arena);
-t_arena	*arena_create(size_t size);
 #endif

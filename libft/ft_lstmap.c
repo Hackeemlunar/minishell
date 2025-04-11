@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "ft_list.h"
 
 static int	ft_lstappend(t_list **list, t_list *new_node)
 {

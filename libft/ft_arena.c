@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "arena.h"
 
 t_arena	*arena_create(size_t size)
 {
@@ -39,6 +39,23 @@ void	*arena_alloc(t_arena *arena, size_t size)
 	ptr = arena->buffer + arena->used;
 	arena->used += size;
 	return (ptr);
+}
+
+void	*arena_realloc(t_arena *arena, size_t new_size)
+{
+	void	*new_ptr;
+
+	if (new_size > arena->size)
+	{
+		new_ptr = malloc(new_size);
+		if (!new_ptr)
+			return (NULL);
+		ft_memcpy(new_ptr, arena->buffer, arena->used);
+		free(arena->buffer);
+		arena->buffer = new_ptr;
+		arena->size = new_size;
+	}
+	return (arena->buffer);
 }
 
 void	arena_reset(t_arena *arena)
