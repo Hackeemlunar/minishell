@@ -23,6 +23,7 @@ void	show_banner(void)
 int	main(void)
 {
 	char	*str;
+	char	**cmd;
 
 	show_banner();
 	str = readline("minishell> ");
@@ -31,7 +32,21 @@ int	main(void)
 		printf("Error: readline failed\n");
 		return (1);
 	}
-	printf("You entered: %s\n", str);
+	cmd = parse_cmd(str);
+	if (cmd == NULL)
+	{
+		printf("Error: parse_cmd failed\n");
+		free(str);
+		return (1);
+	}
+	int i = 0;
+	while (cmd[i])
+	{
+		printf("Command %d: %s\n", i, cmd[i]);
+		free(cmd[i]);
+		i++;
+	}
+	free(cmd);
 	free(str);
 	return (0);
 }

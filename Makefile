@@ -13,17 +13,18 @@ INCLUDE_DIR = include
 # Determine OS for libraries
 UNAME := $(shell uname)
 ifeq ($(UNAME), Linux)
-    LIB_DIR = libs/linux
-    LIBS = -L$(LIB_DIR) -lreadline -lhistory -lncurses
+	LIB_DIR = libs/linux
+	LIBS = -L$(LIB_DIR) -lreadline -lhistory -lncurses
 else
-    LIB_DIR = libs/mac
-    LIBS = -L$(LIB_DIR) -lreadline -lhistory -lcurses
+	LIB_DIR = libs/mac
+	LIBS = -L$(LIB_DIR) -lreadline -lhistory -lcurses
 endif
 
 # Source files
-SRC_FILES = main.c
+SRC_FILES = main.c \
+			parsing/parser.c
 
-# Object files
+# Object files# Object files
 OBJ_FILES = $(patsubst %.c,$(OBJ_DIR)/%.o,$(SRC_FILES))
 
 # Include paths
@@ -41,8 +42,10 @@ $(NAME): $(OBJ_DIR) $(LIBFT) $(OBJ_FILES)
 
 $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
+	mkdir -p $(OBJ_DIR)/parsing
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 $(LIBFT):
