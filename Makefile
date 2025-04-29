@@ -22,7 +22,7 @@ endif
 
 # Source files
 SRC_FILES = main.c \
-			parsing/parser.c
+			parsing/lexer.c
 
 # Object files# Object files
 OBJ_FILES = $(patsubst %.c,$(OBJ_DIR)/%.o,$(SRC_FILES))
