@@ -6,298 +6,258 @@
 /*   By: hmensah- <hmensah-@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 18:05:45 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/02/21 19:48:30 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/04/19 10:00:00 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 
-static int	seen_opn(int i, char c)
+/**
+ * Count the number of commands (pipe segments) in the token list
+ */
+static int	count_commands(t_token *tokens)
 {
-	if (c == '\'' || c == '\"')
-	{
-		return (!i);
-	}
-	return (i);
-}
+	int		count;
+	t_token	*current;
 
-static size_t	count_cmds(char const *s)
-{
-	size_t	count;
-	int		seen_open;
+	count = 1;  // At least one command
+	current = tokens;
 
-	count = 1;
-	seen_open = 0;
-	while (*s)
+	while (current && current->type != TOKEN_EOF)
 	{
-		seen_open = seen_opn(seen_open, *s);
-		if (*s == '|' && !seen_open)
+		if (current->type == TOKEN_PIPE)
 			count++;
-		s++;
+		current = current->next;
 	}
-	printf("commands = %zu\n", count);
+
 	return (count);
 }
 
-static size_t	count_words(char const *s)
+/**
+ * Count the number of arguments in a command segment
+ */
+static int	count_args(t_token *start, t_token **end)
 {
-	size_t	count;
-	int		in_word;
-	int		seen_open;
+	int		count;
+	t_token	*current;
 
 	count = 0;
-	in_word = 0;
-	seen_open = 0;
-	while (*s)
+	current = start;
+
+	while (current && current->type != TOKEN_PIPE && current->type != TOKEN_EOF)
 	{
-		seen_open = seen_opn(seen_open, *s);
-		if (*s != ' ' && in_word == 0 && !seen_open)
-		{
-			in_word = 1;
+		if (current->type == TOKEN_WORD)
 			count++;
+		else if (current->type == TOKEN_REDIR_IN ||
+				current->type == TOKEN_REDIR_OUT ||
+				current->type == TOKEN_APPEND ||
+				current->type == TOKEN_HEREDOC)
+		{
+			// Skip the redirection token and its argument
+			if (current->next && current->next->type == TOKEN_WORD)
+				current = current->next;
+			else
+				break; // Invalid syntax, missing redirection target
 		}
-		else if (*s == ' ' && !seen_open)
-			in_word = 0;
-		s++;
+		current = current->next;
 	}
+
+	*end = current;
 	return (count);
 }
 
-static char	*word_dup(const char *s, size_t start, size_t finish)
+/**
+ * Parse redirections in a command segment
+ */
+static t_error	parse_redirections(t_token *start, t_token *end,
+								t_in_out *in_out)
 {
-	char	*word;
-	size_t	i;
+	t_token	*current;
 
-	word = (char *)malloc((finish - start + 1) * sizeof(char));
-	if (!word)
-		return (NULL);
-	i = 0;
-	while (start < finish)
-		word[i++] = s[start++];
-	word[i] = '\0';
-	return (word);
-}
-
-static char	**extract(char const *s, char **word)
-{
-	size_t	i;
-	size_t	j;
-	size_t	len;
-	int		index;
-	int		seen_open;
-
-	index = -1;
-	i = -1;
-	j = 0;
-	seen_open = 0;
-	len = ft_strlen(s);
-	while (++i <= len)
+	current = start;
+	while (current != end && current && current->type != TOKEN_PIPE &&
+			current->type != TOKEN_EOF)
 	{
-		seen_open = seen_opn(seen_open, s[i]);
-		if ((s[i] != ' ' || seen_open) && index < 0)
-			index = i;
-		else if (((s[i] == ' ' && !seen_open) || i == len) && index >= 0)
+		if (current->type == TOKEN_REDIR_IN)
 		{
-			word[j++] = word_dup(s, index, i);
-			index = -1;
-		}
-	}
-	return (word);
-}
-
-char	**parse_cmd(char const *s)
-{
-	char	**split;
-
-	if (!s)
-		return (NULL);
-	split = (char **)malloc((count_words(s) + 1) * sizeof(char *));
-	if (!split)
-		return (NULL);
-	extract(s, split);
-	return (split);
-}
-
-char	*get_word(t_allocs *alloc, char *cmdln)
-{
-	int		i;
-	int		seen_open;
-	char	*word;
-
-	i = 0;
-	seen_open = 0;
-	while (cmdln[i] && cmdln[i] != ' ' && !seen_open)
-	{
-		seen_open = seen_opn(seen_open, cmdln[i]);
-		if (cmdln[i] == '|' && !seen_open)
-			break ;
-		i++;
-	}
-	word = (char *)arena_alloc(alloc->parse_alloc, (i + 1) * sizeof(char));
-	if (!word)
-		return (NULL);
-	ft_strlcpy(word, cmdln, i + 1);
-	return (word);
-}
-
-void	init_in_file(char *cmdln, t_mshell *shell, t_allocs *alloc, int len)
-{
-	int	i;
-	int	seen_open;
-
-	i = 0;
-	seen_open = 0;
-	while (cmdln[i])
-	{
-		seen_open = seen_opn(seen_open, cmdln[i]);
-		if (cmdln[i] == '|' && !seen_open)
-			shell->in_out->in_mode = -1;
-		else if (cmdln[i] == '<' && !seen_open)
-		{
-			if (i + 1 < len && cmdln[i + 1] == '<')
+			if (current->next && current->next->type == TOKEN_WORD)
 			{
-				shell->in_out->heredoc_delim = get_word(alloc, cmdln + i + 2);
-				shell->in_out->in_mode = 1;
+				in_out->in_file = current->next->value;
+				in_out->in_mode = 0; // Normal input
+				current = current->next; // Skip the filename
 			}
 			else
+				return (INVALID_REDIRECT);
+		}
+		else if (current->type == TOKEN_REDIR_OUT)
+		{
+			if (current->next && current->next->type == TOKEN_WORD)
 			{
-				shell->in_out->in_mode = 0;
-				shell->in_out->in_file = get_word(alloc, cmdln + i + 1);
+				in_out->out_file = current->next->value;
+				in_out->out_mode = 0; // Truncate
+				current = current->next; // Skip the filename
 			}
-		}
-		i++;
-	}
-}
-
-void	init_out_file(char *cmdln, t_mshell *shell, t_allocs *alloc, int len)
-{
-	int	i;
-	int	seen_open;
-
-	i = len - 1;
-	seen_open = 0;
-	while (cmdln[i])
-	{
-		seen_open = seen_opn(seen_open, cmdln[i]);
-		if (cmdln[i] == '|' && !seen_open)
-			shell->in_out->out_mode = -1;
-		else if (cmdln[i] == '>' && !seen_open)
-		{
-			if (i - 1 > 0 && cmdln[i - 1] == '>')
-				shell->in_out->out_mode = 1;
 			else
-				shell->in_out->out_mode = 0;
-			shell->in_out->in_file = get_word(alloc, cmdln + i + 1);
+				return (INVALID_REDIRECT);
 		}
-		i--;
-	}
-}
-
-void	init_in_out(char *cmdln, t_mshell *shell, t_allocs *alloc, int num_cmds)
-{
-	int	len;
-	int	i;
-	int	seen_open;
-
-	i = 0;
-	seen_open = 0;
-	len = ft_strlen(cmdln);
-	init_in_file(cmdln, shell, alloc, len);
-	init_out_file(cmdln, shell, alloc, len);
-}
-
-void	skip_spaces_next_word(char *cmdln, int *i)
-{
-	while (cmdln[*i] && cmdln[*i] == ' ')
-		(*i)++;
-	while (cmdln[*i] && cmdln[*i] != ' ')
-		(*i)++;
-}
-
-void	count_cmdargs(char *cmdln)
-{
-	int		i;
-	int		seen_open;
-	int		word_count;
-	int		in_word;
-
-	i = -1;
-	seen_open = 0;
-	word_count = 0;
-	in_word = 0;
-	while (cmdln[++i])
-	{
-		seen_open = seen_opn(seen_open, cmdln[i]);
-		if ((cmdln[i] == '>' || cmdln[i] == '<') && !seen_open)
+		else if (current->type == TOKEN_APPEND)
 		{
-			i++;
-			if (cmdln[i] == '>')
-				skip_spaces_next_word(cmdln, &i);
-			else if (cmdln[i] == '<')
-				skip_spaces_next_word(cmdln, &i);
-			else
-				skip_spaces_next_word(cmdln, &i);
-		}
-		else if (!seen_open && cmdln[i] != ' ' && cmdln[i] != '|')
-		{
-			if (in_word == 0)
+			if (current->next && current->next->type == TOKEN_WORD)
 			{
-				in_word = 1;
-				word_count++;
+				in_out->out_file = current->next->value;
+				in_out->out_mode = 1; // Append
+				current = current->next; // Skip the filename
 			}
-			else if (cmdln[i] == ' ' && !seen_open)
-				in_word = 0;
-		}
-	}
-}
-
-void	extract_cmds(char *cmdln, t_mshell *shell, t_allocs *alloc)
-{
-	int		i;
-	int		seen_open;
-	char	*word;
-
-	i = 0;
-	seen_open = 0;
-	while (cmdln[i])
-	{
-		seen_open = seen_opn(seen_open, cmdln[i]);
-		if ((cmdln[i] == '>' || cmdln[i] == '<') && !seen_open)
-		{
-			i++;
-			if (cmdln[i] == '>')
-				skip_spaces_next_word(cmdln, &i);
-			else if (cmdln[i] == '<')
-				skip_spaces_next_word(cmdln, &i);
 			else
-				skip_spaces_next_word(cmdln, &i);
+				return (INVALID_REDIRECT);
 		}
-
+		else if (current->type == TOKEN_HEREDOC)
+		{
+			if (current->next && current->next->type == TOKEN_WORD)
+			{
+				in_out->heredoc_delim = current->next->value;
+				in_out->in_mode = 1; // Heredoc
+				current = current->next; // Skip the delimiter
+			}
+			else
+				return (INVALID_REDIRECT);
+		}
+		current = current->next;
 	}
+
+	return (NO_ERROR);
 }
 
-void	parse_cmdline(const char *cmdline, t_mshell *shell, t_allocs *allocs)
+/**
+ * Parse arguments in a command segment
+ */
+static t_error	parse_arguments(t_token *start, t_token *end, t_cmd *cmd)
 {
-	if (!cmdline || !shell || !allocs)
+	t_token	*current;
+	int		arg_idx;
+
+	arg_idx = 0;
+	current = start;
+
+	while (current != end && current && current->type != TOKEN_PIPE &&
+			current->type != TOKEN_EOF)
 	{
-		perror("Error: Invalid arguments to parse_cmdline");
-		exit(EXIT_FAILURE);
+		if (current->type == TOKEN_WORD)
+		{
+			// First word is the command
+			if (arg_idx == 0)
+				cmd->cmd = current->value;
+
+			// All words are stored as arguments (including command)
+			cmd->cmd_args[arg_idx++] = current->value;
+		}
+		else if (current->type == TOKEN_REDIR_IN ||
+				current->type == TOKEN_REDIR_OUT ||
+				current->type == TOKEN_APPEND ||
+				current->type == TOKEN_HEREDOC)
+		{
+			// Skip redirection token and its argument
+			if (current->next && current->next->type == TOKEN_WORD)
+				current = current->next;
+		}
+		current = current->next;
 	}
-	shell->num_cmds = count_cmds(cmdline);
-	shell->cmds = (t_cmd *)arena_alloc(allocs->parse_alloc, shell->num_cmds
-			* sizeof(t_cmd));
-	if (!shell->cmds)
-	{
-		perror("Error allocating memory for commands");
-		exit(EXIT_FAILURE);
-	}
+
+	// NULL-terminate the argument list
+	cmd->cmd_args[arg_idx] = NULL;
+
+	return (NO_ERROR);
+}
+
+/**
+ * Initialize a command structure
+ */
+static void	init_cmd(t_cmd *cmd, int arg_count, t_arena *alloc)
+{
+	cmd->cmd = NULL;
+	cmd->cmd_args = (char **)arena_alloc(alloc, sizeof(char *) * (arg_count + 1));
+	cmd->in_fd = STDIN_FILENO;
+	cmd->out_fd = STDOUT_FILENO;
+}
+
+/**
+ * Initialize input/output structure
+ */
+static void	init_in_out(t_in_out *in_out)
+{
+	in_out->in_file = NULL;
+	in_out->out_file = NULL;
+	in_out->heredoc_delim = NULL;
+	in_out->in_fd = -1;
+	in_out->in_mode = 0;  // Normal input
+	in_out->out_fd = -1;
+	in_out->out_mode = 0; // Normal output (truncate)
+}
+
+/**
+ * Parse the token stream into a shell command structure
+ */
+t_result	parse_cmdln(t_result *lex_result, t_mshell *shell, t_allocs *allocs)
+{
+	t_token	*tokens;
+	t_token	*current;
+	t_token	*end;
+	int		cmd_idx;
+	int		arg_count;
+	t_error	error;
+
+	if (!lex_result || lex_result->is_error || !shell || !allocs->parse_alloc)
+		return (create_error(ERROR));
+
+	tokens = (t_token *)lex_result->data.value;
+	if (!tokens)
+		return (create_error(ERROR));
+
+	// Count the number of commands separated by pipes
+	shell->num_cmds = count_commands(tokens);
+
+	// Allocate memory for commands and in_out structures
+	shell->cmds = (t_cmd *)arena_alloc(allocs->parse_alloc,
+									sizeof(t_cmd) * shell->num_cmds);
 	shell->in_out = (t_in_out *)arena_alloc(allocs->parse_alloc,
-			shell->num_cmds * sizeof(t_in_out));
-	if (!shell->in_out)
+									sizeof(t_in_out) * shell->num_cmds);
+	shell->pids = (pid_t *)arena_alloc(allocs->parse_alloc,
+									sizeof(pid_t) * shell->num_cmds);
+
+	if (!shell->cmds || !shell->in_out || !shell->pids)
+		return (create_error(NO_MEMORY));
+
+	// Parse each command
+	cmd_idx = 0;
+	current = tokens;
+
+	while (current && current->type != TOKEN_EOF)
 	{
-		perror("Error allocating memory for input/output");
-		exit(EXIT_FAILURE);
+		// Initialize the current command and I/O structures
+		end = NULL;
+		arg_count = count_args(current, &end);
+		init_cmd(&shell->cmds[cmd_idx], arg_count, allocs->parse_alloc);
+		init_in_out(&shell->in_out[cmd_idx]);
+
+		// Parse redirections first (they might affect argument count)
+		error = parse_redirections(current, end, &shell->in_out[cmd_idx]);
+		if (error != NO_ERROR)
+			return (create_error(error));
+
+		// Parse command and arguments
+		error = parse_arguments(current, end, &shell->cmds[cmd_idx]);
+		if (error != NO_ERROR)
+			return (create_error(error));
+
+		// Move to the next command after the pipe
+		if (end && end->type == TOKEN_PIPE)
+			current = end->next;
+		else
+			current = end;
+
+		cmd_idx++;
 	}
-	init_in_out(cmdline, shell, allocs, shell->num_cmds);
-	extract_cmds(cmdline, shell, allocs);
+
+	return (create_success(shell));
 }
+

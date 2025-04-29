@@ -178,7 +178,8 @@ typedef struct s_minishell
 	int			num_cmds;
 }	t_mshell;
 
-char	**parse_cmd(char const *s);
 t_result	create_success(void *value);
 t_result	create_error(t_error error_code);
+t_result	lex_cmdln(const char *cmdline, t_mshell *shell, t_allocs *allocs);
+t_result	parse_cmdln(t_result *lex_cmdln, t_mshell *shell, t_allocs *allocs);
 #endif
