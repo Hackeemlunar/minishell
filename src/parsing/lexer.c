@@ -1,303 +1,266 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   parser.c                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: hmensah- <hmensah-@student.42abudhabi.a    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/21 18:05:45 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/02/21 19:48:30 by hmensah-         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
-#include "parsing.h"
+#include "parser.h"
 
-static int	seen_opn(int i, char c)
+/**
+ * Initialize a lexer with the given input
+ */
+
+static t_lexer	init_lexer(const char *input, t_arena *alloc)
 {
-	if (c == '\'' || c == '\"')
-	{
-		return (!i);
-	}
-	return (i);
+	t_lexer	lexer;
+
+	lexer.input = input;
+	lexer.pos = 0;
+	lexer.len = ft_strlen(input);
+	lexer.alloc = alloc;
+	return (lexer);
 }
 
-// static size_t	count_cmds(char const *s)
-// {
-// 	size_t	count;
-// 	int		seen_open;
+/**
+ * Skip whitespace characters
+ */
 
-// 	count = 1;
-// 	seen_open = 0;
-// 	while (*s)
-// 	{
-// 		seen_open = seen_opn(seen_open, *s);
-// 		if (*s == '|' && !seen_open)
-// 			count++;
-// 		s++;
-// 	}
-// 	printf("commands = %zu\n", count);
-// 	return (count);
-// }
-
-static size_t	count_words(char const *s)
+static void	skip_whitespace(t_lexer *lexer)
 {
-	size_t	count;
-	int		in_word;
-	int		seen_open;
-
-	count = 0;
-	in_word = 0;
-	seen_open = 0;
-	while (*s)
+	while (lexer->pos < lexer->len &&
+		(lexer->input[lexer->pos] == ' ' ||
+		lexer->input[lexer->pos] == '\t' ||
+		lexer->input[lexer->pos] == '\n'))
 	{
-		seen_open = seen_opn(seen_open, *s);
-		if (*s != ' ' && in_word == 0 && !seen_open)
-		{
-			in_word = 1;
-			count++;
-		}
-		else if (*s == ' ' && !seen_open)
-			in_word = 0;
-		s++;
+		lexer->pos++;
 	}
-	return (count);
 }
 
-static char	*word_dup(const char *s, size_t start, size_t finish)
+/**
+ * Check if character is a special token character
+ */
+static int	is_special_char(char c)
 {
-	char	*word;
-	size_t	i;
+	return (c == '|' || c == '<' || c == '>' || c == ' ' ||
+			c == '\t' || c == '\n' || c == '\0');
+}
 
-	word = (char *)malloc((finish - start + 1) * sizeof(char));
-	if (!word)
+/**
+ * Create a new token with the given type and value
+ */
+static t_token	*new_token(t_token_type type, char *value, t_arena *alloc)
+{
+	t_token	*token;
+
+	token = (t_token *)arena_alloc(alloc, sizeof(t_token));
+	if (!token)
 		return (NULL);
+
+	token->type = type;
+	token->value = value;
+	token->next = NULL;
+
+	return (token);
+}
+
+/**
+ * Handle quoted strings in lexing process
+ * Following bash behavior:
+ * - Single quotes preserve literal value of characters
+ * - Double quotes allow parameter and command substitution
+ */
+static char	*handle_quotes(t_lexer *lexer, char quote_type)
+{
+	int		start;
+	int		quoted_len;
+	char	*result;
+
+	// Skip the opening quote
+	start = ++lexer->pos;
+	quoted_len = 0;
+
+	// Find the closing quote
+	while (lexer->pos < lexer->len && lexer->input[lexer->pos] != quote_type)
+	{
+		lexer->pos++;
+		quoted_len++;
+	}
+
+	// If we found a closing quote, skip it
+	if (lexer->pos < lexer->len && lexer->input[lexer->pos] == quote_type)
+		lexer->pos++;
+	else
+		return (NULL); // Unclosed quote is an error
+
+	// Extract the quoted string without the quotes
+	result = (char *)arena_alloc(lexer->alloc, quoted_len + 1);
+	if (!result)
+		return (NULL);
+
+	ft_strlcpy(result, &lexer->input[start], quoted_len + 1);
+	return (result);
+}
+
+/**
+ * Handle escape sequences in words
+ */
+static int	handle_escape(t_lexer *lexer, char *result, int pos)
+{
+	if (lexer->pos + 1 < lexer->len)
+	{
+		lexer->pos++; // Skip the backslash
+		result[pos] = lexer->input[lexer->pos];
+		lexer->pos++;
+		return (1);
+	}
+	return (0);
+}
+
+/**
+ * Extract a word token, handling quotes and escapes
+ */
+static char	*extract_word(t_lexer *lexer)
+{
+	int		start;
+	int		i;
+	char	*result;
+	char	*quoted;
+
+	start = lexer->pos;
+
+	// Handle quotes if present
+	if (lexer->input[lexer->pos] == '"' || lexer->input[lexer->pos] == '\'')
+	{
+		quoted = handle_quotes(lexer, lexer->input[lexer->pos]);
+		return (quoted);
+	}
+
+	// Find length of word
 	i = 0;
-	while (start < finish)
-		word[i++] = s[start++];
-	word[i] = '\0';
-	return (word);
-}
-
-static char	**extract(char const *s, char **word)
-{
-	size_t	i;
-	size_t	j;
-	size_t	len;
-	int		index;
-	int		seen_open;
-
-	index = -1;
-	i = -1;
-	j = 0;
-	seen_open = 0;
-	len = ft_strlen(s);
-	while (++i <= len)
+	while (lexer->pos < lexer->len && !is_special_char(lexer->input[lexer->pos]))
 	{
-		seen_open = seen_opn(seen_open, s[i]);
-		if ((s[i] != ' ' || seen_open) && index < 0)
-			index = i;
-		else if (((s[i] == ' ' && !seen_open) || i == len) && index >= 0)
+		if (lexer->input[lexer->pos] == '\\')
+			lexer->pos += 2; // Skip backslash and escaped char
+		else
+			lexer->pos++;
+		i++;
+	}
+
+	result = (char *)arena_alloc(lexer->alloc, i + 1);
+	if (!result)
+		return (NULL);
+
+	// Copy word with proper escape handling
+	lexer->pos = start;
+	i = 0;
+	while (lexer->pos < lexer->len && !is_special_char(lexer->input[lexer->pos]))
+	{
+		if (lexer->input[lexer->pos] == '\\')
+			i += handle_escape(lexer, result, i);
+		else
 		{
-			word[j++] = word_dup(s, index, i);
-			index = -1;
+			result[i++] = lexer->input[lexer->pos];
+			lexer->pos++;
 		}
 	}
-	return (word);
+	result[i] = '\0';
+
+	return (result);
 }
 
-char	**parse_cmd(char const *s)
+/**
+ * Get the next token from the input
+ */
+static t_token	*get_next_token(t_lexer *lexer)
 {
-	char	**split;
+	char	*value;
 
-	if (!s)
+	skip_whitespace(lexer);
+
+	if (lexer->pos >= lexer->len)
+		return (new_token(TOKEN_EOF, NULL, lexer->alloc));
+
+	// Check for pipe
+	if (lexer->input[lexer->pos] == '|')
+	{
+		lexer->pos++;
+		value = (char *)arena_alloc(lexer->alloc, 2);
+		if (!value)
+			return (NULL);
+		value[0] = '|';
+		value[1] = '\0';
+		return (new_token(TOKEN_PIPE, value, lexer->alloc));
+	}
+
+	// Check for redirections
+	if (lexer->input[lexer->pos] == '<')
+	{
+		lexer->pos++;
+		if (lexer->pos < lexer->len && lexer->input[lexer->pos] == '<')
+		{
+			lexer->pos++;
+			value = (char *)arena_alloc(lexer->alloc, 3);
+			if (!value)
+				return (NULL);
+			ft_strlcpy(value, "<<", 3);
+			return (new_token(TOKEN_HEREDOC, value, lexer->alloc));
+		}
+		value = (char *)arena_alloc(lexer->alloc, 2);
+		if (!value)
+			return (NULL);
+		value[0] = '<';
+		value[1] = '\0';
+		return (new_token(TOKEN_REDIR_IN, value, lexer->alloc));
+	}
+
+	if (lexer->input[lexer->pos] == '>')
+	{
+		lexer->pos++;
+		if (lexer->pos < lexer->len && lexer->input[lexer->pos] == '>')
+		{
+			lexer->pos++;
+			value = (char *)arena_alloc(lexer->alloc, 3);
+			if (!value)
+				return (NULL);
+			ft_strlcpy(value, ">>", 3);
+			return (new_token(TOKEN_APPEND, value, lexer->alloc));
+		}
+		value = (char *)arena_alloc(lexer->alloc, 2);
+		if (!value)
+			return (NULL);
+		value[0] = '>';
+		value[1] = '\0';
+		return (new_token(TOKEN_REDIR_OUT, value, lexer->alloc));
+	}
+
+	// Must be a word (command, argument, or filename)
+	value = extract_word(lexer);
+	if (!value)
 		return (NULL);
-	split = (char **)malloc((count_words(s) + 1) * sizeof(char *));
-	if (!split)
-		return (NULL);
-	extract(s, split);
-	return (split);
+
+	return (new_token(TOKEN_WORD, value, lexer->alloc));
 }
 
-// char	*get_word(t_allocs *alloc, char *cmdln)
-// {
-// 	int		i;
-// 	int		seen_open;
-// 	char	*word;
+/**
+ * Tokenize the input command line
+ */
+t_result	lex_cmdln(const char *cmdline, t_mshell *shell, t_allocs *allocs)
+{
+	t_lexer		lexer;
+	t_token		*head;
+	t_token		*current;
+	t_token		*next_token;
 
-// 	i = 0;
-// 	seen_open = 0;
-// 	while (cmdln[i] && cmdln[i] != ' ' && !seen_open)
-// 	{
-// 		seen_open = seen_opn(seen_open, cmdln[i]);
-// 		if (cmdln[i] == '|' && !seen_open)
-// 			break ;
-// 		i++;
-// 	}
-// 	word = (char *)arena_alloc(alloc->parse_alloc, (i + 1) * sizeof(char));
-// 	if (!word)
-// 		return (NULL);
-// 	ft_strlcpy(word, cmdln, i + 1);
-// 	return (word);
-// }
-
-// void	init_in_file(char *cmdln, t_mshell *shell, t_allocs *alloc, int len)
-// {
-// 	int	i;
-// 	int	seen_open;
-
-// 	i = 0;
-// 	seen_open = 0;
-// 	while (cmdln[i])
-// 	{
-// 		seen_open = seen_opn(seen_open, cmdln[i]);
-// 		if (cmdln[i] == '|' && !seen_open)
-// 			shell->in_out->in_mode = -1;
-// 		else if (cmdln[i] == '<' && !seen_open)
-// 		{
-// 			if (i + 1 < len && cmdln[i + 1] == '<')
-// 			{
-// 				shell->in_out->heredoc_delim = get_word(alloc, cmdln + i + 2);
-// 				shell->in_out->in_mode = 1;
-// 			}
-// 			else
-// 			{
-// 				shell->in_out->in_mode = 0;
-// 				shell->in_out->in_file = get_word(alloc, cmdln + i + 1);
-// 			}
-// 		}
-// 		i++;
-// 	}
-// }
-
-// void	init_out_file(char *cmdln, t_mshell *shell, t_allocs *alloc, int len)
-// {
-// 	int	i;
-// 	int	seen_open;
-
-// 	i = len - 1;
-// 	seen_open = 0;
-// 	while (cmdln[i])
-// 	{
-// 		seen_open = seen_opn(seen_open, cmdln[i]);
-// 		if (cmdln[i] == '|' && !seen_open)
-// 			shell->in_out->out_mode = -1;
-// 		else if (cmdln[i] == '>' && !seen_open)
-// 		{
-// 			if (i - 1 > 0 && cmdln[i - 1] == '>')
-// 				shell->in_out->out_mode = 1;
-// 			else
-// 				shell->in_out->out_mode = 0;
-// 			shell->in_out->in_file = get_word(alloc, cmdln + i + 1);
-// 		}
-// 		i--;
-// 	}
-// }
-
-// void	init_in_out(char *cmdln, t_mshell *shell, t_allocs *alloc, int num_cmds)
-// {
-// 	int	len;
-// 	int	i;
-// 	int	seen_open;
-
-// 	i = 0;
-// 	seen_open = 0;
-// 	len = ft_strlen(cmdln);
-// 	init_in_file(cmdln, shell, alloc, len);
-// 	init_out_file(cmdln, shell, alloc, len);
-// }
-
-// void	skip_spaces_next_word(char *cmdln, int *i)
-// {
-// 	while (cmdln[*i] && cmdln[*i] == ' ')
-// 		(*i)++;
-// 	while (cmdln[*i] && cmdln[*i] != ' ')
-// 		(*i)++;
-// }
-
-// void	count_cmdargs(char *cmdln)
-// {
-// 	int		i;
-// 	int		seen_open;
-// 	int		word_count;
-// 	int		in_word;
-
-// 	i = -1;
-// 	seen_open = 0;
-// 	word_count = 0;
-// 	in_word = 0;
-// 	while (cmdln[++i])
-// 	{
-// 		seen_open = seen_opn(seen_open, cmdln[i]);
-// 		if ((cmdln[i] == '>' || cmdln[i] == '<') && !seen_open)
-// 		{
-// 			i++;
-// 			if (cmdln[i] == '>')
-// 				skip_spaces_next_word(cmdln, &i);
-// 			else if (cmdln[i] == '<')
-// 				skip_spaces_next_word(cmdln, &i);
-// 			else
-// 				skip_spaces_next_word(cmdln, &i);
-// 		}
-// 		else if (!seen_open && cmdln[i] != ' ' && cmdln[i] != '|')
-// 		{
-// 			if (in_word == 0)
-// 			{
-// 				in_word = 1;
-// 				word_count++;
-// 			}
-// 			else if (cmdln[i] == ' ' && !seen_open)
-// 				in_word = 0;
-// 		}
-// 	}
-// }
-
-// void	extract_cmds(char *cmdln, t_mshell *shell, t_allocs *alloc)
-// {
-// 	int		i;
-// 	int		seen_open;
-// 	char	*word;
-
-// 	i = 0;
-// 	seen_open = 0;
-// 	while (cmdln[i])
-// 	{
-// 		seen_open = seen_opn(seen_open, cmdln[i]);
-// 		if ((cmdln[i] == '>' || cmdln[i] == '<') && !seen_open)
-// 		{
-// 			i++;
-// 			if (cmdln[i] == '>')
-// 				skip_spaces_next_word(cmdln, &i);
-// 			else if (cmdln[i] == '<')
-// 				skip_spaces_next_word(cmdln, &i);
-// 			else
-// 				skip_spaces_next_word(cmdln, &i);
-// 		}
-
-// 	}
-// }
-
-// void	parse_cmdline(const char *cmdline, t_mshell *shell, t_allocs *allocs)
-// {
-// 	if (!cmdline || !shell || !allocs)
-// 	{
-// 		perror("Error: Invalid arguments to parse_cmdline");
-// 		exit(EXIT_FAILURE);
-// 	}
-// 	shell->num_cmds = count_cmds(cmdline);
-// 	shell->cmds = (t_cmd *)arena_alloc(allocs->parse_alloc, shell->num_cmds
-// 			* sizeof(t_cmd));
-// 	if (!shell->cmds)
-// 	{
-// 		perror("Error allocating memory for commands");
-// 		exit(EXIT_FAILURE);
-// 	}
-// 	shell->in_out = (t_in_out *)arena_alloc(allocs->parse_alloc,
-// 			shell->num_cmds * sizeof(t_in_out));
-// 	if (!shell->in_out)
-// 	{
-// 		perror("Error allocating memory for input/output");
-// 		exit(EXIT_FAILURE);
-// 	}
-// 	init_in_out(cmdline, shell, allocs, shell->num_cmds);
-// 	extract_cmds(cmdline, shell, allocs);
-// }
+	if (!cmdline || !allocs->parse_alloc)
+		return (create_error(ERROR));
+	lexer = init_lexer(cmdline, allocs->parse_alloc);
+	next_token = get_next_token(&lexer);
+	if (!next_token)
+		return (create_error(NO_MEMORY));
+	head = next_token;
+	current = head;
+	while (current->type != TOKEN_EOF)
+	{
+		next_token = get_next_token(&lexer);
+		if (!next_token)
+			return (create_error(NO_MEMORY));
+		current->next = next_token;
+		current = next_token;
+	}
+	return (create_success(head));
+}
