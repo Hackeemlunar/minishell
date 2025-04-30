@@ -79,12 +79,15 @@ static t_result	handle_quotes(t_lexer *lexer, char quote_type)
 		return (create_error(ERROR));
 	start = ++lexer->pos;
 	quoted_len = 0;
-	while (lexer->pos < lexer->len && lexer->input[lexer->pos] != quote_type)
+	while (lexer->pos < lexer->len)
 	{
+		if (lexer->input[lexer->pos] == quote_type
+			&& lexer->input[lexer->pos - 1] != '\\')
+			break;
 		lexer->pos++;
 		quoted_len++;
 	}
-	if (lexer->pos < lexer->len && lexer->input[lexer->pos] != quote_type)
+	if (lexer->pos >= lexer->len && lexer->input[lexer->pos] != quote_type)
 		return (create_error(INVALID_QUOTE));
 	lexer->pos++;
 	result = (char *)arena_alloc(lexer->alloc, quoted_len + 1);
