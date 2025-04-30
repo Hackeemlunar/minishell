@@ -39,7 +39,7 @@ typedef struct s_lexer
 } t_lexer;
 
 /* Function prototypes */
-t_result	lex_cmdln(const char *cmdline, t_mshell *shell, t_allocs *allocs);
+t_result	lex_cmdln(const char *cmdline, t_allocs *allocs);
 t_result	parse_cmdln(t_result *lex_result, t_mshell *shell, t_allocs *allocs);
 
 #endif
