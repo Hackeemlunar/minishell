@@ -13,7 +13,13 @@ typedef enum e_token_type
 	TOKEN_REDIR_OUT,  // Output redirection >
 	TOKEN_APPEND,     // Append redirection >>
 	TOKEN_HEREDOC,    // Heredoc redirection <<
-	TOKEN_EOF         // End of input
+	TOKEN_EOF,        // End of input
+	TOKEN_SUBSTITUTION,
+	TOKEN_OR,
+	TOKEN_AND,
+	TOKEN_WILDCARD,
+	TOKEN_BG,
+	TOKEN_PAREN,
 } t_token_type;
 
 /**

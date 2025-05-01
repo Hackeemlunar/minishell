@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hmensah- <hmensah-@student.42abudhabi.ae>  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/01 13:58:53 by hmensah-          #+#    #+#             */
+/*   Updated: 2025/05/01 14:00:18 by hmensah-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 # include <stdio.h>
@@ -8,8 +20,8 @@
 # include <sys/types.h>
 # include <errno.h>
 # include <term.h>
-# include "../include/readline.h"
-# include "../include/history.h"
+# include "../include/readline/readline.h"
+# include "../include/readline/history.h"
 # include "../libft/libft.h"
 # include "../libft/arena.h"
 

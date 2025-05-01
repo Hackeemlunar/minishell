@@ -32,10 +32,10 @@ extern "C" {
 #  include "keymaps.h"
 #  include "tilde.h"
 #else
-#  include <readline/rlstdc.h>
-#  include <readline/rltypedefs.h>
-#  include <readline/keymaps.h>
-#  include <readline/tilde.h>
+#  include "rlstdc.h"
+#  include "rltypedefs.h"
+#  include "keymaps.h"
+#  include "tilde.h"
 #endif
 
 /* Hex-encoded Readline version number. */
@@ -447,6 +447,7 @@ extern int rl_stuff_char (int);
 extern int rl_execute_next (int);
 extern int rl_clear_pending_input (void);
 extern int rl_read_key (void);
+#include <stdio.h>
 extern int rl_getc (FILE *);
 extern int rl_set_keyboard_input_timeout (int);
 

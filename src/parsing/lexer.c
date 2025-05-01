@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lexer.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hmensah- <hmensah-@student.42abudhabi.ae>  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/01 14:01:06 by hmensah-          #+#    #+#             */
+/*   Updated: 2025/05/01 16:55:28 by hmensah-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "parser.h"
 
@@ -41,8 +52,9 @@ static void	skip_whitespace(t_lexer *lexer)
  */
 static bool	is_special_char(char c)
 {
-	return (c == '|' || c == '<' || c == '>' || c == ' ' ||
-			c == '\t' || c == '\n' || c == '\0');
+	return (c == '|' || c == '<' || c == '>' || c == ' '
+		|| c == '(' || c == '$' || c == '&' || c == '\t'
+		|| c == '\n' || c == '\0');
 }
 
 /**
@@ -62,6 +74,33 @@ static t_result	new_token(t_token_type type, char *value, t_arena *alloc)
 	token->next = NULL;
 	return (create_success(token));
 }
+
+/**
+ * quote_strcpy
+ * This is to handle excape sequences in quoted strings
+*/
+static size_t quote_strcpy(char *dst, const char *src, size_t len)
+{
+	size_t	i;
+	size_t	j;
+
+	i = 0;
+	j = 0;
+	while (j < len - 1)
+	{
+		if (src[j] == '\\' && (src[j + 1] == '"' || src[j + 1] == '\''))
+		{
+			j++;
+			continue;
+		}
+		dst[i] = src[j];
+		i++;
+		j++;
+	}
+	dst[i++] = '\0';
+	return (i);
+}
+
 
 /**
  * Handle quoted strings in lexing process
@@ -93,7 +132,7 @@ static t_result	handle_quotes(t_lexer *lexer, char quote_type)
 	result = (char *)arena_alloc(lexer->alloc, quoted_len + 1);
 	if (!result)
 		return (create_error(NO_MEMORY));
-	ft_strlcpy(result, &lexer->input[start], quoted_len + 1);
+	quote_strcpy(result, &lexer->input[start], quoted_len + 1);
 	return (create_success(result));
 }
 
@@ -113,7 +152,6 @@ static int	handle_escape(t_lexer *lexer, char *result, int pos)
 	{
 		result[pos] = '\\';
 		lexer->pos++;
-	
 	}
 	return (0);
 }
@@ -163,11 +201,20 @@ static t_result	extract_word(t_lexer *lexer)
 /**
  * handle pipe character
  */
-static inline t_result	handle_pipe(t_lexer *lexer)
+static inline t_result	handle_pipe_or(t_lexer *lexer)
 {
 	char	*value;
 
 	lexer->pos++;
+	if (lexer->pos < lexer->len && lexer->input[lexer->pos] == '|')
+	{
+		lexer->pos++;
+		value = (char *)arena_alloc(lexer->alloc, 3);
+		if (!value)
+			return (create_error(NO_MEMORY));
+		ft_strlcpy(value, "||", 3);
+		return (new_token(TOKEN_OR, value, lexer->alloc));
+	}
 	value = (char *)arena_alloc(lexer->alloc, 2);
 	if (!value)
 		return (create_error(NO_MEMORY));
@@ -230,6 +277,84 @@ static inline t_result	handle_redir_out(t_lexer *lexer)
 	return (new_token(TOKEN_REDIR_OUT, value, lexer->alloc));
 }
 
+static inline t_result	handle_substitution(t_lexer *lexer)
+{
+
+	char	*value;
+
+	lexer->pos++;	
+	value = (char *)arena_alloc(lexer->alloc, 2);
+	if (!value)
+		return (create_error(NO_MEMORY));
+	value[0] = '$';
+	value[1] = '\0';
+	return (new_token(TOKEN_SUBSTITUTION, value, lexer->alloc));
+}
+
+static inline t_result	handle_wildcard(t_lexer *lexer)
+{
+
+	char	*value;
+
+	lexer->pos++;
+	value = (char *)arena_alloc(lexer->alloc, 2);
+	if (!value)
+		return (create_error(NO_MEMORY));
+	value[0] = '*';
+	value[1] = '\0';
+	return (new_token(TOKEN_WILDCARD, value, lexer->alloc));
+}
+
+static inline t_result	handle_and_bg(t_lexer *lexer)
+{
+
+	char	*value;
+
+	lexer->pos++;
+	if (lexer->pos < lexer->len && lexer->input[lexer->pos] == '&')
+	{
+		lexer->pos++;
+		value = (char *)arena_alloc(lexer->alloc, 3);
+		if (!value)
+			return (create_error(NO_MEMORY));
+		ft_strlcpy(value, "&&", 3);
+		return (new_token(TOKEN_AND, value, lexer->alloc));
+	}
+	value = (char *)arena_alloc(lexer->alloc, 2);
+	if (!value)
+		return (create_error(NO_MEMORY));
+	value[0] = '&';
+	value[1] = '\0';
+	return (new_token(TOKEN_BG, value, lexer->alloc));
+}
+
+static t_result	handle_parenthesis(t_lexer *lexer)
+{
+
+	int		start;
+	int		quoted_len;
+	char		*result;
+
+	if (!lexer || !lexer->alloc)
+		return (create_error(ERROR));
+	start = lexer->pos;	
+	quoted_len = 0;
+	while (lexer->pos < lexer->len && lexer->input[lexer->pos] != ')')
+	{
+		lexer->pos++;
+		quoted_len++;
+	}
+	if (lexer->pos >= lexer->len && lexer->input[lexer->pos - 1] != ')')
+		return (create_error(INVALID_QUOTE));
+	quoted_len++;
+	lexer->pos++;
+	result = (char *)arena_alloc(lexer->alloc, quoted_len + 1);
+	if (!result)
+		return (create_error(NO_MEMORY));
+	ft_strlcpy(result, &lexer->input[start], quoted_len + 1);
+	return new_token(TOKEN_PAREN, result, lexer->alloc);
+}
+
 /**
  * Get the next token from the input
  */
@@ -242,11 +367,19 @@ static t_result	get_next_token(t_lexer *lexer)
 	if (lexer->pos >= lexer->len)
 		return (new_token(TOKEN_EOF, NULL, lexer->alloc));
 	if (lexer->input[lexer->pos] == '|')
-		return (handle_pipe(lexer));
+		return (handle_pipe_or(lexer));
 	if (lexer->input[lexer->pos] == '<')
 		return (handle_redir_in(lexer));
 	if (lexer->input[lexer->pos] == '>')
 		return (handle_redir_out(lexer));
+	if (lexer->input[lexer->pos] == '$')
+		return (handle_substitution(lexer));
+	if (lexer->input[lexer->pos] == '*')
+		return (handle_wildcard(lexer));
+	if (lexer->input[lexer->pos] == '&')
+		return (handle_and_bg(lexer));
+	if (lexer->input[lexer->pos] == '(')
+		return (handle_parenthesis(lexer));
 	result = extract_word(lexer);
 	if (result.is_error)
 		return (result);
