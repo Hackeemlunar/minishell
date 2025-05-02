@@ -6,7 +6,7 @@
 /*   By: hmensah- <hmensah-@student.42abudhabi.ae>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 13:58:53 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/01 14:00:18 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/02 21:18:28 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,7 +209,7 @@ typedef enum e_node_type
 typedef struct s_ast
 {
 	t_node_type			type;
-	union u_data
+	union u_data_ast
 	{
 		struct s_cmd_node
 		{
@@ -237,5 +237,5 @@ typedef struct s_minishell
 t_result	create_success(void *value);
 t_result	create_error(t_error error_code);
 t_result	lex_cmdln(const char *cmdline, t_allocs *allocs);
-t_result	parse_cmdln(t_result *lex_cmdln, t_mshell *shell, t_allocs *allocs);
+t_result	parse_cmdln(char *cmdln, t_mshell *shell, t_allocs *allocs);
 #endif

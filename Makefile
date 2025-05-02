@@ -1,3 +1,15 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: hmensah- <hmensah-@student.42abudhabi.ae>  +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2025/05/02 20:55:00 by hmensah-          #+#    #+#              #
+#    Updated: 2025/05/02 21:33:43 by hmensah-         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 NAME = minishell
 
 # Compiler and flags
@@ -8,7 +20,7 @@ CFLAGS = -Wall -Wextra -Werror
 SRC_DIR = src
 OBJ_DIR = obj
 LIBFT_DIR = libft
-INCLUDE_DIR = include
+INCLUDE_DIR = include/readline
 
 # Determine OS for libraries
 UNAME := $(shell uname)
@@ -21,8 +33,9 @@ else
 endif
 
 # Source files
-SRC_FILES = main.c \
-			parsing/lexer.c
+SRC_FILES =	main.c \
+		utils/res_helpers.c \
+		parsing/lexer.c parsing/parser.c
 
 # Object files# Object files
 OBJ_FILES = $(patsubst %.c,$(OBJ_DIR)/%.o,$(SRC_FILES))

@@ -53,7 +53,7 @@ static void	skip_whitespace(t_lexer *lexer)
 static bool	is_special_char(char c)
 {
 	return (c == '|' || c == '<' || c == '>' || c == ' '
-		|| c == '(' || c == '$' || c == '&' || c == '\t'
+		|| c == '(' || c == ')' || c == '$' || c == '&' || c == '\t'
 		|| c == '\n' || c == '\0');
 }
 
@@ -294,20 +294,6 @@ static inline t_result	handle_substitution(t_lexer *lexer)
 	return (new_token(TOKEN_SUBSTITUTION, value, lexer->alloc));
 }
 
-static inline t_result	handle_wildcard(t_lexer *lexer)
-{
-
-	char	*value;
-
-	lexer->pos++;
-	value = (char *)arena_alloc(lexer->alloc, 2);
-	if (!value)
-		return (create_error(NO_MEMORY));
-	value[0] = '*';
-	value[1] = '\0';
-	return (new_token(TOKEN_WILDCARD, value, lexer->alloc));
-}
-
 static inline t_result	handle_and_bg(t_lexer *lexer)
 {
 
@@ -331,31 +317,26 @@ static inline t_result	handle_and_bg(t_lexer *lexer)
 	return (new_token(TOKEN_BG, value, lexer->alloc));
 }
 
-static t_result	handle_parenthesis(t_lexer *lexer)
+
+static inline t_result	handle_unit(t_lexer *lexer, char token)
 {
 
-	int		start;
-	int		quoted_len;
-	char		*result;
+	char		*value;
+	t_token_type	token_type;
 
-	if (!lexer || !lexer->alloc)
-		return (create_error(ERROR));
-	start = lexer->pos;	
-	quoted_len = 0;
-	while (lexer->pos < lexer->len && lexer->input[lexer->pos] != ')')
-	{
-		lexer->pos++;
-		quoted_len++;
-	}
-	if (lexer->pos >= lexer->len && lexer->input[lexer->pos - 1] != ')')
-		return (create_error(INVALID_QUOTE));
-	quoted_len++;
 	lexer->pos++;
-	result = (char *)arena_alloc(lexer->alloc, quoted_len + 1);
-	if (!result)
+	value = (char *)arena_alloc(lexer->alloc, 2);
+	if (!value)
 		return (create_error(NO_MEMORY));
-	ft_strlcpy(result, &lexer->input[start], quoted_len + 1);
-	return new_token(TOKEN_PAREN, result, lexer->alloc);
+	value[0] = token;
+	value[1] = '\0';
+	if (token == '(')
+		token_type = TOKEN_LPAREN;
+	else if (token == ')')
+		token_type = TOKEN_RPAREN;
+	else
+		token_type = TOKEN_WILDCARD;
+	return (new_token(token_type, value, lexer->alloc));
 }
 
 /**
@@ -363,7 +344,6 @@ static t_result	handle_parenthesis(t_lexer *lexer)
  */
 static t_result	get_next_token(t_lexer *lexer)
 {
-	char		*value;
 	t_result	result;
 
 	skip_whitespace(lexer);
@@ -377,12 +357,11 @@ static t_result	get_next_token(t_lexer *lexer)
 		return (handle_redir_out(lexer));
 	if (lexer->input[lexer->pos] == '$')
 		return (handle_substitution(lexer));
-	if (lexer->input[lexer->pos] == '*')
-		return (handle_wildcard(lexer));
 	if (lexer->input[lexer->pos] == '&')
 		return (handle_and_bg(lexer));
-	if (lexer->input[lexer->pos] == '(')
-		return (handle_parenthesis(lexer));
+	if (lexer->input[lexer->pos] == '(' || lexer->input[lexer->pos] == '*'
+		|| lexer->input[lexer->pos] == ')')
+		return (handle_unit(lexer, lexer->input[lexer->pos]));
 	result = extract_word(lexer);
 	if (result.is_error)
 		return (result);
@@ -424,6 +403,7 @@ t_result	lex_cmdln(const char *cmdline, t_allocs *allocs)
 /**
 * a main function to test the lexer
 */
+/**
 int main()
 {
 	t_allocs	*allocs = malloc(sizeof(t_allocs));
@@ -456,3 +436,4 @@ int main()
 	arena_destroy(allocs->parse_alloc);
 	return (0);
 }
+*/

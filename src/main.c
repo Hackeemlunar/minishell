@@ -20,33 +20,29 @@ void	show_banner(void)
 		"\n", "Sngantch", "Hmensah-");
 }
 
+void	init_allocators(t_allocs *allocs)
+{
+	allocs->parse_alloc = arena_create(4096);
+}
+
 int	main(void)
 {
-	char	*str;
-	char	**cmd;
+	char		*str;
+	t_result	result;
+	t_allocs	allocs;
+	t_mshell	mshell;
 
 	show_banner();
+	init_allocators(&allocs);
 	str = readline("minishell> ");
 	if (str == NULL)
 	{
 		printf("Error: readline failed\n");
 		return (1);
 	}
-	cmd = parse_cmd(str);
-	if (cmd == NULL)
-	{
-		printf("Error: parse_cmd failed\n");
-		free(str);
-		return (1);
-	}
-	int i = 0;
-	while (cmd[i])
-	{
-		printf("Command %d: %s\n", i, cmd[i]);
-		free(cmd[i]);
-		i++;
-	}
-	free(cmd);
+	result = parse_cmdln(str, &mshell, &allocs);
+	printf("%d\n", result.data.error);
+	arena_destroy(allocs.parse_alloc);
 	free(str);
 	return (0);
 }

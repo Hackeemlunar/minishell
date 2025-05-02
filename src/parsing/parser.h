@@ -7,19 +7,20 @@
  */
 typedef enum e_token_type
 {
-	TOKEN_WORD,       // Command or argument
-	TOKEN_PIPE,       // Pipe character |
-	TOKEN_REDIR_IN,   // Input redirection <
-	TOKEN_REDIR_OUT,  // Output redirection >
-	TOKEN_APPEND,     // Append redirection >>
-	TOKEN_HEREDOC,    // Heredoc redirection <<
-	TOKEN_EOF,        // End of input
+	TOKEN_WORD,
+	TOKEN_PIPE,
+	TOKEN_REDIR_IN,
+	TOKEN_REDIR_OUT,
+	TOKEN_APPEND,
+	TOKEN_HEREDOC,
+	TOKEN_EOF,
 	TOKEN_SUBSTITUTION,
 	TOKEN_OR,
 	TOKEN_AND,
 	TOKEN_WILDCARD,
 	TOKEN_BG,
-	TOKEN_PAREN,
+	TOKEN_LPAREN,
+	TOKEN_RPAREN,
 } t_token_type;
 
 /**
@@ -31,7 +32,6 @@ typedef struct s_token
 	char *value;
 	struct s_token *next;
 } t_token;
-
 
 /**
  * Lexer context to track position and state
@@ -45,7 +45,5 @@ typedef struct s_lexer
 } t_lexer;
 
 /* Function prototypes */
-t_result	lex_cmdln(const char *cmdline, t_allocs *allocs);
-t_result	parse_cmdln(t_result *lex_result, t_mshell *shell, t_allocs *allocs);
 
 #endif

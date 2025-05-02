@@ -5,6 +5,7 @@ t_result	create_success(void *value)
 	t_result	result;
 
 	result.is_error = false;
+	result.data.error = NO_ERROR;
 	result.data.value = value;
 	return result;
 }
