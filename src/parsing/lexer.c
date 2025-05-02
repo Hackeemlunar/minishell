@@ -107,6 +107,8 @@ static size_t quote_strcpy(char *dst, const char *src, size_t len)
  * Following bash behavior:
  * - Single quotes preserve literal value of characters
  * - Double quotes allow parameter and command substitution
+ * - We copy the leading quote to determine if we are in a 
+ * - single or double quote. This helps handle substitution
  */
 static t_result	handle_quotes(t_lexer *lexer, char quote_type)
 {
@@ -116,7 +118,7 @@ static t_result	handle_quotes(t_lexer *lexer, char quote_type)
 
 	if (!lexer || !lexer->alloc)
 		return (create_error(ERROR));
-	start = ++lexer->pos;
+	start = lexer->pos++;
 	quoted_len = 0;
 	while (lexer->pos < lexer->len)
 	{
@@ -128,6 +130,7 @@ static t_result	handle_quotes(t_lexer *lexer, char quote_type)
 	}
 	if (lexer->pos >= lexer->len && lexer->input[lexer->pos] != quote_type)
 		return (create_error(INVALID_QUOTE));
+	quoted_len++;
 	lexer->pos++;
 	result = (char *)arena_alloc(lexer->alloc, quoted_len + 1);
 	if (!result)

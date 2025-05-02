@@ -132,21 +132,6 @@ typedef struct s_result
 }			t_result;
 
 /**
- * @struct s_cmd
- * @brief A structure to represent a command and its associated data.
- *
- * This structure is used to store information about a command, including
- * the command string, its arguments, and file descriptors for input and output.
- */
-typedef struct s_cmd
-{
-	char	*cmd;
-	char	**cmd_args;
-	int		in_fd;
-	int		out_fd;
-}	t_cmd;
-
-/**
  * @struct s_in_out
  * @brief Represents input and output file information and descriptors.
  *
@@ -182,11 +167,70 @@ typedef struct s_in_out
 	int		out_mode;
 }	t_in_out;
 
+/**
+ * @enum e_node_type
+ * @brief Enumeration of node types in the Abstract Syntax Tree (AST).
+ *
+ * This enumeration defines various types of nodes that can exist in the
+ * Abstract Syntax Tree (AST) used for parsing shell commands.
+ *
+ * @var e_node_type::NODE_CMD
+ * Represents a command node.
+ * @var e_node_type::NODE_PIPELINE
+ * Represents a pipeline node.
+ * @var e_node_type::NODE_AND
+ * Represents an AND operation node.
+ * @var e_node_type::NODE_OR
+ * Represents an OR operation node.
+ * @var e_node_type::NODE_BACKGROUND
+ * Represents a background execution node.
+ * @var e_node_type::NODE_SUBSHELL
+ * Represents a subshell node.
+ */
+typedef enum e_node_type
+{
+	NODE_CMD,
+	NODE_PIPELINE,
+	NODE_AND,
+	NODE_OR,
+	NODE_BACKGROUND,
+	NODE_SUBSHELL
+}	t_node_type;
+
+/**
+* @struct s_ast
+* @brief Abstract Syntax Tree (AST) node structure.
+*
+* This structure represents a node in the Abstract Syntax Tree (AST)
+* used for parsing shell commands. It can represent different types
+* of nodes, including command nodes, binary operation nodes,
+* and subshell nodes.
+*/
+typedef struct s_ast
+{
+	t_node_type			type;
+	union u_data
+	{
+		struct s_cmd_node
+		{
+			char		**argv;
+			t_in_out	*io;
+		}	cmd_node;
+		struct s_bin_node
+		{
+			struct s_ast	*left;
+			struct s_ast	*right;
+		}	bin_op_node;
+		struct s_ast		*sub;
+	}		data;
+	struct s_ast		*next;
+	struct s_ast		*prev;
+}			t_ast;
+
 typedef struct s_minishell
 {
 	pid_t		*pids;
-	t_cmd		*cmds;
-	t_in_out	*in_out;
+	t_ast		*ast;
 	int			num_cmds;
 }	t_mshell;
 

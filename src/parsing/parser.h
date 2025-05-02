@@ -39,8 +39,8 @@ typedef struct s_token
 typedef struct s_lexer
 {
 	const char	*input;
-	int			pos;
-	int			len;
+	int		pos;
+	int		len;
 	t_arena		*alloc;
 } t_lexer;
 
