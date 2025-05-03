@@ -96,7 +96,8 @@ typedef enum e_error
 	INVALID_PIPE = -6,
 	INVALID_QUOTE = -7,
 	INVALID_REDIRECT = -8,
-	INVALID_VAR = -9
+	INVALID_VAR = -9,
+	INVALID_SYNTAX = -10
 }			t_error;
 
 /**
@@ -213,6 +214,7 @@ typedef struct s_ast
 	{
 		struct s_cmd_node
 		{
+			int			argc;
 			char		**argv;
 			t_in_out	*io;
 		}	cmd_node;
