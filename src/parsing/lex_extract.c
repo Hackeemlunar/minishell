@@ -24,7 +24,7 @@ static t_result	handle_quotes(t_lexer *lexer, char quote_type)
 {
 	int		start;
 	int		quoted_len;
-	char		*result;
+	char	*result;
 
 	if (!lexer || !lexer->alloc)
 		return (create_error(ERROR));
@@ -34,7 +34,7 @@ static t_result	handle_quotes(t_lexer *lexer, char quote_type)
 	{
 		if (lexer->input[lexer->pos] == quote_type
 			&& lexer->input[lexer->pos - 1] != '\\')
-			break;
+			break ;
 		lexer->pos++;
 		quoted_len++;
 	}
@@ -77,14 +77,15 @@ static int	copy_word(t_lexer *lexer, char *result)
 
 	i = 0;
 	quoted = 0;
+	quote_type = 0;
 	while (lexer->pos < lexer->len)
 	{
 		if ((lexer->input[lexer->pos] == '"'
-			|| lexer->input[lexer->pos] == '\'') && !quoted)
-				quote_type = lexer->input[lexer->pos];
+				|| lexer->input[lexer->pos] == '\'') && !quoted)
+			quote_type = lexer->input[lexer->pos];
 		if (lexer->input[lexer->pos] == quote_type)
 			quoted = !quoted;
-		if (!quoted  && is_special_char(lexer->input[lexer->pos]))
+		if (!quoted && is_special_char(lexer->input[lexer->pos]))
 			break ;
 		if (lexer->input[lexer->pos] == '\\')
 			i += handle_escape(lexer, result, i);
@@ -105,14 +106,15 @@ static int	count_char(t_lexer *lexer)
 
 	i = 0;
 	quoted = 0;
+	quote_type = 0;
 	while (lexer->pos < lexer->len)
 	{
 		if ((lexer->input[lexer->pos] == '"'
-			|| lexer->input[lexer->pos] == '\'') && !quoted)
-				quote_type = lexer->input[lexer->pos];
+				|| lexer->input[lexer->pos] == '\'') && !quoted)
+			quote_type = lexer->input[lexer->pos];
 		if (lexer->input[lexer->pos] == quote_type)
 			quoted = !quoted;
-		if (!quoted  && is_special_char(lexer->input[lexer->pos]))
+		if (!quoted && is_special_char(lexer->input[lexer->pos]))
 			break ;
 		if (lexer->input[lexer->pos++] == '\\')
 			lexer->pos += (++i);
@@ -131,7 +133,7 @@ t_result	extract_word(t_lexer *lexer)
 {
 	int		start;
 	int		i;
-	char		*result;
+	char	*result;
 
 	start = lexer->pos;
 	if (lexer->input[lexer->pos] == '"' || lexer->input[lexer->pos] == '\'')
@@ -145,4 +147,3 @@ t_result	extract_word(t_lexer *lexer)
 		return (create_error(INVALID_QUOTE));
 	return (create_success(result));
 }
-

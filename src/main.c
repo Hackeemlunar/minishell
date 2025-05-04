@@ -29,7 +29,7 @@ void walk_ast(t_ast *ast)
 {
 	t_ast *cur = ast;
 	if (cur->type == NODE_CMD){
-		printf("CMD: %s: %s: %d\n", cur->data.cmd_node.argv[0], cur->data.cmd_node.argv[4], cur->data.cmd_node.argc);
+		printf("CMD: %s: %s: %d\n", cur->data.cmd_node.argv[0], cur->data.cmd_node.argv[1], cur->data.cmd_node.argc);
 	}
 	if (cur->type == NODE_PIPELINE){
 		printf("PIPE LEFT\n");
@@ -68,9 +68,11 @@ int	main(void)
 
 	show_banner();
 	init_allocators(&allocs);
+	read_history("./histfile");
 	while (true)
 	{
 		str = readline("minishell> ");
+		add_history(str);
 		if (str == NULL)
 		{
 			printf("Error: readline failed\n");
@@ -79,13 +81,13 @@ int	main(void)
 		result = parse_cmdln(str, &mshell, &allocs);
 		if (result.is_error) {
 			printf("%d\n", result.data.error);
-			arena_destroy(allocs.parse_alloc);
-			return (1);
+			break ;
 		}
 		mshell.ast = result.data.value;
 		walk_ast(mshell.ast);
 		arena_reset(allocs.parse_alloc);
 	}
+	write_history("./histfile");
 	arena_destroy(allocs.parse_alloc);
 	free(str);
 	return (0);

@@ -25,6 +25,8 @@
 # include "../libft/libft.h"
 # include "../libft/arena.h"
 
+typedef struct s_table	t_table;
+
 /**
  * @struct s_allocators
  * @brief A structure that holds memory arenas for different
@@ -97,7 +99,8 @@ typedef enum e_error
 	INVALID_QUOTE = -7,
 	INVALID_REDIRECT = -8,
 	INVALID_VAR = -9,
-	INVALID_SYNTAX = -10
+	INVALID_SYNTAX = -10,
+	INVALID_ARGUMENT = -11,
 }			t_error;
 
 /**
