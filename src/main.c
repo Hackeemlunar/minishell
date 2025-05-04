@@ -71,6 +71,7 @@ int	main(void)
 	while (true)
 	{
 		str = readline("minishell> ");
+		add_history(str);
 		if (str == NULL)
 		{
 			printf("Error: readline failed\n");
