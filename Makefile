@@ -5,8 +5,8 @@
 #                                                     +:+ +:+         +:+      #
 #    By: hmensah- <hmensah-@student.42abudhabi.ae>  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2025/05/02 20:55:00 by hmensah-          #+#    #+#              #
-#    Updated: 2025/05/02 21:33:43 by hmensah-         ###   ########.fr        #
+#    Created: 2025/05/04 19:20:15 by hmensah-          #+#    #+#              #
+#    Updated: 2025/05/04 19:24:31 by hmensah-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,7 +35,7 @@ endif
 # Source files
 SRC_FILES =	main.c \
 		utils/res_helpers.c \
-		parsing/lexer.c parsing/parser.c
+		parsing/lexer.c parsing/parser.c parsing/lex_extract.c parsing/lex_token.c
 
 # Object files# Object files
 OBJ_FILES = $(patsubst %.c,$(OBJ_DIR)/%.o,$(SRC_FILES))

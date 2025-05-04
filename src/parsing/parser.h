@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser.h                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hmensah- <hmensah-@student.42abudhabi.ae>  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/04 18:49:13 by hmensah-          #+#    #+#             */
+/*   Updated: 2025/05/04 19:18:36 by hmensah-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PARSER_H
 # define PARSER_H
 # include "../minishell.h"
@@ -45,5 +57,11 @@ typedef struct s_lexer
 } t_lexer;
 
 /* Function prototypes */
+t_result	lex_cmdln(const char *cmdline, t_allocs *allocs);
+t_result	extract_word(t_lexer *lexer);
+size_t		quote_strcpy(char *dst, const char *src, size_t len);
+t_result	get_next_token(t_lexer *lexer);
+t_result	new_token(t_token_type type, char *value, t_arena *alloc);
+void		skip_whitespace(t_lexer *lexer);
 
 #endif

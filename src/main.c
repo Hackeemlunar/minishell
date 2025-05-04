@@ -25,6 +25,40 @@ void	init_allocators(t_allocs *allocs)
 	allocs->parse_alloc = arena_create(4096);
 }
 
+void walk_ast(t_ast *ast)
+{
+	t_ast *cur = ast;
+	if (cur->type == NODE_CMD){
+		printf("CMD: %s: %s: %d\n", cur->data.cmd_node.argv[0], cur->data.cmd_node.argv[4], cur->data.cmd_node.argc);
+	}
+	if (cur->type == NODE_PIPELINE){
+		printf("PIPE LEFT\n");
+		walk_ast(cur->data.bin_op_node.left);
+		printf("PIPE RIGHT\n");
+		walk_ast(cur->data.bin_op_node.right);
+	}
+	if (cur->type == NODE_AND){
+		printf("AND LEFT\n");
+		walk_ast(cur->data.bin_op_node.left);
+		printf("AND RIGHT\n");
+		walk_ast(cur->data.bin_op_node.right);
+	}
+	if (cur->type == NODE_OR){
+		printf("OR LEFT\n");
+		walk_ast(cur->data.bin_op_node.left);
+		printf("OR RIGHT\n");
+		walk_ast(cur->data.bin_op_node.right);
+	}
+	if (cur->type == NODE_BACKGROUND){
+		printf("BACKGROUND\n");
+		walk_ast(cur->data.bin_op_node.left);
+	}
+	if (cur->type == NODE_SUBSHELL){
+		printf("SUBSHELL\n");
+		walk_ast(cur->data.sub);
+	}
+}
+
 int	main(void)
 {
 	char		*str;
@@ -34,14 +68,24 @@ int	main(void)
 
 	show_banner();
 	init_allocators(&allocs);
-	str = readline("minishell> ");
-	if (str == NULL)
+	while (true)
 	{
-		printf("Error: readline failed\n");
-		return (1);
+		str = readline("minishell> ");
+		if (str == NULL)
+		{
+			printf("Error: readline failed\n");
+			return (1);
+		}
+		result = parse_cmdln(str, &mshell, &allocs);
+		if (result.is_error) {
+			printf("%d\n", result.data.error);
+			arena_destroy(allocs.parse_alloc);
+			return (1);
+		}
+		mshell.ast = result.data.value;
+		walk_ast(mshell.ast);
+		arena_reset(allocs.parse_alloc);
 	}
-	result = parse_cmdln(str, &mshell, &allocs);
-	printf("%d\n", result.data.error);
 	arena_destroy(allocs.parse_alloc);
 	free(str);
 	return (0);

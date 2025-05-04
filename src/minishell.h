@@ -236,6 +236,7 @@ typedef struct s_minishell
 	int			num_cmds;
 }	t_mshell;
 
+bool		is_special_char(char c);
 t_result	create_success(void *value);
 t_result	create_error(t_error error_code);
 t_result	lex_cmdln(const char *cmdline, t_allocs *allocs);
