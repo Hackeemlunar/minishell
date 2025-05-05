@@ -59,16 +59,23 @@ void walk_ast(t_ast *ast)
 	}
 }
 
-int	main(void)
+int	main(int argc, char **argv, char **envp)
 {
 	char		*str;
 	t_result	result;
 	t_allocs	allocs;
 	t_mshell	mshell;
+	t_table		env_table;
 
+	(void)argc;
+	(void)argv;
 	show_banner();
 	init_allocators(&allocs);
 	read_history("./histfile");
+	init_env(&env_table, envp);
+	printf("env_table size: %d\n", env_table.size);
+	t_result res = get_env(&env_table, "USER");
+	printf("env_table: %s\n", (char *)res.data.value);
 	while (true)
 	{
 		str = readline("minishell> ");
@@ -88,6 +95,7 @@ int	main(void)
 		arena_reset(allocs.parse_alloc);
 	}
 	write_history("./histfile");
+	clean_env(&env_table);
 	arena_destroy(allocs.parse_alloc);
 	free(str);
 	return (0);
