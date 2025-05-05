@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hmensah- <hmensah-@student.42abudhabi.ae>  +#+  +:+       +#+        */
+/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 14:01:06 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/04 19:17:33 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/05 18:22:28 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,8 @@ static t_result	init_lexer(const char *input, t_arena *alloc)
 void	skip_whitespace(t_lexer *lexer)
 {
 	while (lexer->pos < lexer->len && (lexer->input[lexer->pos] == ' '
-		|| lexer->input[lexer->pos] == '\t'
-		|| lexer->input[lexer->pos] == '\n'))
+			|| lexer->input[lexer->pos] == '\t'
+			|| lexer->input[lexer->pos] == '\n'))
 	{
 		lexer->pos++;
 	}
@@ -67,7 +67,7 @@ t_result	new_token(t_token_type type, char *value, t_arena *alloc)
  * quote_strcpy
  * This is to handle excape sequences in quoted strings
 */
-size_t quote_strcpy(char *dst, const char *src, size_t len)
+size_t	quote_strcpy(char *dst, const char *src, size_t len)
 {
 	size_t	i;
 	size_t	j;
@@ -79,7 +79,7 @@ size_t quote_strcpy(char *dst, const char *src, size_t len)
 		if (src[j] == '\\' && (src[j + 1] == '"' || src[j + 1] == '\''))
 		{
 			j++;
-			continue;
+			continue ;
 		}
 		dst[i] = src[j];
 		i++;
@@ -120,4 +120,3 @@ t_result	lex_cmdln(const char *cmdline, t_allocs *allocs)
 	}
 	return (create_success(head));
 }
-

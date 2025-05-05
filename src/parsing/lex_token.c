@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lex_token.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hmensah- <hmensah-@student.42abudhabi.ae>  +#+  +:+       +#+        */
+/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/04 18:36:15 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/04 18:43:57 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/05 18:12:05 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,22 +91,8 @@ static inline t_result	handle_redir_out(t_lexer *lexer)
 	return (new_token(TOKEN_REDIR_OUT, value, lexer->alloc));
 }
 
-static inline t_result	handle_substitution(t_lexer *lexer)
-{
-	char	*value;
-
-	lexer->pos++;	
-	value = (char *)arena_alloc(lexer->alloc, 2);
-	if (!value)
-		return (create_error(NO_MEMORY));
-	value[0] = '$';
-	value[1] = '\0';
-	return (new_token(TOKEN_SUBSTITUTION, value, lexer->alloc));
-}
-
 static inline t_result	handle_and_bg(t_lexer *lexer)
 {
-
 	char	*value;
 
 	lexer->pos++;
@@ -127,32 +113,10 @@ static inline t_result	handle_and_bg(t_lexer *lexer)
 	return (new_token(TOKEN_BG, value, lexer->alloc));
 }
 
-
-static inline t_result	handle_unit(t_lexer *lexer, char token)
-{
-
-	char		*value;
-	t_token_type	token_type;
-
-	lexer->pos++;
-	value = (char *)arena_alloc(lexer->alloc, 2);
-	if (!value)
-		return (create_error(NO_MEMORY));
-	value[0] = token;
-	value[1] = '\0';
-	if (token == '(')
-		token_type = TOKEN_LPAREN;
-	else if (token == ')')
-		token_type = TOKEN_RPAREN;
-	else
-		token_type = TOKEN_WILDCARD;
-	return (new_token(token_type, value, lexer->alloc));
-}
-
 /**
  * Get the next token from the input
  */
- t_result	get_next_token(t_lexer *lexer)
+t_result	get_next_token(t_lexer *lexer)
 {
 	t_result	result;
 
@@ -177,4 +141,3 @@ static inline t_result	handle_unit(t_lexer *lexer, char token)
 		return (result);
 	return (new_token(TOKEN_WORD, result.data.value, lexer->alloc));
 }
-
