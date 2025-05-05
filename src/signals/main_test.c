@@ -33,19 +33,39 @@ void simulate_heredoc_child()
 	}
 }
 
-
-void run_fake_child_command()
+void run_real_command(char *input)
 {
-	int pid = fork();
+	pid_t pid = fork();
+
 	if (pid == 0)
 	{
-		printf("Child running... press Ctrl+C or Ctrl+\\ to test signals.\n");
-		while (1)
-			sleep(1);
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
+
+		char *argv[256];
+		char *token = strtok(input, " ");
+		int i = 0;
+		while (token && i < 255)
+		{
+			argv[i++] = token;
+			token = strtok(NULL, " ");
+		}
+		argv[i] = NULL;
+
+		if (execvp(argv[0], argv) == -1)
+		{
+			perror("minishell");
+			exit(EXIT_FAILURE);
+		}
+	}
+	else if (pid > 0)
+	{
+		int status;
+		waitpid(pid, &status, 0);
 	}
 	else
 	{
-		waitpid(pid, NULL, 0);
+		perror("fork");
 	}
 }
 
@@ -71,18 +91,14 @@ int main(void)
 		else if (strcmp(input, "heredoc") == 0)
 		{
 			t_cmd tmp = {.type = CMD_REDIR};
-			set_signal_handler(&tmp); // heredoc mode
+			set_signal_handler(&tmp);
 			simulate_heredoc_child();
-		}
-		else if (strcmp(input, "child") == 0)
-		{
-			t_cmd tmp = {.type = CMD_EXEC};
-			set_signal_handler(&tmp); // exec mode
-			run_fake_child_command();
 		}
 		else
 		{
-			printf("Unrecognized input: %s\n", input);
+			t_cmd tmp = {.type = CMD_EXEC};
+			set_signal_handler(&tmp);
+			run_real_command(input);
 		}
 		free(input);
 	}
