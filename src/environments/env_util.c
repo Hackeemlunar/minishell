@@ -6,7 +6,7 @@
 /*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 18:27:57 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/05 19:19:10 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/05 19:31:56 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,11 @@ static unsigned int	hash(const char *key)
 	int				c;
 
 	hash = 5381;
-	while ((c = *key++))
+	c = *key++;
+	while (c)
 	{
 		hash = ((hash << 5) + hash) + c;
+		c = *key++;
 	}
 	return (hash % HASH_SIZE);
 }
