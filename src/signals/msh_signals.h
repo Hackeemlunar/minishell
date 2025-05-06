@@ -11,6 +11,7 @@
 
 // Setup general shell signal handlers (for prompt and execution)
 void setup_signals(void);
+// Set signal handlers based on command type
 void	set_signal_handler(t_cmd *tree);
 // Special signal handler for heredoc interruption (SIGINT)
 void signal_handler_heredoc(int signum);

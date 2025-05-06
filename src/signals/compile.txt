@@ -1,1 +1,0 @@
-cc signal.c main_test.c ../../libs/mac/*.a ../../libft/libft.a -lcurses -o minishell
