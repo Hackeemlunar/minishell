@@ -25,6 +25,21 @@
 # include "../libft/libft.h"
 # include "../libft/arena.h"
 
+# define HASH_SIZE 128
+
+typedef struct s_env
+{
+	char		*key;
+	char		*value;
+	struct s_env	*next;
+}			t_env;
+
+typedef struct s_table
+{
+	t_env	*bucket[HASH_SIZE];
+	int		size;
+}	t_table;
+
 /**
  * @struct s_allocators
  * @brief A structure that holds memory arenas for different
@@ -97,7 +112,8 @@ typedef enum e_error
 	INVALID_QUOTE = -7,
 	INVALID_REDIRECT = -8,
 	INVALID_VAR = -9,
-	INVALID_SYNTAX = -10
+	INVALID_SYNTAX = -10,
+	INVALID_ARGUMENT = -11,
 }			t_error;
 
 /**
@@ -239,6 +255,10 @@ typedef struct s_minishell
 bool		is_special_char(char c);
 t_result	create_success(void *value);
 t_result	create_error(t_error error_code);
-t_result	lex_cmdln(const char *cmdline, t_allocs *allocs);
 t_result	parse_cmdln(char *cmdln, t_mshell *shell, t_allocs *allocs);
+t_result	add_env(t_table *table, char *key, char *value);
+t_result	get_env(t_table *table, char *key);
+t_result	init_env(t_table *table, char **env);
+t_result	delete_env(t_table *table, char *key);
+void		clean_env(t_table *table);
 #endif

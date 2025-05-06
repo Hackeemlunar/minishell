@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/05 17:33:25 by hmensah-          #+#    #+#             */
+/*   Updated: 2025/05/05 17:33:40 by hmensah-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	show_banner(void)
@@ -29,7 +41,7 @@ void walk_ast(t_ast *ast)
 {
 	t_ast *cur = ast;
 	if (cur->type == NODE_CMD){
-		printf("CMD: %s: %s: %d\n", cur->data.cmd_node.argv[0], cur->data.cmd_node.argv[4], cur->data.cmd_node.argc);
+		printf("CMD: %s: %s: %d\n", cur->data.cmd_node.argv[0], cur->data.cmd_node.argv[1], cur->data.cmd_node.argc);
 	}
 	if (cur->type == NODE_PIPELINE){
 		printf("PIPE LEFT\n");
@@ -59,15 +71,23 @@ void walk_ast(t_ast *ast)
 	}
 }
 
-int	main(void)
+int	main(int argc, char **argv, char **envp)
 {
 	char		*str;
 	t_result	result;
 	t_allocs	allocs;
 	t_mshell	mshell;
+	t_table		env_table;
 
+	(void)argc;
+	(void)argv;
 	show_banner();
 	init_allocators(&allocs);
+	read_history("./histfile");
+	init_env(&env_table, envp);
+	printf("env_table size: %d\n", env_table.size);
+	t_result res = get_env(&env_table, "USER");
+	printf("env_table: %s\n", (char *)res.data.value);
 	while (true)
 	{
 		str = readline("minishell> ");
@@ -80,13 +100,14 @@ int	main(void)
 		result = parse_cmdln(str, &mshell, &allocs);
 		if (result.is_error) {
 			printf("%d\n", result.data.error);
-			arena_destroy(allocs.parse_alloc);
-			return (1);
+			break ;
 		}
 		mshell.ast = result.data.value;
 		walk_ast(mshell.ast);
 		arena_reset(allocs.parse_alloc);
 	}
+	write_history("./histfile");
+	clean_env(&env_table);
 	arena_destroy(allocs.parse_alloc);
 	free(str);
 	return (0);

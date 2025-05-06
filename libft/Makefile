@@ -26,7 +26,8 @@ SRCS	=	ft_isalnum.c ft_isprint.c ft_memcmp.c  ft_putchar_fd.c ft_split.c \
 			handle_strings.c handle_pointer.c process_precision.c process_width_flags.c \
 			process_specifier.c handle_uns.c width_flags_utils.c ft_strcpy.c ft_strcat.c \
 			ft_lstadd_back.c ft_lstadd_front.c ft_lstclear.c ft_lstdelone.c ft_lstiter.c \
-			ft_lstlast.c ft_lstmap.c ft_lstnew.c ft_lstsize.c ft_arena.c ft_atol.c ft_atod.c
+			ft_lstlast.c ft_lstmap.c ft_lstnew.c ft_lstsize.c ft_arena.c ft_atol.c ft_atod.c \
+			ft_strcmp.c
 OBJS	= $(SRCS:.c=.o)
 
 all: $(NAME)
