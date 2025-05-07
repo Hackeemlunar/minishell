@@ -36,7 +36,83 @@ void	init_allocators(t_allocs *allocs)
 {
 	allocs->parse_alloc = arena_create(4096);
 }
+static int  collect_pipeline_cmds(t_ast *node, t_ast **out_cmds, int max)
+{
+    if (node->type == NODE_PIPELINE)
+    {
+        int left_count = collect_pipeline_cmds(node->data.bin_op_node.left, out_cmds, max);
+        if (left_count < 0) return -1;
+        if (left_count >= max) return -1;
+        return left_count + collect_pipeline_cmds(node->data.bin_op_node.right,
+                                                  out_cmds + left_count, max);
+    }
+    /* Not a pipeline: it must be a command (or a subshell producing a single "cmd"). */
+    out_cmds[0] = node;
+    return 1;
+}
 
+void  walk_ast(t_ast *ast)
+{
+    if (!ast) return;
+
+    switch (ast->type)
+    {
+        case NODE_CMD:
+        {
+            /* Print the command and all its args */
+            printf("CMD:");
+            for (int i = 0; i < ast->data.cmd_node.argc; i++)
+                printf(" %s", ast->data.cmd_node.argv[i]);
+            printf("\n");
+            break;
+        }
+        case NODE_PIPELINE:
+        {
+            /* Flatten the pipeline into a list of cmds */
+            t_ast *cmds[128];  /* adjust size or dynamically allocate */
+            int  n = collect_pipeline_cmds(ast, cmds, 128);
+            if (n < 0) {
+                fprintf(stderr, "Pipeline too deep\n");
+                return;
+            }
+
+            for (int i = 0; i < n; i++)
+            {
+                if (i > 0) printf("PIPE\n");
+                walk_ast(cmds[i]);
+            }
+            break;
+        }
+        case NODE_AND:
+            printf("AND\n");
+            walk_ast(ast->data.bin_op_node.left);
+            walk_ast(ast->data.bin_op_node.right);
+            break;
+
+        case NODE_OR:
+            printf("OR\n");
+            walk_ast(ast->data.bin_op_node.left);
+            walk_ast(ast->data.bin_op_node.right);
+            break;
+
+        case NODE_BACKGROUND:
+            printf("BACKGROUND\n");
+            /* background only has a left subtree */
+            walk_ast(ast->data.sub);
+            break;
+
+        case NODE_SUBSHELL:
+            printf("SUBSHELL\n");
+            walk_ast(ast->data.sub);
+            break;
+
+        default:
+            fprintf(stderr, "Unknown AST node type %d\n", ast->type);
+            break;
+    }
+}
+
+/**
 void walk_ast(t_ast *ast)
 {
 	t_ast *cur = ast;
@@ -70,6 +146,7 @@ void walk_ast(t_ast *ast)
 		walk_ast(cur->data.sub);
 	}
 }
+*/
 
 int	main(int argc, char **argv, char **envp)
 {
