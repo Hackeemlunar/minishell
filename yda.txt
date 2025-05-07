@@ -1,0 +1,16 @@
+CC = cc
+	@echo "Minishell compiled successfully!"
+CC = cc
+	@echo "Minishell compiled successfully!"
+CC = cc
+	@echo "Minishell compiled successfully!"
+CC = cc
+	@echo "Minishell compiled successfully!"
+CC = cc
+	@echo "Minishell compiled successfully!"
+CC = cc
+	@echo "Minishell compiled successfully!"
+CC = cc
+	@echo "Minishell compiled successfully!"
+CC = cc
+	@echo "Minishell compiled successfully!"

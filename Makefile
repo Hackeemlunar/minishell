@@ -6,7 +6,7 @@
 #    By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/04 19:20:15 by hmensah-          #+#    #+#              #
-#    Updated: 2025/05/05 18:31:36 by hmensah-         ###   ########.fr        #
+#    Updated: 2025/05/07 19:15:59 by hmensah-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,6 +35,7 @@ endif
 # Source files
 SRC_FILES =	main.c \
 		environments/env.c environments/env_util.c \
+		execution/run.c \
 		utils/res_helpers.c \
 		parsing/lexer.c parsing/parser.c parsing/lex_extract.c parsing/lex_token.c \
 		parsing/lex_token_util.c parsing/parser_cmd.c parsing/parser_util.c
