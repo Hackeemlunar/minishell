@@ -70,9 +70,11 @@ void setup_signals(void)
 }
 
 
-void set_signal_handler(t_ast *tree)
+void set_signal_handler(t_ast *node)
 {
-    if (tree && tree->type == CMD_REDIR)
+    if (node && node->type == NODE_CMD
+        && node->data.cmd_node.io
+        && node->data.cmd_node.io->heredoc_delim != NULL)
     {
         signal(SIGINT, signal_handler_heredoc);
         signal(SIGQUIT, signal_handler_heredoc);

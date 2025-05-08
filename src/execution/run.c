@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   run.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hmensah- <hmensah-@student.42abudhabi.ae>  +#+  +:+       +#+        */
+/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 18:52:11 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/07 19:12:57 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/08 23:35:39 by sngantch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,38 @@ static int  collect_pipeline_cmds(t_ast *node, t_ast **out_cmds, int max)
     }
     out_cmds[0] = node;
     return (1);
+}
+
+int collect_heredoc_input(const char *delim, char *temp_file)
+{
+    int fd;
+    char *line;
+
+    fd = open(temp_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    if (fd < 0)
+    {
+        perror("error in heredoc");
+        return (-1);
+    }
+    while (1)
+    {
+        line =  readline(">");
+        if (!line)
+        {
+            write(STDERR_FILENO, "\n", 1);
+            break;
+        }
+        if (ft_strcmp(line, delim) == 0)
+        {
+            free(line);
+            break;
+        }
+        write(fd, line, ft_strlen(line));
+        write(fd, "\n", 1);
+        free(line);
+    }
+    close(fd);
+    return (0);
 }
 
 void    get_inputs(t_in_out *io)
@@ -64,6 +96,15 @@ t_result    run_simple_cmd(t_ast *ast, t_mshell *shell, t_allocs *allocs)
     if (!ast)
         return (create_error(ERROR));
     io = ast->data.cmd_node.io;
+    if (io->in_mode == 1 && io->heredoc_delim)
+    {
+        if (collect_heredoc_input(io->heredoc_delim, "/tmp/heredoc") < 0)
+            return (create_error(ERROR));
+        io->in_fd = open("/tmp/heredoc", O_RDONLY);
+        if (io->in_fd < 0)
+            return (create_error(NO_FILE));
+        // dup2(io->in_fd, STDIN_FILENO);
+    }
     pid = fork();
     if (pid < 0)
         return create_error(PID_ERROR);
@@ -78,15 +119,7 @@ t_result    run_simple_cmd(t_ast *ast, t_mshell *shell, t_allocs *allocs)
                     return (create_error(NO_FILE));
                 dup2(io->in_fd, STDIN_FILENO);
             }
-            else if (io->in_mode == 1 && io->heredoc_delim)
-            {
-                get_inputs(io);
-                io->in_fd = open("/tmp/heredoc", O_RDONLY);
-                if (io->in_fd < 0)
-                    return (create_error(NO_FILE));
-                dup2(io->in_fd, STDIN_FILENO);
-            }
-            else
+            if (io->in_fd != STDIN_FILENO)
                 io->in_fd = STDIN_FILENO;
             if (io->out_mode == 0 && io->out_file)
             {
@@ -102,8 +135,6 @@ t_result    run_simple_cmd(t_ast *ast, t_mshell *shell, t_allocs *allocs)
                     return (create_error(NO_FILE));
                 dup2(io->out_fd, STDOUT_FILENO);
             }
-            else
-                io->in_fd = STDOUT_FILENO;
         }
         execve(ast->data.cmd_node.argv[0], ast->data.cmd_node.argv, shell->env);
         perror("execve");
@@ -111,6 +142,7 @@ t_result    run_simple_cmd(t_ast *ast, t_mshell *shell, t_allocs *allocs)
     }
     if (waitpid(pid, NULL, 0) == 0)
         return (create_success(ast));
+    unlink("/tmp/heredoc");
     return (create_error(ERROR));
 }
 

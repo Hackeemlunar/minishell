@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:33:25 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/07 19:07:51 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/08 22:22:16 by sngantch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,8 @@ int main(int argc, char **argv, char **envp)
 	show_banner();
 	init_allocators(&allocs);
 	read_history("./histfile");
-	init_env(&env_table, envp);	
+	if (init_env(&env_table, envp).is_error)
+		return (1);
 	mshell.env = envp;
 	result = get_paths(&env_table, &mshell.paths, &allocs);
 	if (result.is_error)
@@ -112,6 +113,11 @@ int main(int argc, char **argv, char **envp)
 	{
 		setup_signals();
 		str = readline("\033[31mmshell\033[0m> ");
+		if (!str)
+		{
+			write(STDOUT_FILENO, "exit\n", 5);
+			break;
+		}
 		if (check_all_white_space(str))
 		{
 			free(str);
@@ -120,15 +126,18 @@ int main(int argc, char **argv, char **envp)
 		add_history(str);
 		result = parse_cmdln(str, &mshell, &allocs);
 		if (result.is_error) {
-			printf("%d\n", result.data.error);
-			break ;
+			ft_printf("%d", result.data.error);
+			write(STDOUT_FILENO, "\n", 1);
+			continue ;
 		}
 		mshell.ast = result.data.value;
 		result = run_command(&mshell, &allocs, &env_table);
 		if (result.is_error) {
-			printf("%d\n", result.data.error);
-			break ;
+			printf("%d", result.data.error);
+			write(STDOUT_FILENO, "\n", 1);
+			continue ;
 		}
+		free(str);
 	}
 	write_history("./histfile");
 	clean_env(&env_table);

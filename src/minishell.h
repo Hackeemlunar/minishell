@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hmensah- <hmensah-@student.42abudhabi.ae>  +#+  +:+       +#+        */
+/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 13:58:53 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/07 19:03:19 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/08 22:05:02 by sngantch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -268,4 +268,7 @@ t_result	delete_env(t_table *table, char *key);
 void		clean_env(t_table *table);
 t_result	run_command(t_mshell *shell, t_allocs *allocs, t_table *table);
 void		setup_signals(void);
+void		setup_signals(void);
+void		set_signal_handler(t_ast *tree);
+void 		signal_handler_heredoc(int signum);
 #endif
