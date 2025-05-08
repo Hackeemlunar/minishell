@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hmensah- <hmensah-@student.42abudhabi.ae>  +#+  +:+       +#+        */
+/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 13:58:53 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/02 21:18:28 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/08 22:05:02 by sngantch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,6 +114,9 @@ typedef enum e_error
 	INVALID_VAR = -9,
 	INVALID_SYNTAX = -10,
 	INVALID_ARGUMENT = -11,
+	PID_ERROR = -12,
+	INVALID_ENV = -13,
+	NO_PATH = -14
 }			t_error;
 
 /**
@@ -249,6 +252,8 @@ typedef struct s_minishell
 {
 	pid_t		*pids;
 	t_ast		*ast;
+	char		**env;
+	char		**paths;
 	int			num_cmds;
 }	t_mshell;
 
@@ -261,4 +266,9 @@ t_result	get_env(t_table *table, char *key);
 t_result	init_env(t_table *table, char **env);
 t_result	delete_env(t_table *table, char *key);
 void		clean_env(t_table *table);
+t_result	run_command(t_mshell *shell, t_allocs *allocs, t_table *table);
+void		setup_signals(void);
+void		setup_signals(void);
+void		set_signal_handler(t_ast *tree);
+void 		signal_handler_heredoc(int signum);
 #endif

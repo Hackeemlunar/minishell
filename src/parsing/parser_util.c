@@ -57,22 +57,22 @@ t_result	parse_redir(t_ast *cmd_node, t_token **current, t_allocs *allocs)
 	if (redirect_tok->type == TOKEN_REDIR_IN)
 	{
 		io->in_file = file_tok->value;
-		io->in_mode = O_RDONLY;
+		io->in_mode = 0;
 	}
 	else if (redirect_tok->type == TOKEN_HEREDOC)
 	{
 		io->heredoc_delim = file_tok->value;
-		io->in_mode = O_RDONLY;
+		io->in_mode = 1;
 	}
 	else if (redirect_tok->type == TOKEN_REDIR_OUT)
 	{
 		io->out_file = file_tok->value;
-		io->out_mode = O_WRONLY | O_CREAT | O_TRUNC;
+		io->out_mode = 0;
 	}
 	else if (redirect_tok->type == TOKEN_APPEND)
 	{
 		io->out_file = file_tok->value;
-		io->out_mode = O_WRONLY | O_CREAT | O_APPEND;
+		io->out_mode = 1;
 	}
 	*current = advance_token(file_tok);
 	return (create_success(NULL));
