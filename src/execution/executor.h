@@ -15,5 +15,5 @@
 
 #include "../minishell.h"
 
-void	walk_ast(t_ast *ast, char **env);
+void  walk_ast(t_ast *ast, t_mshell *shell, t_allocs *allocs, t_table *table);
 #endif

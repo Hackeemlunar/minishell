@@ -35,6 +35,59 @@ void	show_banner(void)
 void	init_allocators(t_allocs *allocs)
 {
 	allocs->parse_alloc = arena_create(4096);
+	allocs->sh_alloc = arena_create(4096);
+	allocs->exec_alloc = arena_create(4096);
+}
+
+void	clean_allocators(t_allocs *allocs)
+{
+	arena_destroy(allocs->parse_alloc);
+	arena_destroy(allocs->sh_alloc);
+	arena_destroy(allocs->exec_alloc);
+}
+
+static t_result get_paths(t_table *table, char ***paths, t_allocs *allocs)
+{
+    t_result    result;
+    char        *path;
+    char        **path_split;
+    int         i;
+
+    result = get_env(table, "PATH");
+    if (result.is_error)
+        return (result);
+    path = result.data.value;
+    path_split = ft_split(path, ':');
+    if (!path_split)
+        return (create_error(NO_MEMORY));
+    i = 0;
+    while (path_split[i])
+        i++;
+    *paths = arena_alloc(allocs->sh_alloc, (i + 1) * sizeof(char*));
+    i = -1;
+    while (path_split[++i])
+    {
+        (*paths)[i] = arena_alloc(allocs->sh_alloc, ft_strlen(path_split[i]) + 3);
+        ft_strlcpy((*paths)[i], path_split[i], ft_strlen(path_split[i]) + 1);
+        ft_strlcat((*paths)[i], "/", ft_strlen(path_split[i]) + 2);
+        free(path_split[i]);
+    }
+    (*paths)[i] = NULL;
+    return (free(path_split), create_success(NULL));
+}
+
+int	check_all_white_space(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (!whitespace(str[i]))
+			return (0);
+		i++;
+	}
+	return (1);
 }
 
 int main(int argc, char **argv, char **envp)
@@ -51,12 +104,18 @@ int main(int argc, char **argv, char **envp)
 	init_allocators(&allocs);
 	read_history("./histfile");
 	init_env(&env_table, envp);
-	printf("env_table size: %d\n", env_table.size);
-	t_result res = get_env(&env_table, "USER");
-	printf("env_table: %s\n", (char *)res.data.value);
+	mshell.env = envp;
+	result = get_paths(&env_table, &mshell.paths, &allocs);
+	if (result.is_error)
+		return (1);
 	while (true)
 	{
-		str = readline("minishell> ");
+		str = readline("\033[31mmshell\033[0m> ");
+		if (check_all_white_space(str))
+		{
+			free(str);
+			continue ;
+		}
 		add_history(str);
 		if (str == NULL)
 		{
@@ -74,11 +133,10 @@ int main(int argc, char **argv, char **envp)
 			printf("%d\n", result.data.error);
 			break ;
 		}
-		arena_reset(allocs.parse_alloc);
 	}
 	write_history("./histfile");
 	clean_env(&env_table);
-	arena_destroy(allocs.parse_alloc);
+	clean_allocators(&allocs);
 	free(str);
 	return (0);
 }

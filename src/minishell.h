@@ -112,8 +112,11 @@ typedef enum e_error
 	INVALID_QUOTE = -7,
 	INVALID_REDIRECT = -8,
 	INVALID_VAR = -9,
+	INVALID_SYNTAX = -10,
 	INVALID_ARGUMENT = -11,
-	PID_ERROR = -12
+	PID_ERROR = -12,
+	INVALID_ENV = -13,
+	NO_PATH = -14
 }			t_error;
 
 /**
@@ -250,6 +253,7 @@ typedef struct s_minishell
 	pid_t		*pids;
 	t_ast		*ast;
 	char		**env;
+	char		**paths;
 	int			num_cmds;
 }	t_mshell;
 
