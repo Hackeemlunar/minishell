@@ -103,13 +103,14 @@ int main(int argc, char **argv, char **envp)
 	show_banner();
 	init_allocators(&allocs);
 	read_history("./histfile");
-	init_env(&env_table, envp);
+	init_env(&env_table, envp);	
 	mshell.env = envp;
 	result = get_paths(&env_table, &mshell.paths, &allocs);
 	if (result.is_error)
 		return (1);
 	while (true)
 	{
+		setup_signals();
 		str = readline("\033[31mmshell\033[0m> ");
 		if (check_all_white_space(str))
 		{
@@ -117,11 +118,6 @@ int main(int argc, char **argv, char **envp)
 			continue ;
 		}
 		add_history(str);
-		if (str == NULL)
-		{
-			printf("Error: readline failed\n");
-			return (1);
-		}
 		result = parse_cmdln(str, &mshell, &allocs);
 		if (result.is_error) {
 			printf("%d\n", result.data.error);

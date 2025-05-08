@@ -35,6 +35,7 @@ endif
 # Source files
 SRC_FILES =	main.c \
 		environments/env.c environments/env_util.c \
+		signals/signal.c  \
 		execution/run.c \
 		utils/res_helpers.c \
 		parsing/lexer.c parsing/parser.c parsing/lex_extract.c parsing/lex_token.c \

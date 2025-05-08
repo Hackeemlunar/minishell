@@ -267,4 +267,5 @@ t_result	init_env(t_table *table, char **env);
 t_result	delete_env(t_table *table, char *key);
 void		clean_env(t_table *table);
 t_result	run_command(t_mshell *shell, t_allocs *allocs, t_table *table);
+void		setup_signals(void);
 #endif

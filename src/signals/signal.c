@@ -70,7 +70,7 @@ void setup_signals(void)
 }
 
 
-void set_signal_handler(t_cmd *tree)
+void set_signal_handler(t_ast *tree)
 {
     if (tree && tree->type == CMD_REDIR)
     {

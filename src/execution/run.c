@@ -164,6 +164,20 @@ void expand_substitutions(t_ast *ast, t_allocs *allocs, t_table *table)
     }
 }
 
+void    remove_leading_quote(t_ast *ast)
+{
+    int i;
+
+    i = 0;
+    while (i < ast->data.cmd_node.argc)
+    {
+        if (ast->data.cmd_node.argv[i][0] == '"'
+            || ast->data.cmd_node.argv[i][0] == '\'')
+            ast->data.cmd_node.argv[i] = ast->data.cmd_node.argv[i] + 1;
+        i++;
+    }
+}
+
 void  walk_ast(t_ast *ast, t_mshell *shell, t_allocs *allocs, t_table *table)
 {
     if (!ast) return;
@@ -173,6 +187,7 @@ void  walk_ast(t_ast *ast, t_mshell *shell, t_allocs *allocs, t_table *table)
         case NODE_CMD:
         {
             expand_substitutions(ast, allocs, table);
+            remove_leading_quote(ast);
             run_simple_cmd(ast, shell, allocs);
             break;
         }
