@@ -112,7 +112,7 @@ int main(int argc, char **argv, char **envp)
 	while (true)
 	{
 		setup_signals();
-		str = readline("\033[31mmshell\033[0m> ");
+		str = readline("sh$mshell-> ");
 		if (!str)
 		{
 			write(STDOUT_FILENO, "exit\n", 5);

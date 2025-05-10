@@ -36,7 +36,7 @@ endif
 SRC_FILES =	main.c \
 		environments/env.c environments/env_util.c \
 		signals/signal.c  \
-		execution/run.c \
+		execution/run.c execution/expand_var.c execution/sub_var.c \
 		utils/res_helpers.c \
 		parsing/lexer.c parsing/parser.c parsing/lex_extract.c parsing/lex_token.c \
 		parsing/lex_token_util.c parsing/parser_cmd.c parsing/parser_util.c
