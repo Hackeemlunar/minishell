@@ -251,10 +251,12 @@ typedef struct s_ast
 typedef struct s_minishell
 {
 	pid_t		*pids;
+	int		pid_track;
 	t_ast		*ast;
 	char		**env;
 	char		**paths;
 	int			num_cmds;
+	int			exit_status;
 }	t_mshell;
 
 bool		is_special_char(char c);

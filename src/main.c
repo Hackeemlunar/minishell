@@ -112,7 +112,7 @@ int main(int argc, char **argv, char **envp)
 	while (true)
 	{
 		setup_signals();
-		str = readline("sh$mshell-> ");
+		str = readline("$mshell-> ");
 		if (!str)
 		{
 			write(STDOUT_FILENO, "exit\n", 5);

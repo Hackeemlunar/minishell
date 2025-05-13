@@ -33,13 +33,18 @@ else
 endif
 
 # Source files
-SRC_FILES =	main.c \
-		environments/env.c environments/env_util.c \
-		signals/signal.c  \
-		execution/run.c execution/expand_var.c execution/sub_var.c \
-		utils/res_helpers.c \
-		parsing/lexer.c parsing/parser.c parsing/lex_extract.c parsing/lex_token.c \
-		parsing/lex_token_util.c parsing/parser_cmd.c parsing/parser_util.c
+#pipe_handler.c pipe_exec.c 
+SRC_FILES =\
+	main.c \
+	environments/env.c environments/env_util.c \
+	signals/signal.c  \
+	execution/expand_var.c execution/sub_var.c \
+	execution/pipe_utils.c  \
+	execution/exec_utils.c execution/run_io.c execution/logical_ops.c \
+	execution/run_simple_cmd.c execution/run_command.c execution/exit_status.c \
+	utils/res_helpers.c \
+	parsing/lexer.c parsing/parser.c parsing/lex_extract.c parsing/lex_token.c \
+	parsing/lex_token_util.c parsing/parser_cmd.c parsing/parser_util.c
 
 # Object files# Object files
 OBJ_FILES = $(patsubst %.c,$(OBJ_DIR)/%.o,$(SRC_FILES))

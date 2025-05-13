@@ -1,27 +1,12 @@
-#    By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+         #
-#    Created: 2025/05/04 19:20:15 by hmensah-          #+#    #+#              #
-#    Updated: 2025/05/07 19:15:59 by hmensah-         ###   ########.fr        #
-NAME = minishell
-# Compiler and flags
-# Directories
-SRC_DIR = src
-# Determine OS for libraries
-UNAME := $(shell uname)
-	LIB_DIR = libs/linux
-	LIBS = -L$(LIB_DIR) -lreadline -lhistory -lncurses
-else
-	LIB_DIR = libs/mac
-	LIBS = -L$(LIB_DIR) -lreadline -lhistory -lcurses
-# Source files
-		environments/env.c environments/env_util.c \
-		signals/signal.c  \
-		utils/res_helpers.c \
-		parsing/lexer.c parsing/parser.c parsing/lex_extract.c parsing/lex_token.c \
-		parsing/lex_token_util.c parsing/parser_cmd.c parsing/parser_util.c
-# Object files# Object files
-OBJ_FILES = $(patsubst %.c,$(OBJ_DIR)/%.o,$(SRC_FILES))
-# Include paths
-INCLUDES = -I$(INCLUDE_DIR) -I$(LIBFT_DIR) -Isrc
-# Rules
-	@echo "Minishell compiled successfully!"
-	mkdir -p $(OBJ_DIR)/parsing
+-rw-r--r-- 1 ace ace    2391 May 12 18:24 Makefile
+-rw-r--r-- 1 ace ace    2278 Apr 11 19:01 README.md
+-rw-r--r-- 1 ace ace    1854 May  6 20:58 a.txt
+-rw------- 1 ace ace     412 May 12 20:39 histfile
+drwxr-xr-x 3 ace ace    4096 May  6 20:58 include
+drwxr-xr-x 2 ace ace    4096 May  9 01:33 libft
+drwxr-xr-x 4 ace ace    4096 May  6 20:58 libs
+-rwxr-xr-x 1 ace ace 1014840 May 12 20:39 minishell
+drwxr-xr-x 7 ace ace    4096 May 12 18:24 obj
+drwxr-xr-x 2 ace ace    4096 May  6 20:58 pipex
+drwxr-xr-x 8 ace ace    4096 May 12 18:18 src
+-rw-r--r-- 1 ace ace       0 May 12 20:42 t.txt

@@ -15,9 +15,53 @@
 
 #include "../minishell.h"
 
+typedef struct s_exec_ctx
+{
+	t_ast		*node;
+	t_mshell	*shell;
+	t_allocs	*allocs;
+	t_table		*table;
+	int			in_fd;
+	int			out_fd;
+}	t_exec_ctx;
+
+typedef struct s_pipe_ctx
+{
+	t_ast   *cmds[30];
+	int     pipes[30][2];
+	int     count;
+	int     index;
+	pid_t   pid;
+}   t_pipe_ctx;
+
 void	walk_ast(t_ast *ast, t_mshell *shell, t_allocs *allocs, t_table *table);
 char	*expand_variable(char *str, t_allocs *allocs, t_table *table);
 int	collect_heredoc_input(const char *delim, char *temp_file);
 int	space_or_quote(char c);
 void	expand_substitutions(t_ast *ast, t_allocs *allocs, t_table *table);
+int	handle_pipes(t_ast *ast, t_mshell *sh, t_allocs *allocs, t_table *tb);
+void    remove_leading_quote(t_ast *ast);
+void    add_full_path(char **argv, char **paths, t_allocs *allocs);
+int     set_in_fds(t_in_out *io);
+int     set_out_fds(t_in_out *io);
+
+/* Logical Operations */
+int	handle_and_operation(t_ast *ast, t_mshell *shell, t_allocs *allocs, t_table *table);
+int	handle_or_operation(t_ast *ast, t_mshell *shell, t_allocs *allocs, t_table *table);
+int	execute_with_status(t_ast *ast, t_mshell *shell, t_allocs *allocs, t_table *table);
+
+/* Subshell Execution */
+int	handle_subshell(t_ast *ast, t_mshell *shell, t_allocs *allocs, t_table *table);
+
+/* Background Execution */
+int	handle_bg(t_ast *ast, t_mshell *shell, t_allocs *allocs, t_table *table);
+
+/* Exit Status Tracking */
+void	set_exit_status(t_mshell *shell, int status);
+int		get_exit_status(t_mshell *shell);
+void	update_exit_status(t_mshell *shell, t_result result);
+t_result	run_simple_cmd(t_ast *ast, t_mshell *shell, t_allocs *allocs);
+
+/* Top-level Command Runner */
+t_result	run_command(t_mshell *shell, t_allocs *allocs, t_table *table);
 #endif
