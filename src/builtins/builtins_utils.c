@@ -1,28 +1,41 @@
 #include "builtins.h"
 
-int	exec_builtin(char **argv, t_mshell *shell)
+
+int	is_builtin(char *cmd)
 {
-	if (!ft_strcmp(argv[0], "echo"))
-		echo(argv);
-	else if (!ft_strcmp(argv[0], "pwd"))
-		pwd();
-	else if (!ft_strcmp(argv[0], "env"))
-		env(argv, shell->params);
-	else if (!ft_strcmp(argv[0], "export"))
-		export_command(argv, &shell->params->env_var_list, &shell->exit_status);
-	//  cd, unset, exit later 
-	else
+	if (!cmd)
 		return (0);
-	return (1);
+	return (!ft_strcmp(cmd, "echo")
+		|| !ft_strcmp(cmd, "cd")
+		|| !ft_strcmp(cmd, "pwd")
+		|| !ft_strcmp(cmd, "export")
+		|| !ft_strcmp(cmd, "unset")
+		|| !ft_strcmp(cmd, "env")
+		|| !ft_strcmp(cmd, "exit"));         
 }
 
-if (is_builtin(ast->data.cmd_node.argv[0]) && !in_pipeline)
+
+int exec_builtin(char **argv, t_mshell *shell, t_table *table, int *exit_status)
 {
-	// run directly in parent
-	exec_builtin(ast->data.cmd_node.argv, shell);
-	return (create_success(ast));
-}
-else
-{
-	// fork, then call exec_builtin inside child (if builtin), else execve
+    if (!argv || !argv[0])
+        return (0);
+
+    if (!ft_strcmp(argv[0], "echo"))
+        echo(argv);
+    else if (!ft_strcmp(argv[0], "pwd"))
+        pwd(exit_status);
+    else if (!ft_strcmp(argv[0], "env"))
+        env(argv, table);
+    else if (!ft_strcmp(argv[0], "export"))
+        export_command(argv, table, exit_status);
+    else if (!ft_strcmp(argv[0], "cd"))
+        cd(argv, table); 
+    else if (!ft_strcmp(argv[0], "unset"))
+        unset(argv, &table->bucket[0]); 
+    else if (!ft_strcmp(argv[0], "exit"))
+        ft_exit(argv, shell); 
+    else
+        return (0);
+
+    return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 13:58:53 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/08 22:05:02 by sngantch         ###   ########.fr       */
+/*   Updated: 2025/05/13 23:32:35 by sngantch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,13 @@
 # include <sys/types.h>
 # include <errno.h>
 # include <term.h>
+# include <signal.h>
 # include "../include/readline/readline.h"
 # include "../include/readline/history.h"
 # include "../libft/libft.h"
 # include "../libft/arena.h"
+# include "builtins/builtins.h"
+#include "signals/msh_signals.h"
 
 # define HASH_SIZE 128
 
@@ -33,6 +36,7 @@ typedef struct s_env
 	char		*value;
 	struct s_env	*next;
 }			t_env;
+
 
 typedef struct s_table
 {
@@ -255,6 +259,8 @@ typedef struct s_minishell
 	char		**env;
 	char		**paths;
 	int			num_cmds;
+	t_table		*env_table; // added current shell enviroment
+	int			exit_status; // last command exit code 
 }	t_mshell;
 
 bool		is_special_char(char c);
@@ -271,4 +277,5 @@ void		setup_signals(void);
 void		setup_signals(void);
 void		set_signal_handler(t_ast *tree);
 void 		signal_handler_heredoc(int signum);
+
 #endif

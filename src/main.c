@@ -6,7 +6,7 @@
 /*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:33:25 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/08 22:22:16 by sngantch         ###   ########.fr       */
+/*   Updated: 2025/05/13 14:15:35 by sngantch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,9 +109,10 @@ int main(int argc, char **argv, char **envp)
 	result = get_paths(&env_table, &mshell.paths, &allocs);
 	if (result.is_error)
 		return (1);
+	setup_signals();
 	while (true)
 	{
-		setup_signals();
+		
 		str = readline("sh$mshell-> ");
 		if (!str)
 		{

@@ -1,19 +1,27 @@
 #include "builtins.h"
+// #include "../minishell.h"
 
-void	env(char **argv, t_params *params)
+void	env(char **argv, t_table *table)
 {
-	t_env_var	*tmp;
+	int i;
+	t_env *node;
 
 	if (argv[1])
 	{
-		ft_printf_fd(2, "env: %s: No such file or directory\n", argv[1]);
-		free_exit(params, 127);
+		ft_printf("env: %s: No such file or directory", argv[1]);
+		write(STDERR_FILENO, "\n", 1);
+		exit(127);  // Simulates Bash's behavior
 	}
-	tmp = params->env_var_list;
-	while (tmp)
+	i = -1;
+	while (++i < HASH_SIZE)
 	{
-		if (tmp->value)
-			ft_printf("%s=%s\n", tmp->key, tmp->value);
-		tmp = tmp->next;
+		node = table->bucket[i];
+		while (node)
+		{
+			if (node->value)
+				ft_printf("%s=%s\n", node->key, node->value);
+			node = node->next;
+		}
 	}
 }
+

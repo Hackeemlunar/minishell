@@ -26,7 +26,7 @@ void signal_handler_heredoc(int signum)
         fd = open("/tmp/child_pid.tmp", O_RDONLY);
         if (fd < 0)
         {
-            perror("open");
+            perror("open: 444");
             exit(1);
         }
         if (read(fd, &child_pid, sizeof(int)) < 0)

@@ -6,7 +6,7 @@
 /*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 18:52:11 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/08 23:35:39 by sngantch         ###   ########.fr       */
+/*   Updated: 2025/05/13 23:17:16 by sngantch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,11 +136,19 @@ t_result    run_simple_cmd(t_ast *ast, t_mshell *shell, t_allocs *allocs)
     if (!ast)
         return (create_error(ERROR));
     io = ast->data.cmd_node.io;
+    if (is_builtin(ast->data.cmd_node.argv[0]))
+    {
+        if (io && (set_in_fds(io) || set_out_fds(io)))
+            return create_error(ERROR);
+        exec_builtin(ast->data.cmd_node.argv, shell, shell->env_table, &shell->exit_status);
+        return create_success(ast);
+    }    
     pid = fork();
     if (pid < 0)
         return create_error(PID_ERROR);
     if (pid == 0)
     {
+        set_signal_handler(ast);
         if (io)
         {
             if (set_in_fds(io))
@@ -205,7 +213,7 @@ int handle_pipeline(t_ast **cmds, int ncmds, t_mshell *shell, t_allocs *allocs, 
 
         if (pids[i] == 0) {
             // Child process
-
+            // set_signal_handler(cmds[i]);
             // Apply input/output redirections
             t_in_out *io = cmds[i]->data.cmd_node.io;
             if (io) {
@@ -242,7 +250,12 @@ int handle_pipeline(t_ast **cmds, int ncmds, t_mshell *shell, t_allocs *allocs, 
             remove_leading_quote(cmds[i]);
 
             // Set full path and execute
-            add_full_path(cmds[i]->data.cmd_node.argv, shell->paths, allocs);
+            // add_full_path(cmds[i]->data.cmd_node.argv, shell->paths, allocs);
+            if (is_builtin(cmds[i]->data.cmd_node.argv[0]))
+            {
+                exec_builtin(cmds[i]->data.cmd_node.argv, shell, table, &shell->exit_status);
+                exit(EXIT_SUCCESS);
+            }
             execve(cmds[i]->data.cmd_node.argv[0], cmds[i]->data.cmd_node.argv, shell->env);
             perror("execve");
             exit(EXIT_FAILURE);
