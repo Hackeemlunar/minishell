@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   logical_ops.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hmensah- <hmensah-@student.42abudhabi.ae>  +#+  +:+       +#+        */
+/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 10:00:00 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/12 10:00:00 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/14 21:36:40 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,6 @@ int	handle_bg(t_ast *ast, t_mshell *shell, t_allocs *allocs, t_table *table)
 {
 	pid_t	pid;
 	t_ast	*sub_ast;
-	int		null_fd;
 
 	sub_ast = ast->data.bin_op_node.left;
 	pid = fork();
