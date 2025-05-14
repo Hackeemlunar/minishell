@@ -5,7 +5,7 @@
 void	walk_ast(t_ast *ast, t_mshell *shell, t_allocs *allocs, t_table *table)
 {
 	t_result	result;
-	int		status;
+	int			status;
 
 	if (!ast)
 		return ;
@@ -34,7 +34,7 @@ void	walk_ast(t_ast *ast, t_mshell *shell, t_allocs *allocs, t_table *table)
 	else if (ast->type == NODE_BACKGROUND)
 		handle_bg(ast, shell, allocs, table);
 	else if (ast->type == NODE_SUBSHELL)
-		handle_subshell(ast, shell, allocs, table);
+		handle_subsh(ast, shell, allocs, table);
 	else
 	{
 		ft_putstr_fd("Unknown AST node type: ", 2);

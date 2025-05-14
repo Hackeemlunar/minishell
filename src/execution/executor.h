@@ -6,7 +6,7 @@
 /*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 18:55:23 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/14 21:36:10 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/14 21:46:39 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ int			handle_or_operation(t_ast *ast, t_mshell *shell,
 				t_allocs *allocs, t_table *table);
 int			execute_with_status(t_ast *ast, t_mshell *shell, t_allocs *allocs,
 				t_table *table);
-int			handle_subshell(t_ast *ast, t_mshell *shell, t_allocs *allocs,
+int			handle_subsh(t_ast *ast, t_mshell *shell, t_allocs *allocs,
 				t_table *table);
 int			handle_bg(t_ast *ast, t_mshell *shell, t_allocs *allocs,
 				t_table *table);

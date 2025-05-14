@@ -6,7 +6,7 @@
 /*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 10:00:00 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/14 21:36:40 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/14 21:58:28 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ int	handle_and_operation(t_ast *ast, t_mshell *shell,
 		walk_ast(right, shell, allocs, table);
 		exit_status = get_exit_status(shell);
 	}
-	
 	return (exit_status);
 }
 
@@ -48,7 +47,6 @@ int	handle_or_operation(t_ast *ast, t_mshell *shell,
 		walk_ast(right, shell, allocs, table);
 		exit_status = get_exit_status(shell);
 	}
-	
 	return (exit_status);
 }
 
@@ -57,7 +55,7 @@ int	handle_bg(t_ast *ast, t_mshell *shell, t_allocs *allocs, t_table *table)
 	pid_t	pid;
 	t_ast	*sub_ast;
 
-	sub_ast = ast->data.bin_op_node.left;
+	sub_ast = ast->data.sub;
 	pid = fork();
 	if (pid < 0)
 		return (perror("fork"), 1);
@@ -80,14 +78,13 @@ int	handle_bg(t_ast *ast, t_mshell *shell, t_allocs *allocs, t_table *table)
 	return (0);
 }
 
-int	handle_subshell(t_ast *ast, t_mshell *shell, t_allocs *allocs, t_table *table)
+int	handle_subsh(t_ast *ast, t_mshell *shell, t_allocs *allocs, t_table *table)
 {
 	pid_t	pid;
 	int		status;
 	t_ast	*sub_ast;
 
 	sub_ast = ast->data.sub;
-	
 	pid = fork();
 	if (pid < 0)
 	{

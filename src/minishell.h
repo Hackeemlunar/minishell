@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 13:58:53 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/08 22:05:02 by sngantch         ###   ########.fr       */
+/*   Updated: 2025/05/14 21:53:50 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -244,14 +244,12 @@ typedef struct s_ast
 		}	bin_op_node;
 		struct s_ast		*sub;
 	}		data;
-	struct s_ast		*next;
-	struct s_ast		*prev;
 }			t_ast;
 
 typedef struct s_minishell
 {
 	pid_t		*pids;
-	int		pid_track;
+	int			pid_track;
 	t_ast		*ast;
 	char		**env;
 	char		**paths;

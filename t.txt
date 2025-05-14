@@ -1,31 +1,6 @@
-#    By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+         #
-#    Created: 2025/05/04 19:20:15 by hmensah-          #+#    #+#              #
-#    Updated: 2025/05/14 21:34:35 by hmensah-         ###   ########.fr        #
-NAME = minishell
-# Compiler and flags
-# Directories
-SRC_DIR = src
-# Determine OS for libraries
-UNAME := $(shell uname)
-	LIB_DIR = libs/linux
-	LIBS = -L$(LIB_DIR) -lreadline -lhistory -lncurses
-else
-	LIB_DIR = libs/mac
-	LIBS = -L$(LIB_DIR) -lreadline -lhistory -lcurses
-# Source files
-	environments/env.c environments/env_util.c \
-	signals/signal.c  \
-	execution/expand_var.c execution/sub_var.c \
-	execution/pipe_utils.c execution/pipe_utils1.c execution/pipe_exec.c \
-	execution/exec_utils.c execution/run_io.c execution/logical_ops.c \
-	execution/run_simple_cmd.c execution/run_command.c execution/exit_status.c \
-	utils/res_helpers.c \
-	parsing/lexer.c parsing/parser.c parsing/lex_extract.c parsing/lex_token.c \
-	parsing/lex_token_util.c parsing/parser_cmd.c parsing/parser_util.c
-# Object files# Object files
-OBJ_FILES = $(patsubst %.c,$(OBJ_DIR)/%.o,$(SRC_FILES))
-# Include paths
-INCLUDES = -I$(INCLUDE_DIR) -I$(LIBFT_DIR) -Isrc
-# Rules
-	@echo "Minishell compiled successfully!"
-	mkdir -p $(OBJ_DIR)/parsing
+sub_var.c: Error!
+Error: INVALID_HEADER       (line:   1, col:   1):	[97mMissing or invalid 42 header[0m
+Error: SPC_BEFORE_NL        (line:  34, col:  71):	Space before newline
+Error: TOO_FEW_TAB          (line:  35, col:   9):	Missing tabs for indent level
+Error: LINE_TOO_LONG        (line:  42, col:  82):	[94mline too long[0m
+Error: EMPTY_LINE_EOF       (line:  94, col:   1):	Empty line at end of file
