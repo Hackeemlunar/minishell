@@ -7,6 +7,9 @@ void	unset(char **args, t_table *table, int *exit_status)
 {
 	int i = 1;
 
+	if (!table || !exit_status || !args)
+		return;
+
 	while (args[i])
 	{
 		if (!is_valid_variable_name(args[i]))

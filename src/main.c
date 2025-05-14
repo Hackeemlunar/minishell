@@ -6,7 +6,7 @@
 /*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:33:25 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/13 14:15:35 by sngantch         ###   ########.fr       */
+/*   Updated: 2025/05/14 22:46:19 by sngantch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,13 +106,13 @@ int main(int argc, char **argv, char **envp)
 	if (init_env(&env_table, envp).is_error)
 		return (1);
 	mshell.env = envp;
+	mshell.env_table = &env_table;
 	result = get_paths(&env_table, &mshell.paths, &allocs);
 	if (result.is_error)
 		return (1);
-	setup_signals();
 	while (true)
 	{
-		
+		setup_signals();
 		str = readline("sh$mshell-> ");
 		if (!str)
 		{
@@ -138,7 +138,7 @@ int main(int argc, char **argv, char **envp)
 			write(STDOUT_FILENO, "\n", 1);
 			continue ;
 		}
-		free(str);
+		// free(str);
 	}
 	write_history("./histfile");
 	clean_env(&env_table);

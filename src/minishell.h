@@ -6,7 +6,7 @@
 /*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 13:58:53 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/13 23:32:35 by sngantch         ###   ########.fr       */
+/*   Updated: 2025/05/14 23:15:42 by sngantch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -273,9 +273,22 @@ t_result	init_env(t_table *table, char **env);
 t_result	delete_env(t_table *table, char *key);
 void		clean_env(t_table *table);
 t_result	run_command(t_mshell *shell, t_allocs *allocs, t_table *table);
+
 void		setup_signals(void);
 void		setup_signals(void);
 void		set_signal_handler(t_ast *tree);
 void 		signal_handler_heredoc(int signum);
+
+
+int		is_builtin(char *cmd);
+int		is_valid_variable_name(char *key);
+int 	exec_builtin(char **argv, t_mshell *shell, t_table *table, int *exit_status);
+void	cd(char **argv, t_table *table, int *exit_status);
+void	echo(char **argv);
+void	env(char **argv, t_table *table);
+void	export_command(char **args, t_table *table, int *exit_status);
+void	unset(char **args, t_table *table, int *exit_status);
+void	pwd(int *exit_status);
+void	ft_exit(char **argv, t_mshell *shell);
 
 #endif

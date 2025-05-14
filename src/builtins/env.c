@@ -18,7 +18,7 @@ void	env(char **argv, t_table *table)
 		node = table->bucket[i];
 		while (node)
 		{
-			if (node->value)
+			if (node->value && node->key)
 				ft_printf("%s=%s\n", node->key, node->value);
 			node = node->next;
 		}

@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+         #
+#    By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/04 19:20:15 by hmensah-          #+#    #+#              #
-#    Updated: 2025/05/07 19:15:59 by hmensah-         ###   ########.fr        #
+#    Updated: 2025/05/13 23:03:38 by sngantch         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,6 +36,8 @@ endif
 SRC_FILES =	main.c \
 		environments/env.c environments/env_util.c \
 		signals/signal.c  \
+		builtins/builtins_utils.c builtins/cd.c builtins/echo.c builtins/env.c \
+		builtins/export.c builtins/unset.c builtins/pwd.c builtins/exit.c \
 		execution/run.c execution/expand_var.c execution/sub_var.c \
 		utils/res_helpers.c \
 		parsing/lexer.c parsing/parser.c parsing/lex_extract.c parsing/lex_token.c \

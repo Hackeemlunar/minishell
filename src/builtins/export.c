@@ -18,13 +18,27 @@ static void	print_environment_variables(t_table *table)
 	}
 }
 
-static void	add_exported_variable(char *key, char *value, t_table *table)
+static void	 add_exported_variable(char *key, char *value, t_table *table)
 {
 	t_result res = get_env(table, key);
+
 	if (!res.is_error)
 	{
 		// Update value if already exists
+		// t_env *existing = res.data.value;
 		t_env *existing = res.data.value;
+		if (existing)
+		{
+			char *new_value = NULL;
+			if (value)
+				new_value = ft_strdup(value);
+				
+			if (value && !new_value)
+				return; // Memory allocation failed
+				
+			if (existing->value)
+				free(existing->value);
+		}
 		free(existing->value);
 		existing->value = ft_strdup(value);
 	}
@@ -32,6 +46,33 @@ static void	add_exported_variable(char *key, char *value, t_table *table)
 	{
 		add_env(table, key, value); // Insert new
 	}
+}
+
+char	*extract_variable_name(char *arg, char *equal_sign)
+{
+	char	*key;
+
+	if (!equal_sign)
+		return (ft_strdup(arg));
+	key = ft_substr(arg, 0, equal_sign - arg);
+	return (key);
+}
+
+int	is_valid_variable_name(char *key)
+{
+	int	i;
+
+	i = 0;
+	if (!ft_isalpha(key[i]) && key[i] != '_')
+		return (0);
+	i++;
+	while (key[i])
+	{
+		if (!ft_isalnum(key[i]) && key[i] != '_')
+			return (0);
+		i++;
+	}
+	return (1);
 }
 
 void	export_command(char **args, t_table *table, int *exit_status)
