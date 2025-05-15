@@ -39,7 +39,8 @@ SRC_FILES =\
 	environments/env.c environments/env_util.c \
 	signals/signal.c  \
 	execution/expand_var.c execution/sub_var.c \
-	execution/pipe_utils.c execution/pipe_utils1.c execution/pipe_exec.c \
+	execution/pipe_utils.c execution/pipe_utils1.c execution/pipe_utils2.c \
+	execution/pipe_exec.c \
 	execution/exec_utils.c execution/run_io.c execution/logical_ops.c \
 	execution/run_simple_cmd.c execution/run_command.c execution/exit_status.c \
 	utils/res_helpers.c \
