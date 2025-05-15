@@ -6,7 +6,7 @@
 /*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 14:30:01 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/15 15:44:49 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/15 19:20:56 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,15 +60,19 @@ void	walk_ast(t_ast *ast, t_mshell *shell, t_allocs *allocs, t_table *table)
 		handle_others(ast, shell, allocs, table);
 }
 
-t_result	run_command(t_mshell *shell, t_allocs *allocs, t_table *table)
+int	run_command(t_mshell *shell, t_allocs *allocs, t_table *table)
 {
 	t_result	result;
+	char		*temp;
 
 	result = get_env(table, "PATH");
 	if (result.is_error)
-		return (result);
+		return (1);
+	temp = ft_itoa(get_exit_status(shell));
+	add_env(table, "?", temp);
+	free(temp);
 	walk_ast(shell->ast, shell, allocs, table);
 	arena_reset(allocs->exec_alloc);
 	arena_reset(allocs->parse_alloc);
-	return (create_success(shell->ast));
+	return (get_exit_status(shell));
 }

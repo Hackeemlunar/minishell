@@ -6,7 +6,7 @@
 /*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 13:58:53 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/14 21:53:50 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/15 18:04:37 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -266,9 +266,10 @@ t_result	get_env(t_table *table, char *key);
 t_result	init_env(t_table *table, char **env);
 t_result	delete_env(t_table *table, char *key);
 void		clean_env(t_table *table);
-t_result	run_command(t_mshell *shell, t_allocs *allocs, t_table *table);
-void		setup_signals(void);
+void		clean_mshell(t_allocs *allocs, t_table *table);
 void		setup_signals(void);
 void		set_signal_handler(t_ast *tree);
 void 		signal_handler_heredoc(int signum);
+void		setup_signals(void);
+int			run_command(t_mshell *shell, t_allocs *allocs, t_table *table);
 #endif

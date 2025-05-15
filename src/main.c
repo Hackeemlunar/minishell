@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:33:25 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/08 22:22:16 by sngantch         ###   ########.fr       */
+/*   Updated: 2025/05/15 18:08:56 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,13 +34,14 @@ void	show_banner(void)
 
 void	init_allocators(t_allocs *allocs)
 {
-	allocs->parse_alloc = arena_create(4096);
-	allocs->sh_alloc = arena_create(4096);
-	allocs->exec_alloc = arena_create(4096);
+	allocs->parse_alloc = arena_create(8192);
+	allocs->sh_alloc = arena_create(8192);
+	allocs->exec_alloc = arena_create(8192);
 }
 
-void	clean_allocators(t_allocs *allocs)
+void	clean_mshell(t_allocs *allocs, t_table *table)
 {
+	clean_env(table);
 	arena_destroy(allocs->parse_alloc);
 	arena_destroy(allocs->sh_alloc);
 	arena_destroy(allocs->exec_alloc);
@@ -131,17 +132,11 @@ int main(int argc, char **argv, char **envp)
 			continue ;
 		}
 		mshell.ast = result.data.value;
-		result = run_command(&mshell, &allocs, &env_table);
-		if (result.is_error) {
-			printf("%d", result.data.error);
-			write(STDOUT_FILENO, "\n", 1);
-			continue ;
-		}
+		run_command(&mshell, &allocs, &env_table);
 		free(str);
 	}
 	write_history("./histfile");
-	clean_env(&env_table);
-	clean_allocators(&allocs);
+	clean_mshell(&allocs, &env_table);
 	free(str);
-	return (0);
+	return (mshell.exit_status);
 }

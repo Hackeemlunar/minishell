@@ -6,7 +6,7 @@
 /*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 14:39:05 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/15 14:40:56 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/15 19:11:31 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ static char	*get_variable_name(char **argv, int i)
 
 static void	replace_vari(t_ast *ast, t_allocs *allocs, t_table *table, int *i)
 {
-	char		*var_name;
+	char		*var_key;
 	char		*expanded;
 	t_result	value;
 
@@ -63,9 +63,9 @@ static void	replace_vari(t_ast *ast, t_allocs *allocs, t_table *table, int *i)
 		(*i)++;
 		return ;
 	}
-	var_name = get_variable_name(ast->data.cmd_node.argv, *i + 1);
-	value = get_env(table, var_name);
-	free(var_name);
+	var_key = get_variable_name(ast->data.cmd_node.argv, *i + 1);
+	value = get_env(table, var_key);
+	free(var_key);
 	if (value.is_error)
 	{
 		printf("Unknown variable: %s\n", ast->data.cmd_node.argv[*i + 1]);

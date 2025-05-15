@@ -6,7 +6,7 @@
 /*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 14:38:27 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/15 15:48:41 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/15 19:34:03 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ int	run_simple_cmd(t_ast *ast, t_mshell *shell, t_allocs *allocs,
 	if (pid == 0)
 		run_child_cmd(ast, shell, allocs, table);
 	waitpid(pid, &status, 0);
+	printf("status is %d", status);
 	if (WIFEXITED(status))
 		set_exit_status(shell, WEXITSTATUS(status));
 	else if (WIFSIGNALED(status))
