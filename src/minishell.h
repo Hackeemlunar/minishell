@@ -6,7 +6,7 @@
 /*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 13:58:53 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/15 18:04:37 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/15 19:58:37 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -272,4 +272,5 @@ void		set_signal_handler(t_ast *tree);
 void 		signal_handler_heredoc(int signum);
 void		setup_signals(void);
 int			run_command(t_mshell *shell, t_allocs *allocs, t_table *table);
+int			handle_builtins(t_mshell *shell, t_table *table);
 #endif
