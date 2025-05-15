@@ -6,13 +6,13 @@
 /*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 10:00:00 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/14 21:58:28 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/15 14:06:01 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 
-int	handle_and_operation(t_ast *ast, t_mshell *shell, 
+int	handle_and_operation(t_ast *ast, t_mshell *shell,
 						t_allocs *allocs, t_table *table)
 {
 	int		exit_status;
@@ -31,7 +31,7 @@ int	handle_and_operation(t_ast *ast, t_mshell *shell,
 	return (exit_status);
 }
 
-int	handle_or_operation(t_ast *ast, t_mshell *shell, 
+int	handle_or_operation(t_ast *ast, t_mshell *shell,
 					t_allocs *allocs, t_table *table)
 {
 	int		exit_status;
@@ -87,10 +87,7 @@ int	handle_subsh(t_ast *ast, t_mshell *shell, t_allocs *allocs, t_table *table)
 	sub_ast = ast->data.sub;
 	pid = fork();
 	if (pid < 0)
-	{
-		ft_putendl_fd("fork: Resource temporarily unavailable", 2);
-		return (1);
-	}
+		return (perror("fork"), 1);
 	if (pid == 0)
 	{
 		walk_ast(sub_ast, shell, allocs, table);
@@ -106,4 +103,3 @@ int	handle_subsh(t_ast *ast, t_mshell *shell, t_allocs *allocs, t_table *table)
 	}
 	return (get_exit_status(shell));
 }
-

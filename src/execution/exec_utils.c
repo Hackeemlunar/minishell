@@ -1,11 +1,21 @@
-
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_utils.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/15 14:06:52 by hmensah-          #+#    #+#             */
+/*   Updated: 2025/05/15 14:07:11 by hmensah-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "executor.h"
 
 void	add_full_path(char **argv, char **paths, t_allocs *allocs)
 {
 	char	full_path[512];
-	int	idx;
+	int		idx;
 
 	if (!paths || !*paths)
 		return ;

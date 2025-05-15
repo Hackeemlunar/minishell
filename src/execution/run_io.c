@@ -1,9 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   run_io.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/15 14:37:21 by hmensah-          #+#    #+#             */
+/*   Updated: 2025/05/15 14:38:15 by hmensah-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "executor.h"
 
 int	collect_heredoc_input(const char *delim, char *temp_file)
 {
-	int	fd;
+	int		fd;
 	char	*line;
 
 	fd = open(temp_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
@@ -15,12 +26,12 @@ int	collect_heredoc_input(const char *delim, char *temp_file)
 		if (!line)
 		{
 			write(STDERR_FILENO, "\n", 1);
-			break;
+			break ;
 		}
 		if (ft_strcmp(line, delim) == 0)
 		{
 			free(line);
-			break;
+			break ;
 		}
 		ft_putendl_fd(line, fd);
 		free(line);

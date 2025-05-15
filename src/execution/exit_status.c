@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit_status.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hmensah- <hmensah-@student.42abudhabi.ae>  +#+  +:+       +#+        */
+/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 10:00:00 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/12 10:00:00 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/15 14:08:41 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	set_exit_status(t_mshell *shell, int status)
 /**
  * Get the current exit status from the shell structure
  */
-int		get_exit_status(t_mshell *shell)
+int	get_exit_status(t_mshell *shell)
 {
 	if (shell)
 		return (shell->exit_status);
@@ -37,8 +37,7 @@ int		get_exit_status(t_mshell *shell)
 void	update_exit_status(t_mshell *shell, t_result result)
 {
 	if (!shell)
-		return;
-	
+		return ;
 	if (result.is_error)
 	{
 		if (result.data.error == NO_PATH || result.data.error == INVALID_CMD)

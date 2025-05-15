@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   sub_var.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/15 14:39:05 by hmensah-          #+#    #+#             */
+/*   Updated: 2025/05/15 14:40:56 by hmensah-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "executor.h"
 
 static char	*expand_var(t_allocs *allocs, t_result value)
@@ -31,15 +43,15 @@ static char	*get_variable_name(char **argv, int i)
 
 	var_arg = argv[i];
 	len = ft_strlen(var_arg);
-	if (len >= 2 && ((var_arg[0] == '"' && var_arg[len - 1] == '"') || 
-		(var_arg[0] == '\'' && var_arg[len - 1] == '\'')))
+	if (len >= 2 && ((var_arg[0] == '"' && var_arg[len - 1] == '"')
+			|| (var_arg[0] == '\'' && var_arg[len - 1] == '\'')))
 		var_name = ft_substr(var_arg, 1, len - 2);
 	else
 		var_name = ft_strdup(var_arg);
 	return (var_name);
 }
 
-static void	replace_variable(t_ast *ast, t_allocs *allocs, t_table *table, int *i)
+static void	replace_vari(t_ast *ast, t_allocs *allocs, t_table *table, int *i)
 {
 	char		*var_name;
 	char		*expanded;
@@ -79,7 +91,7 @@ void	expand_substitutions(t_ast *ast, t_allocs *allocs, t_table *table)
 		arg = ast->data.cmd_node.argv[i];
 		if (arg[0] == '$' && arg[1] == '\0')
 		{
-			replace_variable(ast, allocs, table, &i);
+			replace_vari(ast, allocs, table, &i);
 			continue ;
 		}
 		else
@@ -91,4 +103,3 @@ void	expand_substitutions(t_ast *ast, t_allocs *allocs, t_table *table)
 		}
 	}
 }
-

@@ -1,46 +1,24 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   expand_var.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/15 14:09:59 by hmensah-          #+#    #+#             */
+/*   Updated: 2025/05/15 14:48:54 by hmensah-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "executor.h"
 
-static void process_variable_build(char **current, char **start,
-								  char **dest, t_table *table)
+void	process_variable_build(char **current, char **start,
+			char **dest, t_table *table);
+void	copy_static_part(char **dest, char **start, char *end);
+
+static void	copy_remaining_part(char *dest, char *start, char *current)
 {
-	int		var_len;
-	char	*var_name;
-	t_result    value;
-	size_t      val_len;
-
-	(*current)++;
-	var_len = 0;
-	while ((*current)[var_len] && !space_or_quote((*current)[var_len]))
-		var_len++;
-	var_name = ft_substr(*current, 0, var_len);
-	value = get_env(table, var_name);
-	if (!value.is_error)
-	{
-		val_len = ft_strlen(value.data.value);
-		ft_memcpy(*dest, value.data.value, val_len);
-		*dest += val_len;
-	}
-	free(var_name);
-	*start = *current + var_len;
-	*current = *start;
-}
-
-static void copy_static_part(char **dest, char **start, char *end)
-{
-	size_t part_len;
-
-	part_len = end - *start;
-	if (part_len > 0)
-	{
-		ft_memcpy(*dest, *start, part_len);
-		*dest += part_len;
-	}
-	*start = end;
-}
-
-static void copy_remaining_part(char *dest, char *start, char *current)
-{
-	size_t part_len;
+	size_t	part_len;
 
 	part_len = current - start;
 	if (part_len > 0)
@@ -51,7 +29,7 @@ static void copy_remaining_part(char *dest, char *start, char *current)
 	*dest = '\0';
 }
 
-static void build_expanded_string(char *dest, char *str, t_table *table)
+static void	build_expanded_string(char *dest, char *str, t_table *table)
 {
 	char	*current;
 	char	*start;
@@ -73,12 +51,12 @@ static void build_expanded_string(char *dest, char *str, t_table *table)
 	copy_remaining_part(dest, start, current);
 }
 
-static void process_variable_length(char **current, char **start,
+static void	process_variable_length(char **current, char **start,
 									size_t *total_len, t_table *table)
 {
-	int		var_len;
-	char	*var_name;
-	t_result value;
+	int			var_len;
+	char		*var_name;
+	t_result	value;
 
 	*total_len += *current - *start;
 	(*current)++;
@@ -94,7 +72,7 @@ static void process_variable_length(char **current, char **start,
 	*current = *start;
 }
 
-static size_t calculate_total_length(char *current, t_table *table)
+static size_t	calculate_total_length(char *current, t_table *table)
 {
 	size_t	total_len;
 	char	*start;
@@ -116,7 +94,7 @@ static size_t calculate_total_length(char *current, t_table *table)
 	return (total_len);
 }
 
-char *expand_variable(char *str, t_allocs *allocs, t_table *table)
+char	*expand_variable(char *str, t_allocs *allocs, t_table *table)
 {
 	char	*expanded;
 	char	*current;

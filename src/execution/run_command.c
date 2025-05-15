@@ -1,6 +1,39 @@
-
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   run_command.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/15 14:30:01 by hmensah-          #+#    #+#             */
+/*   Updated: 2025/05/15 14:35:18 by hmensah-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "executor.h"
+
+static inline void	handle_others(t_ast *ast, t_mshell *shell,
+	t_allocs *allocs, t_table *table)
+{
+	int	status;
+
+	if (ast->type == NODE_OR)
+	{
+		status = handle_or_operation(ast, shell, allocs, table);
+		set_exit_status(shell, status);
+	}
+	else if (ast->type == NODE_BACKGROUND)
+		handle_bg(ast, shell, allocs, table);
+	else if (ast->type == NODE_SUBSHELL)
+		handle_subsh(ast, shell, allocs, table);
+	else
+	{
+		ft_putstr_fd("Unknown AST node type: ", 2);
+		ft_putnbr_fd(ast->type, 2);
+		ft_putchar_fd('\n', 2);
+		set_exit_status(shell, 1);
+	}
+}
 
 void	walk_ast(t_ast *ast, t_mshell *shell, t_allocs *allocs, t_table *table)
 {
@@ -26,22 +59,8 @@ void	walk_ast(t_ast *ast, t_mshell *shell, t_allocs *allocs, t_table *table)
 		status = handle_and_operation(ast, shell, allocs, table);
 		set_exit_status(shell, status);
 	}
-	else if (ast->type == NODE_OR)
-	{
-		status = handle_or_operation(ast, shell, allocs, table);
-		set_exit_status(shell, status);
-	}
-	else if (ast->type == NODE_BACKGROUND)
-		handle_bg(ast, shell, allocs, table);
-	else if (ast->type == NODE_SUBSHELL)
-		handle_subsh(ast, shell, allocs, table);
 	else
-	{
-		ft_putstr_fd("Unknown AST node type: ", 2);
-		ft_putnbr_fd(ast->type, 2);
-		ft_putchar_fd('\n', 2);
-		set_exit_status(shell, 1);
-	}
+		handle_others(ast, shell, allocs, table);
 }
 
 t_result	run_command(t_mshell *shell, t_allocs *allocs, t_table *table)

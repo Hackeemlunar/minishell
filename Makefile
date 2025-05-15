@@ -6,7 +6,7 @@
 #    By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/04 19:20:15 by hmensah-          #+#    #+#              #
-#    Updated: 2025/05/14 21:34:35 by hmensah-         ###   ########.fr        #
+#    Updated: 2025/05/15 14:49:59 by hmensah-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,7 +38,7 @@ SRC_FILES =\
 	main.c \
 	environments/env.c environments/env_util.c \
 	signals/signal.c  \
-	execution/expand_var.c execution/sub_var.c \
+	execution/expand_var.c execution/expand_var_util.c execution/sub_var.c \
 	execution/pipe_utils.c execution/pipe_utils1.c execution/pipe_utils2.c \
 	execution/pipe_exec.c \
 	execution/exec_utils.c execution/run_io.c execution/logical_ops.c \
