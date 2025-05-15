@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:33:25 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/05 17:33:40 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/14 22:46:19 by sngantch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,43 +35,62 @@ void	show_banner(void)
 void	init_allocators(t_allocs *allocs)
 {
 	allocs->parse_alloc = arena_create(4096);
+	allocs->sh_alloc = arena_create(4096);
+	allocs->exec_alloc = arena_create(4096);
 }
 
-void walk_ast(t_ast *ast)
+void	clean_allocators(t_allocs *allocs)
 {
-	t_ast *cur = ast;
-	if (cur->type == NODE_CMD){
-		printf("CMD: %s: %s: %d\n", cur->data.cmd_node.argv[0], cur->data.cmd_node.argv[1], cur->data.cmd_node.argc);
-	}
-	if (cur->type == NODE_PIPELINE){
-		printf("PIPE LEFT\n");
-		walk_ast(cur->data.bin_op_node.left);
-		printf("PIPE RIGHT\n");
-		walk_ast(cur->data.bin_op_node.right);
-	}
-	if (cur->type == NODE_AND){
-		printf("AND LEFT\n");
-		walk_ast(cur->data.bin_op_node.left);
-		printf("AND RIGHT\n");
-		walk_ast(cur->data.bin_op_node.right);
-	}
-	if (cur->type == NODE_OR){
-		printf("OR LEFT\n");
-		walk_ast(cur->data.bin_op_node.left);
-		printf("OR RIGHT\n");
-		walk_ast(cur->data.bin_op_node.right);
-	}
-	if (cur->type == NODE_BACKGROUND){
-		printf("BACKGROUND\n");
-		walk_ast(cur->data.bin_op_node.left);
-	}
-	if (cur->type == NODE_SUBSHELL){
-		printf("SUBSHELL\n");
-		walk_ast(cur->data.sub);
-	}
+	arena_destroy(allocs->parse_alloc);
+	arena_destroy(allocs->sh_alloc);
+	arena_destroy(allocs->exec_alloc);
 }
 
-int	main(int argc, char **argv, char **envp)
+static t_result get_paths(t_table *table, char ***paths, t_allocs *allocs)
+{
+    t_result    result;
+    char        *path;
+    char        **path_split;
+    int         i;
+
+    result = get_env(table, "PATH");
+    if (result.is_error)
+        return (result);
+    path = result.data.value;
+    path_split = ft_split(path, ':');
+    if (!path_split)
+        return (create_error(NO_MEMORY));
+    i = 0;
+    while (path_split[i])
+        i++;
+    *paths = arena_alloc(allocs->sh_alloc, (i + 1) * sizeof(char*));
+    i = -1;
+    while (path_split[++i])
+    {
+        (*paths)[i] = arena_alloc(allocs->sh_alloc, ft_strlen(path_split[i]) + 3);
+        ft_strlcpy((*paths)[i], path_split[i], ft_strlen(path_split[i]) + 1);
+        ft_strlcat((*paths)[i], "/", ft_strlen(path_split[i]) + 2);
+        free(path_split[i]);
+    }
+    (*paths)[i] = NULL;
+    return (free(path_split), create_success(NULL));
+}
+
+int	check_all_white_space(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (!whitespace(str[i]))
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+int main(int argc, char **argv, char **envp)
 {
 	char		*str;
 	t_result	result;
@@ -84,31 +103,46 @@ int	main(int argc, char **argv, char **envp)
 	show_banner();
 	init_allocators(&allocs);
 	read_history("./histfile");
-	init_env(&env_table, envp);
-	printf("env_table size: %d\n", env_table.size);
-	t_result res = get_env(&env_table, "USER");
-	printf("env_table: %s\n", (char *)res.data.value);
+	if (init_env(&env_table, envp).is_error)
+		return (1);
+	mshell.env = envp;
+	mshell.env_table = &env_table;
+	result = get_paths(&env_table, &mshell.paths, &allocs);
+	if (result.is_error)
+		return (1);
 	while (true)
 	{
-		str = readline("minishell> ");
-		add_history(str);
-		if (str == NULL)
+		setup_signals();
+		str = readline("sh$mshell-> ");
+		if (!str)
 		{
-			printf("Error: readline failed\n");
-			return (1);
+			write(STDOUT_FILENO, "exit\n", 5);
+			break;
 		}
+		if (check_all_white_space(str))
+		{
+			free(str);
+			continue ;
+		}
+		add_history(str);
 		result = parse_cmdln(str, &mshell, &allocs);
 		if (result.is_error) {
-			printf("%d\n", result.data.error);
-			break ;
+			ft_printf("%d", result.data.error);
+			write(STDOUT_FILENO, "\n", 1);
+			continue ;
 		}
 		mshell.ast = result.data.value;
-		walk_ast(mshell.ast);
-		arena_reset(allocs.parse_alloc);
+		result = run_command(&mshell, &allocs, &env_table);
+		if (result.is_error) {
+			printf("%d", result.data.error);
+			write(STDOUT_FILENO, "\n", 1);
+			continue ;
+		}
+		// free(str);
 	}
 	write_history("./histfile");
 	clean_env(&env_table);
-	arena_destroy(allocs.parse_alloc);
+	clean_allocators(&allocs);
 	free(str);
 	return (0);
 }

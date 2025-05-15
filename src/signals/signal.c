@@ -26,7 +26,7 @@ void signal_handler_heredoc(int signum)
         fd = open("/tmp/child_pid.tmp", O_RDONLY);
         if (fd < 0)
         {
-            perror("open");
+            perror("open: 444");
             exit(1);
         }
         if (read(fd, &child_pid, sizeof(int)) < 0)
@@ -70,9 +70,11 @@ void setup_signals(void)
 }
 
 
-void set_signal_handler(t_cmd *tree)
+void set_signal_handler(t_ast *node)
 {
-    if (tree && tree->type == CMD_REDIR)
+    if (node && node->type == NODE_CMD
+        && node->data.cmd_node.io
+        && node->data.cmd_node.io->heredoc_delim != NULL)
     {
         signal(SIGINT, signal_handler_heredoc);
         signal(SIGQUIT, signal_handler_heredoc);

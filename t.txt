@@ -1,16 +1,27 @@
-CC = cc
+#    By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+         #
+#    Created: 2025/05/04 19:20:15 by hmensah-          #+#    #+#              #
+#    Updated: 2025/05/07 19:15:59 by hmensah-         ###   ########.fr        #
+NAME = minishell
+# Compiler and flags
+# Directories
+SRC_DIR = src
+# Determine OS for libraries
+UNAME := $(shell uname)
+	LIB_DIR = libs/linux
+	LIBS = -L$(LIB_DIR) -lreadline -lhistory -lncurses
+else
+	LIB_DIR = libs/mac
+	LIBS = -L$(LIB_DIR) -lreadline -lhistory -lcurses
+# Source files
+		environments/env.c environments/env_util.c \
+		signals/signal.c  \
+		utils/res_helpers.c \
+		parsing/lexer.c parsing/parser.c parsing/lex_extract.c parsing/lex_token.c \
+		parsing/lex_token_util.c parsing/parser_cmd.c parsing/parser_util.c
+# Object files# Object files
+OBJ_FILES = $(patsubst %.c,$(OBJ_DIR)/%.o,$(SRC_FILES))
+# Include paths
+INCLUDES = -I$(INCLUDE_DIR) -I$(LIBFT_DIR) -Isrc
+# Rules
 	@echo "Minishell compiled successfully!"
-CC = cc
-	@echo "Minishell compiled successfully!"
-CC = cc
-	@echo "Minishell compiled successfully!"
-CC = cc
-	@echo "Minishell compiled successfully!"
-CC = cc
-	@echo "Minishell compiled successfully!"
-CC = cc
-	@echo "Minishell compiled successfully!"
-CC = cc
-	@echo "Minishell compiled successfully!"
-CC = cc
-	@echo "Minishell compiled successfully!"
+	mkdir -p $(OBJ_DIR)/parsing

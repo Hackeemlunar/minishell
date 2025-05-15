@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hmensah- <hmensah-@student.42abudhabi.ae>  +#+  +:+       +#+        */
+/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 13:58:53 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/02 21:18:28 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/15 18:22:35 by sngantch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,13 @@
 # include <sys/types.h>
 # include <errno.h>
 # include <term.h>
+# include <signal.h>
 # include "../include/readline/readline.h"
 # include "../include/readline/history.h"
 # include "../libft/libft.h"
 # include "../libft/arena.h"
+# include "builtins/builtins.h"
+#include "signals/msh_signals.h"
 
 # define HASH_SIZE 128
 
@@ -33,6 +36,7 @@ typedef struct s_env
 	char		*value;
 	struct s_env	*next;
 }			t_env;
+
 
 typedef struct s_table
 {
@@ -114,6 +118,9 @@ typedef enum e_error
 	INVALID_VAR = -9,
 	INVALID_SYNTAX = -10,
 	INVALID_ARGUMENT = -11,
+	PID_ERROR = -12,
+	INVALID_ENV = -13,
+	NO_PATH = -14
 }			t_error;
 
 /**
@@ -249,7 +256,11 @@ typedef struct s_minishell
 {
 	pid_t		*pids;
 	t_ast		*ast;
+	char		**env;
+	char		**paths;
 	int			num_cmds;
+	t_table		*env_table; // added current shell enviroment
+	int			exit_status; // last command exit code 
 }	t_mshell;
 
 bool		is_special_char(char c);
@@ -261,4 +272,23 @@ t_result	get_env(t_table *table, char *key);
 t_result	init_env(t_table *table, char **env);
 t_result	delete_env(t_table *table, char *key);
 void		clean_env(t_table *table);
+t_result	run_command(t_mshell *shell, t_allocs *allocs, t_table *table);
+
+void		setup_signals(void);
+void		setup_signals(void);
+void		set_signal_handler(t_ast *tree);
+void 		signal_handler_heredoc(int signum);
+
+
+int		is_builtin(char *cmd);
+int		is_valid_variable_name(char *key);
+int 	exec_builtin(char **argv, t_mshell *shell, t_table *table, int *exit_status);
+void	cd(char **av, t_table *table, int *exit_status);
+void	echo(char **argv);
+void	env(char **argv, t_table *table);
+void	export_command(char **args, t_table *table, int *exit_status);
+void	unset(char **args, t_table *table, int *exit_status);
+void	pwd(int *exit_status);
+void	ft_exit(char **argv, t_mshell *shell);
+
 #endif
