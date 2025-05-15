@@ -6,7 +6,7 @@
 /*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 13:58:53 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/14 23:15:42 by sngantch         ###   ########.fr       */
+/*   Updated: 2025/05/15 18:22:35 by sngantch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -283,7 +283,7 @@ void 		signal_handler_heredoc(int signum);
 int		is_builtin(char *cmd);
 int		is_valid_variable_name(char *key);
 int 	exec_builtin(char **argv, t_mshell *shell, t_table *table, int *exit_status);
-void	cd(char **argv, t_table *table, int *exit_status);
+void	cd(char **av, t_table *table, int *exit_status);
 void	echo(char **argv);
 void	env(char **argv, t_table *table);
 void	export_command(char **args, t_table *table, int *exit_status);

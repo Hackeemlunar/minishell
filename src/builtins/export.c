@@ -75,6 +75,22 @@ int	is_valid_variable_name(char *key)
 	return (1);
 }
 
+/**
+ * @brief Handles the export command by setting environment variables.
+ *
+ * This function processes the command-line arguments provided to export 
+ * environment variables. If no arguments are provided, it prints all 
+ * environment variables. For each argument, it extracts the variable name 
+ * and value, validates the variable name, and then adds or updates the 
+ * environment variable in the table. If the variable name is invalid, it 
+ * prints an error message and sets the exit status to 1.
+ *
+ * @param args Array of arguments, with args[0] being "export" and subsequent 
+ *             elements being the variables to export.
+ * @param table The environment variable table to add or update variables.
+ * @param exit_status Pointer to an integer to store the exit status.
+ */
+
 void	export_command(char **args, t_table *table, int *exit_status)
 {
 	int		i = 1;
