@@ -6,7 +6,7 @@
 /*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 18:55:23 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/14 21:46:39 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/15 15:45:31 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,10 +60,10 @@ int			handle_bg(t_ast *ast, t_mshell *shell, t_allocs *allocs,
 				t_table *table);
 void		set_exit_status(t_mshell *shell, int status);
 int			get_exit_status(t_mshell *shell);
-void		update_exit_status(t_mshell *shell, t_result result);
 int			collect_pipeline_cmds(t_ast *node, t_ast **out_cmds, int max);
 void		execute_node(t_exec_ctx *ctx);
-t_result	run_simple_cmd(t_ast *ast, t_mshell *shell, t_allocs *allocs);
+int			run_simple_cmd(t_ast *ast, t_mshell *shell, t_allocs *allocs,
+				t_table *table);
 t_result	run_command(t_mshell *shell, t_allocs *allocs, t_table *table);
 t_exec_ctx	setup_exec_ctx(t_ast *node, t_mshell *shell, t_allocs *allocs,
 				t_table *table);

@@ -6,13 +6,14 @@
 /*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 14:38:27 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/15 14:38:31 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/15 15:48:41 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 
-static void	run_child_cmd(t_ast *ast, t_mshell *shell, t_allocs *allocs)
+static void	run_child_cmd(t_ast *ast, t_mshell *shell, t_allocs *allocs,
+		t_table *table)
 {
 	t_in_out	*io;
 
@@ -24,6 +25,8 @@ static void	run_child_cmd(t_ast *ast, t_mshell *shell, t_allocs *allocs)
 		if (set_out_fds(io))
 			exit(1);
 	}
+	expand_substitutions(ast, allocs, table);
+	remove_leading_quote(ast);
 	add_full_path(ast->data.cmd_node.argv, shell->paths, allocs);
 	execve(ast->data.cmd_node.argv[0], ast->data.cmd_node.argv, shell->env);
 	if (errno == ENOENT)
@@ -36,25 +39,25 @@ static void	run_child_cmd(t_ast *ast, t_mshell *shell, t_allocs *allocs)
 	exit(126);
 }
 
-t_result	run_simple_cmd(t_ast *ast, t_mshell *shell, t_allocs *allocs)
+int	run_simple_cmd(t_ast *ast, t_mshell *shell, t_allocs *allocs,
+		t_table *table)
 {
 	pid_t	pid;
 	int		status;
 
 	if (!ast)
-		return (create_error(ERROR));
-	shell->exit_status = 0;
+		return (perror("pipe"), 1);
 	pid = fork();
 	if (pid < 0)
-		return (create_error(PID_ERROR));
+		return (perror("fork"), 1);
 	if (pid == 0)
-		run_child_cmd(ast, shell, allocs);
+		run_child_cmd(ast, shell, allocs, table);
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
 		set_exit_status(shell, WEXITSTATUS(status));
 	else if (WIFSIGNALED(status))
 		set_exit_status(shell, 128 + WTERMSIG(status));
-	else
+	else if (status != 0)
 		set_exit_status(shell, 1);
-	return (create_success(ast));
+	return (status);
 }

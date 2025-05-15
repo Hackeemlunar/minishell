@@ -6,7 +6,7 @@
 /*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 14:30:01 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/15 14:35:18 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/15 15:44:49 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,17 +37,14 @@ static inline void	handle_others(t_ast *ast, t_mshell *shell,
 
 void	walk_ast(t_ast *ast, t_mshell *shell, t_allocs *allocs, t_table *table)
 {
-	t_result	result;
 	int			status;
 
 	if (!ast)
 		return ;
 	if (ast->type == NODE_CMD)
 	{
-		expand_substitutions(ast, allocs, table);
-		remove_leading_quote(ast);
-		result = run_simple_cmd(ast, shell, allocs);
-		update_exit_status(shell, result);
+		status = run_simple_cmd(ast, shell, allocs, table);
+		set_exit_status(shell, status);
 	}
 	else if (ast->type == NODE_PIPELINE)
 	{
