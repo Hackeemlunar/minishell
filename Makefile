@@ -6,7 +6,7 @@
 #    By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/04 19:20:15 by hmensah-          #+#    #+#              #
-#    Updated: 2025/05/15 14:49:59 by hmensah-         ###   ########.fr        #
+#    Updated: 2025/05/16 15:59:08 by hmensah-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -43,7 +43,7 @@ SRC_FILES =\
 	execution/pipe_exec.c \
 	execution/exec_utils.c execution/run_io.c execution/logical_ops.c \
 	execution/run_simple_cmd.c execution/run_command.c execution/exit_status.c \
-	utils/res_helpers.c \
+	utils/res_helpers.c utils/main_utils.c \
 	parsing/lexer.c parsing/parser.c parsing/lex_extract.c parsing/lex_token.c \
 	parsing/lex_token_util.c parsing/parser_cmd.c parsing/parser_util.c
 

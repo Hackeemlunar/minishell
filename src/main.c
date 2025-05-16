@@ -6,7 +6,7 @@
 /*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:33:25 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/15 18:08:56 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/16 16:48:15 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,72 +32,43 @@ void	show_banner(void)
 		"\n", "Sngantch", "Hmensah-");
 }
 
-void	init_allocators(t_allocs *allocs)
-{
-	allocs->parse_alloc = arena_create(8192);
-	allocs->sh_alloc = arena_create(8192);
-	allocs->exec_alloc = arena_create(8192);
-}
-
-void	clean_mshell(t_allocs *allocs, t_table *table)
-{
-	clean_env(table);
-	arena_destroy(allocs->parse_alloc);
-	arena_destroy(allocs->sh_alloc);
-	arena_destroy(allocs->exec_alloc);
-}
-
-static t_result get_paths(t_table *table, char ***paths, t_allocs *allocs)
-{
-    t_result    result;
-    char        *path;
-    char        **path_split;
-    int         i;
-
-    result = get_env(table, "PATH");
-    if (result.is_error)
-        return (result);
-    path = result.data.value;
-    path_split = ft_split(path, ':');
-    if (!path_split)
-        return (create_error(NO_MEMORY));
-    i = 0;
-    while (path_split[i])
-        i++;
-    *paths = arena_alloc(allocs->sh_alloc, (i + 1) * sizeof(char*));
-    i = -1;
-    while (path_split[++i])
-    {
-        (*paths)[i] = arena_alloc(allocs->sh_alloc, ft_strlen(path_split[i]) + 3);
-        ft_strlcpy((*paths)[i], path_split[i], ft_strlen(path_split[i]) + 1);
-        ft_strlcat((*paths)[i], "/", ft_strlen(path_split[i]) + 2);
-        free(path_split[i]);
-    }
-    (*paths)[i] = NULL;
-    return (free(path_split), create_success(NULL));
-}
-
-int	check_all_white_space(char *str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i])
-	{
-		if (!whitespace(str[i]))
-			return (0);
-		i++;
-	}
-	return (1);
-}
-
-int main(int argc, char **argv, char **envp)
+static void	command_loop(t_mshell *shell, t_allocs *allocs, t_table *table)
 {
 	char		*str;
 	t_result	result;
+
+	while (true)
+	{
+		setup_signals();
+		str = readline("$mshell-> ");
+		if (!str)
+			return ;
+		if (check_all_white_space(str))
+		{
+			free(str);
+			continue ;
+		}
+		add_history(str);
+		result = parse_cmdln(str, shell, allocs);
+		if (result.is_error)
+		{
+			print_parse_error(result);
+			free(str);
+			continue ;
+		}
+		run_command(shell, allocs, table, result);
+		free(str);
+	}
+}
+
+
+
+int main(int argc, char **argv, char **envp)
+{
 	t_allocs	allocs;
 	t_mshell	mshell;
 	t_table		env_table;
+	t_result	result;
 
 	(void)argc;
 	(void)argv;
@@ -110,33 +81,9 @@ int main(int argc, char **argv, char **envp)
 	result = get_paths(&env_table, &mshell.paths, &allocs);
 	if (result.is_error)
 		return (1);
-	while (true)
-	{
-		setup_signals();
-		str = readline("$mshell-> ");
-		if (!str)
-		{
-			write(STDOUT_FILENO, "exit\n", 5);
-			break;
-		}
-		if (check_all_white_space(str))
-		{
-			free(str);
-			continue ;
-		}
-		add_history(str);
-		result = parse_cmdln(str, &mshell, &allocs);
-		if (result.is_error) {
-			ft_printf("%d", result.data.error);
-			write(STDOUT_FILENO, "\n", 1);
-			continue ;
-		}
-		mshell.ast = result.data.value;
-		run_command(&mshell, &allocs, &env_table);
-		free(str);
-	}
+	command_loop(&mshell, &allocs, &env_table);
+	write(STDOUT_FILENO, "exit\n", 5);
 	write_history("./histfile");
 	clean_mshell(&allocs, &env_table);
-	free(str);
 	return (mshell.exit_status);
 }

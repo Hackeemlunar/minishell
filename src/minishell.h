@@ -6,7 +6,7 @@
 /*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 13:58:53 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/15 19:58:37 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/16 16:44:48 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -258,6 +258,10 @@ typedef struct s_minishell
 }	t_mshell;
 
 bool		is_special_char(char c);
+void		init_allocators(t_allocs *allocs);
+void		clean_mshell(t_allocs *allocs, t_table *table);
+int			check_all_white_space(char *str);
+t_result 	get_paths(t_table *table, char ***paths, t_allocs *allocs);
 t_result	create_success(void *value);
 t_result	create_error(t_error error_code);
 t_result	parse_cmdln(char *cmdln, t_mshell *shell, t_allocs *allocs);
@@ -271,6 +275,7 @@ void		setup_signals(void);
 void		set_signal_handler(t_ast *tree);
 void 		signal_handler_heredoc(int signum);
 void		setup_signals(void);
-int			run_command(t_mshell *shell, t_allocs *allocs, t_table *table);
+int			run_command(t_mshell *shell, t_allocs *allocs, t_table *table,
+						t_result result);
 int			handle_builtins(t_mshell *shell, t_table *table);
 #endif
