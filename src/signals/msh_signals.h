@@ -1,13 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   msh_signals.h                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/16 21:00:24 by sngantch          #+#    #+#             */
+/*   Updated: 2025/05/16 21:01:47 by sngantch         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MSH_SIGNALS_H
 #define MSH_SIGNALS_H
 
-#define CMD_REDIR    1
-#define CMD_HEREDOC  2
-#define CMD_EXEC     0
-
-
-#include <signal.h>     // sigaction, sigemptyset, kill, SIGKILL, etc.
-#include "../minishell.h"  // ← Gives access to t_cmd and command types
+#include <signal.h> 
+#include "../minishell.h"
 
 // Setup general shell signal handlers (for prompt and execution)
 // void setup_signals(void);

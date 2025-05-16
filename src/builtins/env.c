@@ -1,16 +1,27 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/16 20:57:54 by sngantch          #+#    #+#             */
+/*   Updated: 2025/05/16 21:03:23 by sngantch         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "builtins.h"
-// #include "../minishell.h"
 
 void	env(char **argv, t_table *table)
 {
-	int i;
-	t_env *node;
+	int		i;
+	t_env	*node;
 
 	if (argv[1])
 	{
 		ft_printf("env: %s: No such file or directory", argv[1]);
 		write(STDERR_FILENO, "\n", 1);
-		exit(127);  // Simulates Bash's behavior
+		exit(127);
 	}
 	i = -1;
 	while (++i < HASH_SIZE)
@@ -24,4 +35,3 @@ void	env(char **argv, t_table *table)
 		}
 	}
 }
-

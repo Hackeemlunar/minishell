@@ -6,14 +6,13 @@
 /*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 14:38:27 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/15 20:07:36 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/16 20:15:09 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 
-static void	run_child_cmd(t_ast *ast, t_mshell *shell, t_allocs *allocs,
-		t_table *table)
+static void	run_child_cmd(t_ast *ast, t_mshell *shell, t_allocs *allocs)
 {
 	t_in_out	*io;
 
@@ -25,8 +24,6 @@ static void	run_child_cmd(t_ast *ast, t_mshell *shell, t_allocs *allocs,
 		if (set_out_fds(io))
 			exit(1);
 	}
-	expand_substitutions(ast, allocs, table);
-	remove_leading_quote(ast);
 	add_full_path(ast->data.cmd_node.argv, shell->paths, allocs);
 	execve(ast->data.cmd_node.argv[0], ast->data.cmd_node.argv, shell->env);
 	if (errno == ENOENT)
@@ -46,12 +43,16 @@ int	run_simple_cmd(t_ast *ast, t_mshell *shell, t_allocs *allocs,
 	int		status;
 
 	if (!ast)
-		return (perror("pipe"), 1);
+		return (perror("Unknown command"), 1);
+	expand_substitutions(ast, allocs, table);
+	remove_leading_quote(ast);
+	if (!handle_builtins(ast->data.cmd_node.argv, shell, table, allocs))
+		return (shell->exit_status);
 	pid = fork();
 	if (pid < 0)
 		return (perror("fork"), 1);
 	if (pid == 0)
-		run_child_cmd(ast, shell, allocs, table);
+		run_child_cmd(ast, shell, allocs);
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
 		set_exit_status(shell, WEXITSTATUS(status));

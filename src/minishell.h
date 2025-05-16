@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 13:58:53 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/16 16:44:48 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/16 21:49:12 by sngantch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -277,5 +277,6 @@ void 		signal_handler_heredoc(int signum);
 void		setup_signals(void);
 int			run_command(t_mshell *shell, t_allocs *allocs, t_table *table,
 						t_result result);
-int			handle_builtins(t_mshell *shell, t_table *table);
+int			handle_builtins(char **argv, t_mshell *shell,
+						t_table *table, t_allocs *alloc);
 #endif
