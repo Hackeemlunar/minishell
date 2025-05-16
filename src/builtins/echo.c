@@ -29,10 +29,10 @@ void	echo(char **argv)
 	}
 	while (argv[i])
 	{
-		ft_printf("%s", argv[i]);
+		printf("%s", argv[i]);
 		if (argv[i++ + 1])
-			ft_printf(" ");
+			printf(" ");
 	}
 	if (new_line)
-		ft_printf("\n");
+		printf("\n");
 }

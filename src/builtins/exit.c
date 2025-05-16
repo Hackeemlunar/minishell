@@ -62,11 +62,12 @@ static void	exit_cleanup_and_exit(t_mshell *shell, int status)
 	exit(status);
 }
 
-void	ft_exit(char **argv, t_mshell *shell)
+void	ft_exit(char **argv, t_mshell *shell, t_allocs *allocs)
 {
 	long long	exit_code;
 	int			overflow_flag;
 
+	(void)allocs;
 	if (!shell)
 	{
 		ft_printf("exit\n");
