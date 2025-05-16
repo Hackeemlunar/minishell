@@ -102,7 +102,6 @@ void	export_command(char **args, t_table *table, int *exit_status)
 		print_environment_variables(table);
 		return;
 	}
-
 	while (args[i])
 	{
 		equal_sign = ft_strchr(args[i], '=');

@@ -9,7 +9,6 @@ void	env(char **argv, t_table *table);
 void	export_command(char **args, t_table *table, int *exit_status);
 void	unset(char *key, t_table *table, int *exit_status);
 void	pwd(int *exit_status);
-void	ft_exit(char **argv, t_mshell *shell, t_allocs *allocs);
+void	ft_exit(t_allocs *allocs, t_table *table);
 
 #endif
-

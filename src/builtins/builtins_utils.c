@@ -15,9 +15,9 @@ int handle_builtins(char **argv, t_mshell *sh, t_table *table, t_allocs *alloc)
     else if (ft_strcmp(argv[0], "cd") == 0)
         cd(argv, table, &sh->exit_status); 
     else if (ft_strcmp(argv[0], "unset") == 0)
-        unset(argv, table, &sh->exit_status); 
+        unset(argv[1], table, &sh->exit_status); 
     else if (ft_strcmp(argv[0], "exit") == 0)
-        ft_exit(argv, sh, alloc); 
+        ft_exit(alloc, table); 
     else
         return (1);
     return (0);
