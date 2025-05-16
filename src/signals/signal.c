@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   signal.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/16 21:00:30 by sngantch          #+#    #+#             */
+/*   Updated: 2025/05/16 21:51:04 by sngantch         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 
 #include "msh_signals.h"
 
@@ -60,28 +72,34 @@ void signal_handler_input(int signum)
 void setup_signals(void)
 {
     struct sigaction sa = {0};
-
+    
     sa.sa_handler = signal_handler;
     sa.sa_flags = SA_RESTART;
     sigemptyset(&sa.sa_mask);
     sigaction(SIGINT, &sa, NULL);
-    signal(SIGQUIT, SIG_IGN);
     
+    sa.sa_handler = SIG_IGN;
+    sigaction(SIGQUIT, &sa, NULL);
 }
-
 
 void set_signal_handler(t_ast *node)
 {
+    struct sigaction sa = {0};
+    sa.sa_flags = SA_RESTART;
+    sigemptyset(&sa.sa_mask);
+    
     if (node && node->type == NODE_CMD
         && node->data.cmd_node.io
         && node->data.cmd_node.io->heredoc_delim != NULL)
     {
-        signal(SIGINT, signal_handler_heredoc);
-        signal(SIGQUIT, signal_handler_heredoc);
+        sa.sa_handler = signal_handler_heredoc;
     }
     else
     {
-        signal(SIGINT, signal_handler_input);
-        signal(SIGQUIT, signal_handler_input);
+        sa.sa_handler = signal_handler_input;
     }
+    
+    sigaction(SIGINT, &sa, NULL);
+    sigaction(SIGQUIT, &sa, NULL);
 }
+
