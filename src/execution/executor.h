@@ -52,8 +52,6 @@ int			handle_and_operation(t_ast *ast, t_mshell *shell,
 				t_allocs *allocs, t_table *table);
 int			handle_or_operation(t_ast *ast, t_mshell *shell,
 				t_allocs *allocs, t_table *table);
-int			execute_with_status(t_ast *ast, t_mshell *shell, t_allocs *allocs,
-				t_table *table);
 int			handle_subsh(t_ast *ast, t_mshell *shell, t_allocs *allocs,
 				t_table *table);
 int			handle_bg(t_ast *ast, t_mshell *shell, t_allocs *allocs,

@@ -32,6 +32,22 @@ void	show_banner(void)
 		"\n", "Sngantch", "Hmensah-");
 }
 
+void print_parse_error(t_result result)
+{
+	if (result.data.error == INVALID_PIPE)
+		ft_putendl_fd("minishell: invalid pipe", 2);
+	else if (result.data.error == INVALID_QUOTE)
+		ft_putendl_fd("minishell: invalid quote", 2);
+	else if (result.data.error == INVALID_REDIRECT)
+		ft_putendl_fd("minishell: invalid redirect", 2);
+	else if (result.data.error == INVALID_VAR)
+		ft_putendl_fd("minishell: invalid variable", 2);
+	else if (result.data.error == INVALID_SYNTAX)
+		ft_putendl_fd("minishell: syntax error", 2);
+	else
+		ft_putendl_fd("minishell: unknown error", 2);
+}
+
 static void	command_loop(t_mshell *shell, t_allocs *allocs, t_table *table)
 {
 	char		*str;
@@ -40,7 +56,7 @@ static void	command_loop(t_mshell *shell, t_allocs *allocs, t_table *table)
 	while (true)
 	{
 		setup_signals();
-		str = readline("$mshell-> ");
+		str = readline("$minishell-> ");
 		if (!str)
 			return ;
 		if (check_all_white_space(str))
@@ -60,8 +76,6 @@ static void	command_loop(t_mshell *shell, t_allocs *allocs, t_table *table)
 		free(str);
 	}
 }
-
-
 
 int main(int argc, char **argv, char **envp)
 {
