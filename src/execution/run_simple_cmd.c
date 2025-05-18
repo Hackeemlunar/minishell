@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   run_simple_cmd.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 14:38:27 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/16 20:15:09 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/18 20:30:32 by sngantch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ static void	run_child_cmd(t_ast *ast, t_mshell *shell, t_allocs *allocs)
 {
 	t_in_out	*io;
 
+	set_signal_handler(ast);
 	io = ast->data.cmd_node.io;
 	if (io)
 	{
