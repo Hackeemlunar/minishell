@@ -1,28 +1,39 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   signal.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/16 21:00:30 by sngantch          #+#    #+#             */
+/*   Updated: 2025/05/18 18:13:16 by sngantch         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "msh_signals.h"
 
-void signal_handler(int signum)
+void    signal_handler(int signum)
 {
     if (signum == SIGINT)
     {
         write(STDERR_FILENO, "\n", 1);
+        rl_already_prompted = 1;
         rl_replace_line("", 0);
         rl_on_new_line();
         rl_redisplay();
     }
-    else if (signum == SIGQUIT)
+    else if (signum == SIGQUIT || signum == SIGTSTP)
     {
     }
 }
 
-void signal_handler_heredoc(int signum)
+void    signal_handler_heredoc(int signum)
 {
     int fd;
     int child_pid;
 
     if (signum == SIGINT)
     {
-        write(STDOUT_FILENO, "\n", 1);
         fd = open("/tmp/child_pid.tmp", O_RDONLY);
         if (fd < 0)
         {
@@ -36,12 +47,15 @@ void signal_handler_heredoc(int signum)
         }
         close(fd);
         kill(child_pid, SIGINT);
+        rl_already_prompted = 1;
+        exit(1);
     }
     else if (signum == SIGQUIT)
     {
         write(STDOUT_FILENO, "\b\b  \b\b", 5);
     }
 }
+
 
 void signal_handler_input(int signum)
 {
@@ -56,32 +70,35 @@ void signal_handler_input(int signum)
     }
 }
 
-
-void setup_signals(void)
+void    setup_signals(void)
 {
     struct sigaction sa = {0};
-
+    
     sa.sa_handler = signal_handler;
     sa.sa_flags = SA_RESTART;
     sigemptyset(&sa.sa_mask);
     sigaction(SIGINT, &sa, NULL);
-    signal(SIGQUIT, SIG_IGN);
     
+    sa.sa_handler = SIG_IGN;
+    sa.sa_flags = 0; // Reset sa_flags
+    sigaction(SIGQUIT, &sa, NULL);
+    sigaction(SIGTSTP, &sa, NULL);
 }
 
-
-void set_signal_handler(t_ast *node)
+void set_signal_handler(t_ast *ast)
 {
-    if (node && node->type == NODE_CMD
-        && node->data.cmd_node.io
-        && node->data.cmd_node.io->heredoc_delim != NULL)
+    struct sigaction sa = {0};
+    
+    sa.sa_flags = SA_RESTART;
+    sigemptyset(&sa.sa_mask);
+    if (ast->data.cmd_node.io && ast->data.cmd_node.io->heredoc_delim)
     {
-        signal(SIGINT, signal_handler_heredoc);
-        signal(SIGQUIT, signal_handler_heredoc);
+        sa.sa_handler = signal_handler_heredoc;
     }
     else
     {
-        signal(SIGINT, signal_handler_input);
-        signal(SIGQUIT, signal_handler_input);
+        sa.sa_handler = signal_handler_input;
     }
+    sigaction(SIGINT, &sa, NULL);
+    sigaction(SIGQUIT, &sa, NULL);
 }

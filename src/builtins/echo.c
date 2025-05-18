@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   echo.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/16 20:57:50 by sngantch          #+#    #+#             */
+/*   Updated: 2025/05/16 21:02:52 by sngantch         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "builtins.h"
 
 static int	is_newline_flag(char *str)
@@ -17,8 +29,8 @@ static int	is_newline_flag(char *str)
 
 void	echo(char **argv)
 {
-	int		i;
-	int		new_line;
+	int	i;
+	int	new_line;
 
 	i = 1;
 	new_line = 1;
@@ -29,10 +41,10 @@ void	echo(char **argv)
 	}
 	while (argv[i])
 	{
-		ft_printf("%s", argv[i]);
+		printf("%s", argv[i]);
 		if (argv[i++ + 1])
-			ft_printf(" ");
+			printf(" ");
 	}
 	if (new_line)
-		ft_printf("\n");
+		printf("\n");
 }

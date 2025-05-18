@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:33:25 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/16 16:48:15 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/18 17:37:48 by sngantch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	show_banner(void)
 		"\n", "Sngantch", "Hmensah-");
 }
 
-void print_parse_error(t_result result)
+void	print_parse_error(t_result result)
 {
 	if (result.data.error == INVALID_PIPE)
 		ft_putendl_fd("minishell: invalid pipe", 2);
@@ -57,6 +57,7 @@ static void	command_loop(t_mshell *shell, t_allocs *allocs, t_table *table)
 	{
 		setup_signals();
 		str = readline("$minishell-> ");
+		rl_already_prompted = 0; // Reset the flag
 		if (!str)
 			return ;
 		if (check_all_white_space(str))
@@ -77,7 +78,7 @@ static void	command_loop(t_mshell *shell, t_allocs *allocs, t_table *table)
 	}
 }
 
-int main(int argc, char **argv, char **envp)
+int	main(int argc, char **argv, char **envp)
 {
 	t_allocs	allocs;
 	t_mshell	mshell;

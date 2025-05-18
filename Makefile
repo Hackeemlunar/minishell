@@ -6,7 +6,7 @@
 #    By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/04 19:20:15 by hmensah-          #+#    #+#              #
-#    Updated: 2025/05/16 15:59:08 by hmensah-         ###   ########.fr        #
+#    Updated: 2025/05/16 19:29:00 by hmensah-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,7 +36,9 @@ endif
 #pipe_handler.c pipe_exec.c 
 SRC_FILES =\
 	main.c \
-	environments/env.c environments/env_util.c \
+	builtins/builtins_utils.c builtins/env.c builtins/cd.c \
+	builtins/echo.c builtins/exit.c builtins/export.c builtins/pwd.c \
+	builtins/unset.c environments/env.c environments/env_util.c \
 	signals/signal.c  \
 	execution/expand_var.c execution/expand_var_util.c execution/sub_var.c \
 	execution/pipe_utils.c execution/pipe_utils1.c execution/pipe_utils2.c \
