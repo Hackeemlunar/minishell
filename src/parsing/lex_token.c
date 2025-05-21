@@ -133,8 +133,7 @@ t_result	get_next_token(t_lexer *lexer)
 		return (handle_substitution(lexer));
 	if (lexer->input[lexer->pos] == '&')
 		return (handle_and_bg(lexer));
-	if (lexer->input[lexer->pos] == '(' || lexer->input[lexer->pos] == '*'
-		|| lexer->input[lexer->pos] == ')')
+	if (lexer->input[lexer->pos] == '(' || lexer->input[lexer->pos] == ')')
 		return (handle_unit(lexer, lexer->input[lexer->pos]));
 	result = extract_word(lexer);
 	if (result.is_error)

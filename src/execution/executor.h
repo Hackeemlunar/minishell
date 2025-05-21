@@ -39,6 +39,7 @@ char		*expand_variable(char *str, t_allocs *allocs, t_table *table);
 int			collect_heredoc_input(const char *delim, char *temp_file);
 int			space_or_quote(char c);
 void		expand_substitutions(t_ast *ast, t_allocs *allocs, t_table *table);
+void		expand_wildcards(t_ast *ast, t_allocs *allocs);
 int			handle_pipes(t_ast *ast, t_mshell *sh, t_allocs *allcs, t_table *t);
 void		remove_leading_quote(t_ast *ast);
 void		add_full_path(char **argv, char **paths, t_allocs *allocs);

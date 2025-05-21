@@ -44,7 +44,7 @@ SRC_FILES =\
 	execution/pipe_utils.c execution/pipe_utils1.c execution/pipe_utils2.c \
 	execution/pipe_exec.c \
 	execution/exec_utils.c execution/run_io.c execution/logical_ops.c \
-	execution/run_simple_cmd.c execution/run_command.c execution/exit_status.c \
+	execution/run_simple_cmd.c execution/run_command.c execution/exit_status.c execution/glob.c \
 	utils/res_helpers.c utils/main_utils.c \
 	parsing/lexer.c parsing/parser.c parsing/lex_extract.c parsing/lex_token.c \
 	parsing/lex_token_util.c parsing/parser_cmd.c parsing/parser_util.c

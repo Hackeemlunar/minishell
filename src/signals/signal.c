@@ -31,7 +31,7 @@ void	signal_handler_heredoc(int signum)
 {
 	if (signum == SIGINT)
 	{
-		rl_already_prompted = 1;
+		// Don't set rl_already_prompted here - we're exiting the process
 		rl_replace_line("", 0);
 		rl_on_new_line();
 		exit(1);

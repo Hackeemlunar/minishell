@@ -46,6 +46,7 @@ int	run_simple_cmd(t_ast *ast, t_mshell *shell, t_allocs *allocs,
 	if (!ast)
 		return (perror("Unknown command"), 1);
 	expand_substitutions(ast, allocs, table);
+	expand_wildcards(ast, allocs);
 	remove_leading_quote(ast);
 	if (!handle_builtins(ast->data.cmd_node.argv, shell, table, allocs))
 		return (shell->exit_status);

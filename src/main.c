@@ -56,8 +56,8 @@ static void	command_loop(t_mshell *shell, t_allocs *allocs, t_table *table)
 	while (true)
 	{
 		setup_signals();
+		rl_already_prompted = 0;
 		str = readline("$minishell-> ");
-		rl_already_prompted = 0; // Reset the flag
 		if (!str)
 			return ;
 		if (check_all_white_space(str))
