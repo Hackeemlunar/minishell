@@ -80,7 +80,6 @@ static int	expand_wildcard(char *pattern, char ***matches, t_allocs *allocs)
 			}
 			if (count > 0)
 				ft_memcpy(tmp, new_matches, count * sizeof(char *));
-			
 			tmp[count] = arena_alloc(allocs->exec_alloc, ft_strlen(entry->d_name) + 1);
 			if (!tmp[count])
 			{
