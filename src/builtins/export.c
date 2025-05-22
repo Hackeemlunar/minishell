@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 20:58:04 by sngantch          #+#    #+#             */
-/*   Updated: 2025/05/16 21:22:03 by sngantch         ###   ########.fr       */
+/*   Updated: 2025/05/22 20:42:49 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,30 +35,10 @@ static void	print_environment_variables(t_table *table)
 static void	add_exported_variable(char *key, char *value, t_table *table)
 {
 	t_result	res;
-	t_env		*existing;
-	char		*new_value;
 
-	res = get_env(table, key);
-	if (!res.is_error)
-	{
-		existing = res.data.value;
-		if (existing)
-		{
-			new_value = NULL;
-			if (value)
-				new_value = ft_strdup(value);
-			if (value && !new_value)
-				return ;
-			if (existing->value)
-				free(existing->value);
-		}
-		free(existing->value);
-		existing->value = ft_strdup(value);
-	}
-	else
-	{
-		add_env(table, key, value);
-	}
+	res = add_env(table, key, value);
+	if (res.is_error)
+		return ;
 }
 
 char	*extract_variable_name(char *arg, char *equal_sign)
@@ -78,6 +58,8 @@ void	process_export_arg(char *arg, t_table *table, int *exit_status)
 
 	equal_sign = ft_strchr(arg, '=');
 	key = extract_variable_name(arg, equal_sign);
+	if (!key)
+		return ;
 	if (!is_valid_variable_name(key))
 	{
 		ft_printf("minishell: export: `%s': not a valid identifier", arg);

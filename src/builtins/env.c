@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 20:57:54 by sngantch          #+#    #+#             */
-/*   Updated: 2025/05/16 21:03:23 by sngantch         ###   ########.fr       */
+/*   Updated: 2025/05/22 20:23:24 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	env(char **argv, t_table *table)
 		node = table->bucket[i];
 		while (node)
 		{
-			if (node->value && node->key)
+			if (node->value && node->key && (ft_strcmp(node->key, "?") != 0))
 				ft_printf("%s=%s\n", node->key, node->value);
 			node = node->next;
 		}
