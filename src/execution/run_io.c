@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   run_io.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 14:37:21 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/18 17:37:53 by sngantch         ###   ########.fr       */
+/*   Updated: 2025/05/22 17:44:23 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	collect_heredoc_input(const char *delim, char *temp_file)
 		return (perror("error in heredoc"), -1);
 	while (1)
 	{
-		line = readline("heredoc>");
+		line = readline("> ");
 		if (!line)
 		{
 			write(STDERR_FILENO, "\n", 1);

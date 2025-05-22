@@ -6,7 +6,7 @@
 /*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 14:10:10 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/15 14:19:15 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/22 18:06:45 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ static int	execute_pipeline_cmd(t_pipe_ctx *ctx, t_mshell *shell,
 {
 	t_exec_ctx	exec_ctx;
 
+	
 	ctx->pid = fork();
 	if (ctx->pid < 0)
 	{
@@ -65,6 +66,7 @@ static int	execute_pipeline_cmd(t_pipe_ctx *ctx, t_mshell *shell,
 	}
 	if (ctx->pid == 0)
 	{
+		set_signal_handler(ctx->cmds[ctx->index]);
 		exec_ctx = setup_exec_ctx(ctx->cmds[ctx->index], shell, allocs, table);
 		setup_child_pipes(ctx, &exec_ctx);
 		execute_node(&exec_ctx);

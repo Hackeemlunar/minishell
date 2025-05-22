@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:33:25 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/18 17:37:48 by sngantch         ###   ########.fr       */
+/*   Updated: 2025/05/22 17:58:50 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ static void	command_loop(t_mshell *shell, t_allocs *allocs, t_table *table)
 
 	while (true)
 	{
-		setup_signals();
 		rl_already_prompted = 0;
 		str = readline("$minishell-> ");
 		if (!str)
@@ -89,6 +88,7 @@ int	main(int argc, char **argv, char **envp)
 	(void)argv;
 	show_banner();
 	init_allocators(&allocs);
+	setup_signals();
 	read_history("./histfile");
 	if (init_env(&env_table, envp).is_error)
 		return (1);

@@ -1,77 +1,84 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   signal.c                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/16 21:00:30 by sngantch          #+#    #+#             */
-/*   Updated: 2025/05/19 19:13:11 by sngantch         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "msh_signals.h"
 
-void	signal_handler(int signum)
+void disable_echoctl(void)
 {
-	if (signum == SIGINT)
-	{
-		write(STDERR_FILENO, "\n", 1);
-		rl_already_prompted = 1;
-		rl_replace_line("", 0);
-		rl_on_new_line();
-		rl_redisplay();
-	}
-	else if (signum == SIGQUIT || signum == SIGTSTP)
-	{
-	}
+    struct termios term;
+
+    tcgetattr(STDIN_FILENO, &term);
+    term.c_lflag &= ~ECHOCTL;
+    tcsetattr(STDIN_FILENO, TCSANOW, &term);
 }
 
-void	signal_handler_heredoc(int signum)
+// Main signal handler
+void signal_handler(int signum)
 {
-	if (signum == SIGINT)
-	{
-		// Don't set rl_already_prompted here - we're exiting the process
-		rl_replace_line("", 0);
-		rl_on_new_line();
-		exit(1);
-	}
-	else if (signum == SIGQUIT)
-	{
-		write(STDOUT_FILENO, "\b\b  \b\b", 5);
-	}
+    if (signum == SIGINT)
+    {
+        rl_cleanup_after_signal();
+        write(STDERR_FILENO, "\n", 1);
+        rl_replace_line("", 0);
+        rl_on_new_line();
+        rl_reset_after_signal();
+        rl_redisplay();
+    }
 }
 
-void	signal_handler_input(int signum)
+// Heredoc handler
+void signal_handler_heredoc(int signum)
 {
-	if (signum == SIGQUIT)
-	{
-		ft_printf("Quit: %d\b", SIGQUIT);
-		write(STDERR_FILENO, "\n", 1);
-	}
-	else if (signum == SIGINT)
-	{
-		write(STDERR_FILENO, "\n", 1);
-	}
+    if (signum == SIGINT)
+    {
+        rl_replace_line("", 0);
+        rl_on_new_line();
+        exit(1);
+    }
 }
 
-void	setup_signals(void)
+// Child process handler
+void signal_handler_input(int signum)
 {
-	signal(SIGINT, signal_handler);
-	signal(SIGQUIT, signal_handler);
-	signal(SIGTSTP, signal_handler);
+    if (signum == SIGQUIT)
+    {
+        ft_printf("Quit: %d\b", SIGQUIT);
+        write(STDERR_FILENO, "\n", 1);
+    }
+    else if (signum == SIGINT)
+    {
+        write(STDERR_FILENO, "\n", 1);
+    }
 }
 
-void	set_signal_handler(t_ast *ast)
+void setup_signals(void)
 {
-	if (ast->data.cmd_node.io && ast->data.cmd_node.io->heredoc_delim)
-	{
-		signal(SIGINT, signal_handler_heredoc);
-		signal(SIGQUIT, signal_handler_heredoc);
-	}
-	else
-	{
-		signal(SIGINT, signal_handler_input);
-		signal(SIGQUIT, signal_handler_input);
-	}
+    struct sigaction    sa;
+    
+    disable_echoctl();
+    sa.sa_handler = signal_handler;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = SA_RESTART;
+    sigaction(SIGINT, &sa, NULL);
+    sigaction(SIGQUIT, &sa, NULL);
+    sigaction(SIGTSTP, &sa, NULL);
+}
+
+void set_signal_handler(t_ast *ast)
+{
+    struct sigaction sa;
+    
+    if (ast->data.cmd_node.io && ast->data.cmd_node.io->heredoc_delim)
+    {
+        sa.sa_handler = signal_handler_heredoc;
+        sa.sa_flags = SA_RESTART;
+        sigemptyset(&sa.sa_mask);
+        sigaction(SIGINT, &sa, NULL);
+        sigaction(SIGQUIT, &sa, NULL);
+    }
+    else
+    {
+        sa.sa_handler = signal_handler_input;
+        sa.sa_flags = SA_RESTART;
+        sigemptyset(&sa.sa_mask);
+        sigaction(SIGINT, &sa, NULL);
+        sigaction(SIGQUIT, &sa, NULL);
+    }
 }
