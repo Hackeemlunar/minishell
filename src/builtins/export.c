@@ -6,7 +6,7 @@
 /*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 20:58:04 by sngantch          #+#    #+#             */
-/*   Updated: 2025/05/22 20:42:49 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/24 17:22:05 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,15 +30,6 @@ static void	print_environment_variables(t_table *table)
 			node = node->next;
 		}
 	}
-}
-
-static void	add_exported_variable(char *key, char *value, t_table *table)
-{
-	t_result	res;
-
-	res = add_env(table, key, value);
-	if (res.is_error)
-		return ;
 }
 
 char	*extract_variable_name(char *arg, char *equal_sign)
@@ -69,9 +60,7 @@ void	process_export_arg(char *arg, t_table *table, int *exit_status)
 		return ;
 	}
 	if (equal_sign)
-		add_exported_variable(key, equal_sign + 1, table);
-	else
-		add_exported_variable(key, NULL, table);
+		add_env(table, key, equal_sign + 1);
 	free(key);
 }
 

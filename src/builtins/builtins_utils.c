@@ -6,7 +6,7 @@
 /*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 20:57:40 by sngantch          #+#    #+#             */
-/*   Updated: 2025/05/24 14:34:38 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/24 17:03:21 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	handle_builtins(t_ast *node, t_mshell *sh, t_table *table, t_allocs *alloc)
 	if (!argv || !argv[0] || !sh || !table)
 		return (1);
 	if (ft_strcmp(argv[0], "echo") == 0)
-		echo(node);
+		sh->exit_status = echo(node);
 	else if (ft_strcmp(argv[0], "pwd") == 0)
 		pwd(&sh->exit_status);
 	else if (ft_strcmp(argv[0], "env") == 0)

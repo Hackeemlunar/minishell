@@ -6,7 +6,7 @@
 /*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 14:09:59 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/15 14:48:54 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/24 16:54:47 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,13 +82,9 @@ static size_t	calculate_total_length(char *current, t_table *table)
 	while (*current)
 	{
 		if (*current == '$')
-		{
 			process_variable_length(&current, &start, &total_len, table);
-		}
 		else
-		{
 			current++;
-		}
 	}
 	total_len += current - start;
 	return (total_len);

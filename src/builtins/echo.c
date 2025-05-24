@@ -6,7 +6,7 @@
 /*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 20:57:50 by sngantch          #+#    #+#             */
-/*   Updated: 2025/05/24 15:22:25 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/24 16:37:55 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,13 @@ static inline int open_fd(t_ast *node)
 	else
 		fd = STDOUT_FILENO;
 	return (fd);
+}
+
+int	close_fd(int fd)
+{
+	if (fd > STDOUT_FILENO)
+		close(fd);
+	return (0);
 }
 
 int	echo(t_ast *node)
@@ -52,6 +59,6 @@ int	echo(t_ast *node)
 			ft_putstr_fd(" ", fd);
 	}
 	if (new_line)
-		printf("\n");
-	return (0);
+		ft_putstr_fd("\n", fd);
+	return (close_fd(fd), 0);
 }
