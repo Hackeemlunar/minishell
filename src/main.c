@@ -6,7 +6,7 @@
 /*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:33:25 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/22 17:58:50 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/24 18:11:26 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,7 @@ int	main(int argc, char **argv, char **envp)
 	result = get_paths(&env_table, &mshell.paths, &allocs);
 	if (result.is_error)
 		return (1);
+	mshell.exit_status = 0;
 	command_loop(&mshell, &allocs, &env_table);
 	write(STDOUT_FILENO, "exit\n", 5);
 	write_history("./histfile");

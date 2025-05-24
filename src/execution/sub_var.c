@@ -6,7 +6,7 @@
 /*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 14:39:05 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/24 17:31:27 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/24 18:09:24 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,6 @@ static void	replace_vari(t_ast *ast, t_allocs *allocs, t_table *table, int *i)
 
 	if (*i + 1 >= ast->data.cmd_node.argc)
 	{
-		printf("Error: no variable after $\n");
 		(*i)++;
 		return ;
 	}
