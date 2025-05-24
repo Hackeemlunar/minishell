@@ -3,21 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 20:57:40 by sngantch          #+#    #+#             */
-/*   Updated: 2025/05/16 21:23:01 by sngantch         ###   ########.fr       */
+/*   Updated: 2025/05/24 14:34:38 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtins.h"
 
-int	handle_builtins(char **argv, t_mshell *sh, t_table *table, t_allocs *alloc)
+int	handle_builtins(t_ast *node, t_mshell *sh, t_table *table, t_allocs *alloc)
 {
+	char	**argv;
+
+	argv = node->data.cmd_node.argv;
 	if (!argv || !argv[0] || !sh || !table)
 		return (1);
 	if (ft_strcmp(argv[0], "echo") == 0)
-		echo(argv);
+		echo(node);
 	else if (ft_strcmp(argv[0], "pwd") == 0)
 		pwd(&sh->exit_status);
 	else if (ft_strcmp(argv[0], "env") == 0)

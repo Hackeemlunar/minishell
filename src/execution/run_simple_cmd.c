@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   run_simple_cmd.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 14:38:27 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/18 20:30:32 by sngantch         ###   ########.fr       */
+/*   Updated: 2025/05/24 14:59:24 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ int	run_simple_cmd(t_ast *ast, t_mshell *shell, t_allocs *allocs,
 	expand_substitutions(ast, allocs, table);
 	expand_wildcards(ast, allocs);
 	remove_leading_quote(ast);
-	if (!handle_builtins(ast->data.cmd_node.argv, shell, table, allocs))
+	if (!handle_builtins(ast, shell, table, allocs))
 		return (shell->exit_status);
 	pid = fork();
 	if (pid < 0)

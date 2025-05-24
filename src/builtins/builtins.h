@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 21:03:36 by sngantch          #+#    #+#             */
-/*   Updated: 2025/05/16 21:20:56 by sngantch         ###   ########.fr       */
+/*   Updated: 2025/05/24 15:18:15 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # include "../minishell.h"
 
 void	cd(char **argv, t_table *table, int *exit_status);
-void	echo(char **argv);
+int     echo(t_ast *node);
 void	env(char **argv, t_table *table);
 void	export_command(char **args, t_table *table, int *exit_status);
 void	unset(char *key, t_table *table, int *exit_status);

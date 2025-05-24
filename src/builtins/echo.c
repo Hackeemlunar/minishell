@@ -3,48 +3,55 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 20:57:50 by sngantch          #+#    #+#             */
-/*   Updated: 2025/05/16 21:02:52 by sngantch         ###   ########.fr       */
+/*   Updated: 2025/05/24 15:22:25 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtins.h"
 
-static int	is_newline_flag(char *str)
+static inline int open_fd(t_ast *node)
 {
-	int	i;
+	t_in_out	*io;
+	int			fd;
 
-	i = 1;
-	if (str[0] == '-')
-	{
-		while (str[i] && str[i] == 'n')
-			i++;
-		if (str[i] == '\0')
-			return (1);
-	}
-	return (0);
+	io = node->data.cmd_node.io;
+	if ((io->out_mode == 0) && io->out_file)
+		fd = open(io->out_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	else if ((io->out_mode == 1) && io->out_file)
+		fd = open(io->out_file, O_WRONLY | O_CREAT | O_APPEND, 0644);
+	else
+		fd = STDOUT_FILENO;
+	return (fd);
 }
 
-void	echo(char **argv)
+int	echo(t_ast *node)
 {
-	int	i;
-	int	new_line;
+	int		i;
+	int		new_line;
+	int		fd;
+	char	**argv;
 
 	i = 1;
 	new_line = 1;
-	while (argv[i] && is_newline_flag(argv[i]))
+	argv = node->data.cmd_node.argv;
+	fd = open_fd(node);
+	if (fd < 0)
+		return (perror(node->data.cmd_node.io->out_file), 1);
+	if (argv[i] && (ft_strncmp(argv[i], "-n", 2) == 0))
 	{
 		new_line = 0;
 		i++;
 	}
-	while (argv[i])
+	while (i < node->data.cmd_node.argc)
 	{
-		printf("%s", argv[i]);
-		if (argv[i++ + 1])
-			printf(" ");
+		ft_putstr_fd(argv[i], fd);
+		if (argv[(i++) + 1])
+			ft_putstr_fd(" ", fd);
 	}
 	if (new_line)
 		printf("\n");
+	return (0);
 }
