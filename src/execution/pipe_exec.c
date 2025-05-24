@@ -42,13 +42,20 @@ static int	wait_for_children(t_pipe_ctx *ctx, t_mshell *shell)
 			if (WIFEXITED(status))
 				last_status = WEXITSTATUS(status);
 			else if (WIFSIGNALED(status))
+			{
 				last_status = 128 + WTERMSIG(status);
+				// If terminated by SIGINT (Ctrl+C), set rl_already_prompted to prevent double prompt
+				if (WTERMSIG(status) == SIGINT)
+					rl_already_prompted = 1;
+			}
 			else
 				last_status = 1;
 			set_exit_status(shell, last_status);
 		}
 		i++;
 	}
+	// Reset signals back to shell mode after all children have terminated
+	setup_signals();
 	return (last_status);
 }
 

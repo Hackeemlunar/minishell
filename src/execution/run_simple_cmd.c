@@ -59,8 +59,18 @@ int	run_simple_cmd(t_ast *ast, t_mshell *shell, t_allocs *allocs,
 	if (WIFEXITED(status))
 		set_exit_status(shell, WEXITSTATUS(status));
 	else if (WIFSIGNALED(status))
+	{
+		// Handle case where command was terminated by a signal
 		set_exit_status(shell, 128 + WTERMSIG(status));
+		
+		// If terminated by SIGINT (Ctrl+C), set rl_already_prompted to prevent double prompt
+		if (WTERMSIG(status) == SIGINT)
+			rl_already_prompted = 1;
+	}
 	else if (status != 0)
 		set_exit_status(shell, 1);
+		
+	// Reset signals back to shell mode immediately after command completes
+	setup_signals();
 	return (status);
 }

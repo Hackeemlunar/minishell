@@ -18,6 +18,8 @@ void signal_handler(int signum)
         write(STDERR_FILENO, "\n", 1);
         rl_replace_line("", 0);
         rl_on_new_line();
+        // Set rl_already_prompted to 1 to prevent readline from displaying a second prompt
+        rl_already_prompted = 1;
         rl_reset_after_signal();
         rl_redisplay();
     }
@@ -30,7 +32,12 @@ void signal_handler_heredoc(int signum)
     {
         rl_replace_line("", 0);
         rl_on_new_line();
-        exit(1);
+        write(STDERR_FILENO, "\n", 1);
+        exit(1);  // Exit with error code for SIGINT
+    }
+    else if (signum == SIGQUIT)
+    {
+        // Ignore SIGQUIT in heredoc
     }
 }
 
@@ -44,6 +51,8 @@ void signal_handler_input(int signum)
     }
     else if (signum == SIGINT)
     {
+        // Just write a newline - the process will be terminated by the signal
+        // and we don't want to mess with readline's state here
         write(STDERR_FILENO, "\n", 1);
     }
 }

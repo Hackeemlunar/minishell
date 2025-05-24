@@ -16,6 +16,14 @@ int	collect_heredoc_input(const char *delim, char *temp_file)
 {
 	int		fd;
 	char	*line;
+	struct sigaction sa;
+
+	// Set up special signal handling for heredoc mode
+	sa.sa_handler = signal_handler_heredoc;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = SA_RESTART;
+	sigaction(SIGINT, &sa, NULL);
+	sigaction(SIGQUIT, &sa, NULL);
 
 	fd = open(temp_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd < 0)
@@ -23,8 +31,10 @@ int	collect_heredoc_input(const char *delim, char *temp_file)
 	while (1)
 	{
 		line = readline("> ");
+		// Handle EOF (Ctrl+D) in heredoc
 		if (!line)
 		{
+			// EOF reached
 			write(STDERR_FILENO, "\n", 1);
 			break ;
 		}
@@ -36,7 +46,11 @@ int	collect_heredoc_input(const char *delim, char *temp_file)
 		ft_putendl_fd(line, fd);
 		free(line);
 	}
-	return (close(fd), 0);
+	close(fd);
+	
+	// Restore standard shell signal handling
+	setup_signals();
+	return (0);
 }
 
 int	set_in_fds(t_in_out *io)

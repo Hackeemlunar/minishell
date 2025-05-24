@@ -25,8 +25,8 @@ INCLUDE_DIR = include/readline
 # Determine OS for libraries
 UNAME := $(shell uname)
 ifeq ($(UNAME), Linux)
-	LIB_DIR = libs/linux
-	LIBS = -L$(LIB_DIR) -lreadline -lhistory -lncurses
+	# Use system readline instead of precompiled
+	LIBS = -lreadline -lhistory -lncurses
 else
 	LIB_DIR = libs/mac
 	LIBS = -L$(LIB_DIR) -lreadline -lhistory -lcurses

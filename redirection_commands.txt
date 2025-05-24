@@ -1,0 +1,45 @@
+# Copy-paste these commands one by one into your minishell to test redirections
+
+# Basic redirection test
+echo "Testing basic redirection" > test_file.txt
+cat test_file.txt
+
+# Append test
+echo "Appending to file" >> test_file.txt
+cat test_file.txt
+
+# Comparing behavior between internal and external commands
+echo "Internal command redirection" > test_file.txt
+/bin/echo "External command redirection" > test_file2.txt
+cat test_file.txt
+cat test_file2.txt
+
+# Multiple redirects in one line
+echo "First" > file1.txt > file2.txt
+cat file1.txt
+cat file2.txt
+
+# Pipe with redirection
+echo "hello world" | wc -w > pipe_result.txt
+cat pipe_result.txt
+
+# Input redirection
+cat < test_file.txt
+
+# Input and output redirection together
+cat < test_file.txt > copy.txt
+cat copy.txt
+
+# Heredoc test with redirection
+cat << EOF > heredoc.txt
+This is a heredoc
+with multiple lines
+EOF
+cat heredoc.txt
+
+# Command substitution with redirection
+echo $(ls) > cmd_subst.txt
+cat cmd_subst.txt
+
+# Cleanup
+rm test_file.txt test_file2.txt file1.txt file2.txt pipe_result.txt copy.txt heredoc.txt cmd_subst.txt

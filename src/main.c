@@ -55,8 +55,14 @@ static void	command_loop(t_mshell *shell, t_allocs *allocs, t_table *table)
 
 	while (true)
 	{
-		rl_already_prompted = 0;
+		setup_signals(); // Reset signal handlers before each prompt
+		// Only reset already_prompted if it wasn't set by a signal handler
+		if (!rl_already_prompted)
+			rl_already_prompted = 0;
 		str = readline("$minishell-> ");
+		// Reset rl_already_prompted after readline returns
+		rl_already_prompted = 0;
+		
 		if (!str)
 			return ;
 		if (check_all_white_space(str))
