@@ -18,7 +18,7 @@
 void	set_exit_status(t_mshell *shell, int status)
 {
 	if (shell)
-		shell->exit_status = status;
+		shell->exit_status = status & 0xFF;
 }
 
 /**

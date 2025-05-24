@@ -21,7 +21,8 @@ void	env(char **argv, t_table *table)
 	{
 		ft_printf("env: %s: No such file or directory", argv[1]);
 		write(STDERR_FILENO, "\n", 1);
-		exit(127);
+		add_env(table, "?", "127");
+		return;
 	}
 	i = -1;
 	while (++i < HASH_SIZE)

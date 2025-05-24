@@ -62,5 +62,5 @@ int	run_simple_cmd(t_ast *ast, t_mshell *shell, t_allocs *allocs,
 		set_exit_status(shell, 128 + WTERMSIG(status));
 	else if (status != 0)
 		set_exit_status(shell, 1);
-	return (status);
+	return (get_exit_status(shell));
 }
