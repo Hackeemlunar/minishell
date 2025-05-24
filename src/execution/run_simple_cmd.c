@@ -6,7 +6,7 @@
 /*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 14:38:27 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/24 18:18:46 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/24 20:52:07 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static void	run_child_cmd(t_ast *ast, t_mshell *shell, t_allocs *allocs)
 	{
 		ft_putstr_fd(ast->data.cmd_node.argv[0], 2);
 		ft_putendl_fd(": command not found", 2);
-		exit(1);
+		exit(127);
 	}
 	perror("execve");
 	exit(126);

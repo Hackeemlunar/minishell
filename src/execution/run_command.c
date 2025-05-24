@@ -6,7 +6,7 @@
 /*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 14:30:01 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/16 16:47:27 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/24 20:51:07 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ int	run_command(t_mshell *shell, t_allocs *allocs, t_table *table,
 	if (result.is_error)
 		return (1);
 	exit_status = get_exit_status(shell);
-	exit_status = exit_status & 0xFF; // Ensure we only use the lower 8 bits
+	exit_status = exit_status & 0xFF;
 	temp = ft_itoa(exit_status);
 	add_env(table, "?", temp);
 	free(temp);

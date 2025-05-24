@@ -6,7 +6,7 @@
 /*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 20:57:54 by sngantch          #+#    #+#             */
-/*   Updated: 2025/05/22 20:23:24 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/24 20:47:02 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	env(char **argv, t_table *table)
 		ft_printf("env: %s: No such file or directory", argv[1]);
 		write(STDERR_FILENO, "\n", 1);
 		add_env(table, "?", "127");
-		return;
+		return ;
 	}
 	i = -1;
 	while (++i < HASH_SIZE)
