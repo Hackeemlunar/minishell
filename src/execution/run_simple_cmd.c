@@ -3,20 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   run_simple_cmd.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 14:38:27 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/25 16:41:56 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/25 21:26:24 by sngantch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 
-static void	run_child_cmd(t_ast *ast, t_mshell *shell, t_allocs *allocs)
+static void	run_child_cmd(t_ast *ast, t_mshell *shell, t_allocs *allocs, t_table *table)
 {
 	t_in_out	*io;
 
 	set_signal_handler(ast);
+	signal(SIGQUIT, SIG_DFL);
 	io = ast->data.cmd_node.io;
 	if (io)
 	{
@@ -25,7 +26,8 @@ static void	run_child_cmd(t_ast *ast, t_mshell *shell, t_allocs *allocs)
 		if (set_out_fds(io))
 			exit(1);
 	}
-	add_full_path(ast->data.cmd_node.argv, shell->paths, allocs);
+	
+	add_full_path(ast->data.cmd_node.argv, allocs, table);
 	execve(ast->data.cmd_node.argv[0], ast->data.cmd_node.argv, shell->env);
 	if (errno == ENOENT)
 	{
@@ -55,7 +57,7 @@ int	run_simple_cmd(t_ast *ast, t_mshell *shell, t_allocs *allocs,
 	if (pid < 0)
 		return (perror("fork"), 1);
 	if (pid == 0)
-		run_child_cmd(ast, shell, allocs);
+		run_child_cmd(ast, shell, allocs, table);
 	waitpid(pid, &status, 0);
 	g_in_child = 0;
 	if (WIFEXITED(status))

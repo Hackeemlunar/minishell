@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 18:55:23 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/15 17:25:04 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/25 21:30:50 by sngantch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void		expand_substitutions(t_ast *ast, t_allocs *allocs, t_table *table);
 void		expand_wildcards(t_ast *ast, t_allocs *allocs);
 int			handle_pipes(t_ast *ast, t_mshell *sh, t_allocs *allcs, t_table *t);
 void		remove_leading_quote(t_ast *ast);
-void		add_full_path(char **argv, char **paths, t_allocs *allocs);
+// void		add_full_path(char **argv, char **paths, t_allocs *allocs);
 void		close_unused_pipes(t_pipe_ctx *ctx);
 void		setup_cmd_redirections(t_in_out *io, int in_fd, int out_fd);
 void		execute_node(t_exec_ctx *ctx);
@@ -65,4 +65,6 @@ int			run_simple_cmd(t_ast *ast, t_mshell *shell, t_allocs *allocs,
 				t_table *table);
 t_exec_ctx	setup_exec_ctx(t_ast *node, t_mshell *shell, t_allocs *allocs,
 				t_table *table);
+void	add_full_path(char **argv, t_allocs *allocs, t_table *table);
+
 #endif

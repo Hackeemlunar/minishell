@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_utils1.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 14:25:37 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/15 14:27:21 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/25 21:26:13 by sngantch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,7 @@ static void	exec_cmd_node(t_exec_ctx *ctx)
 		ctx->in_fd, ctx->out_fd);
 	expand_substitutions(ctx->node, ctx->allocs, ctx->table);
 	remove_leading_quote(ctx->node);
-	add_full_path(ctx->node->data.cmd_node.argv,
-		ctx->shell->paths, ctx->allocs);
+	add_full_path(ctx->node->data.cmd_node.argv, ctx->allocs, ctx->table);
 	execve(ctx->node->data.cmd_node.argv[0], ctx->node->data.cmd_node.argv,
 		ctx->shell->env);
 	if (errno == ENOENT)

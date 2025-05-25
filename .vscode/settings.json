@@ -3,6 +3,7 @@
         "minishell.h": "c",
         "ostream": "c",
         "__node_handle": "c",
-        "executor.h": "c"
+        "executor.h": "c",
+        "__locale": "c"
     }
 }

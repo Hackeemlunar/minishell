@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:33:25 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/25 16:32:49 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/25 21:31:15 by sngantch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ int	main(int argc, char **argv, char **envp)
 	t_allocs	allocs;
 	t_mshell	mshell;
 	t_table		env_table;
-	t_result	result;
+	// t_result	result;
 
 	(void)argc;
 	(void)argv;
@@ -95,9 +95,9 @@ int	main(int argc, char **argv, char **envp)
 	if (init_env(&env_table, envp).is_error)
 		return (1);
 	mshell.env = envp;
-	result = get_paths(&env_table, &mshell.paths, &allocs);
-	if (result.is_error)
-		return (1);
+	// result = get_paths(&env_table, &mshell.paths, &allocs);
+	// if (result.is_error)
+	// 	return (1);
 	mshell.exit_status = 0;
 	command_loop(&mshell, &allocs, &env_table);
 	write(STDOUT_FILENO, "exit\n", 5);

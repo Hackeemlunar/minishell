@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 13:58:53 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/25 16:29:34 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/25 21:14:19 by sngantch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -264,7 +264,6 @@ bool		is_special_char(char c);
 void		init_allocators(t_allocs *allocs);
 void		clean_mshell(t_allocs *allocs, t_table *table);
 int			check_all_white_space(char *str);
-t_result	get_paths(t_table *table, char ***paths, t_allocs *allocs);
 t_result	create_success(void *value);
 t_result	create_error(t_error error_code);
 t_result	parse_cmdln(char *cmdln, t_mshell *shell, t_allocs *allocs);

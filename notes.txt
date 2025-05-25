@@ -1,0 +1,3 @@
+ls |      segfault
+handle double quotes
+ls|>a
