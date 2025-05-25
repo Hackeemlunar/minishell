@@ -12,7 +12,7 @@
 
 #include "executor.h"
 
-static void	setup_in_redirections(t_in_out *io, int in_fd)
+static void	setup_in_redirections(t_in_out *io, int in_fd, t_allocs *allocs, t_table *table)
 {
 	int	has_in;
 
@@ -22,7 +22,7 @@ static void	setup_in_redirections(t_in_out *io, int in_fd)
 	{
 		if (in_fd != STDIN_FILENO)
 			close(in_fd);
-		if (set_in_fds(io))
+		if (set_in_fds(io, allocs, table))
 			exit(EXIT_FAILURE);
 	}
 	else if (in_fd != STDIN_FILENO)
@@ -36,7 +36,7 @@ static void	setup_in_redirections(t_in_out *io, int in_fd)
 	}
 }
 
-static void	setup_out_redirections(t_in_out *io, int out_fd)
+static void	setup_out_redirections(t_in_out *io, int out_fd, t_allocs *allocs, t_table *table)
 {
 	int	has_out;
 
@@ -46,7 +46,7 @@ static void	setup_out_redirections(t_in_out *io, int out_fd)
 	{
 		if (out_fd != STDOUT_FILENO)
 			close(out_fd);
-		if (set_out_fds(io))
+		if (set_out_fds(io, allocs, table))
 			exit(EXIT_FAILURE);
 	}
 	else if (out_fd != STDOUT_FILENO)
@@ -60,10 +60,10 @@ static void	setup_out_redirections(t_in_out *io, int out_fd)
 	}
 }
 
-void	setup_cmd_redirections(t_in_out *io, int in_fd, int out_fd)
+void	setup_cmd_redirections(t_in_out *io, int in_fd, int out_fd, t_allocs *allocs, t_table *table)
 {
-	setup_in_redirections(io, in_fd);
-	setup_out_redirections(io, out_fd);
+	setup_in_redirections(io, in_fd, allocs, table);
+	setup_out_redirections(io, out_fd, allocs, table);
 }
 
 int	create_pipes(t_pipe_ctx *ctx)

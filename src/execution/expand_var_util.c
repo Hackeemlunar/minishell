@@ -22,6 +22,16 @@ void	process_variable_build(char **current, char **start,
 
 	(*current)++;
 	var_len = 0;
+	
+	// Handle bare $ character (with no variable name following)
+	if (!(*current)[var_len] || space_or_quote((*current)[var_len]))
+	{
+		**dest = '$';
+		(*dest)++;
+		*start = *current;
+		return;
+	}
+	
 	while ((*current)[var_len] && !space_or_quote((*current)[var_len]))
 		var_len++;
 	var_name = ft_substr(*current, 0, var_len);

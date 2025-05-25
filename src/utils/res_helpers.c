@@ -34,6 +34,6 @@ t_result	create_error(t_error error_code)
 bool	is_special_char(char c)
 {
 	return (c == '|' || c == '<' || c == '>' || c == ' '
-		|| c == '(' || c == ')' || c == '$' || c == '&' || c == '\t'
+		|| c == '(' || c == ')' || c == '&' || c == '\t'
 		|| c == '\n' || c == '\0');
 }

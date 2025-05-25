@@ -36,7 +36,7 @@ typedef struct s_pipe_ctx
 
 void		walk_ast(t_ast *ast, t_mshell *sh, t_allocs *allcs, t_table *table);
 char		*expand_variable(char *str, t_allocs *allocs, t_table *table);
-int			collect_heredoc_input(const char *delim, char *temp_file);
+int			collect_heredoc_input(const char *delim, char *temp_file, t_allocs *allocs, t_table *table);
 int			space_or_quote(char c);
 void		expand_substitutions(t_ast *ast, t_allocs *allocs, t_table *table);
 void		expand_wildcards(t_ast *ast, t_allocs *allocs);
@@ -44,10 +44,10 @@ int			handle_pipes(t_ast *ast, t_mshell *sh, t_allocs *allcs, t_table *t);
 void		remove_leading_quote(t_ast *ast);
 // void		add_full_path(char **argv, char **paths, t_allocs *allocs);
 void		close_unused_pipes(t_pipe_ctx *ctx);
-void		setup_cmd_redirections(t_in_out *io, int in_fd, int out_fd);
+void		setup_cmd_redirections(t_in_out *io, int in_fd, int out_fd, t_allocs *allocs, t_table *table);
 void		execute_node(t_exec_ctx *ctx);
-int			set_in_fds(t_in_out *io);
-int			set_out_fds(t_in_out *io);
+int			set_in_fds(t_in_out *io, t_allocs *allocs, t_table *table);
+int			set_out_fds(t_in_out *io, t_allocs *allocs, t_table *table);
 int			create_pipes(t_pipe_ctx *ctx);
 int			handle_and_operation(t_ast *ast, t_mshell *shell,
 				t_allocs *allocs, t_table *table);

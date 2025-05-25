@@ -17,13 +17,12 @@ static void	run_child_cmd(t_ast *ast, t_mshell *shell, t_allocs *allocs, t_table
 	t_in_out	*io;
 
 	set_signal_handler(ast);
-	signal(SIGQUIT, SIG_DFL);
 	io = ast->data.cmd_node.io;
 	if (io)
 	{
-		if (set_in_fds(io))
+		if (set_in_fds(io, allocs, table))
 			exit(1);
-		if (set_out_fds(io))
+		if (set_out_fds(io, allocs, table))
 			exit(1);
 	}
 	

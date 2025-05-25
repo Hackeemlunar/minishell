@@ -60,6 +60,15 @@ static void	process_variable_length(char **current, char **start,
 
 	*total_len += *current - *start;
 	(*current)++;
+	
+	// Handle bare $ character (with no variable name following)
+	if (!(**current) || space_or_quote(**current))
+	{
+		(*total_len)++;  // Count the $ character
+		*start = *current;
+		return;
+	}
+	
 	var_len = 0;
 	while ((*current)[var_len] && !space_or_quote((*current)[var_len]))
 		var_len++;
@@ -95,10 +104,14 @@ char	*expand_variable(char *str, t_allocs *allocs, t_table *table)
 	char	*expanded;
 	char	*current;
 	size_t	total_len;
+	// int     skip_first;
 
-	if (str[0] != '"')
-		return (NULL);
-	str++;
+	// skip_first = 0;
+	if (str[0] == '"')
+	{
+		str++;
+		// skip_first = 1;
+	}
 	current = str;
 	total_len = calculate_total_length(current, table);
 	expanded = arena_alloc(allocs->exec_alloc, total_len + 1);
