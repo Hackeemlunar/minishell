@@ -6,7 +6,7 @@
 /*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 14:38:27 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/24 20:52:07 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/25 16:41:56 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,12 +50,14 @@ int	run_simple_cmd(t_ast *ast, t_mshell *shell, t_allocs *allocs,
 	remove_leading_quote(ast);
 	if (!handle_builtins(ast, shell, table, allocs))
 		return (shell->exit_status);
+	g_in_child = 1;
 	pid = fork();
 	if (pid < 0)
 		return (perror("fork"), 1);
 	if (pid == 0)
 		run_child_cmd(ast, shell, allocs);
 	waitpid(pid, &status, 0);
+	g_in_child = 0;
 	if (WIFEXITED(status))
 		set_exit_status(shell, WEXITSTATUS(status));
 	else if (WIFSIGNALED(status))

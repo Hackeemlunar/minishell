@@ -6,7 +6,7 @@
 /*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 13:58:53 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/24 14:32:30 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/25 16:29:34 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,12 @@
 
 # define HASH_SIZE 128
 
+extern volatile sig_atomic_t	g_in_child;
+
 typedef struct s_env
 {
-	char		*key;
-	char		*value;
+	char			*key;
+	char			*value;
 	struct s_env	*next;
 }			t_env;
 
@@ -262,7 +264,7 @@ bool		is_special_char(char c);
 void		init_allocators(t_allocs *allocs);
 void		clean_mshell(t_allocs *allocs, t_table *table);
 int			check_all_white_space(char *str);
-t_result 	get_paths(t_table *table, char ***paths, t_allocs *allocs);
+t_result	get_paths(t_table *table, char ***paths, t_allocs *allocs);
 t_result	create_success(void *value);
 t_result	create_error(t_error error_code);
 t_result	parse_cmdln(char *cmdln, t_mshell *shell, t_allocs *allocs);
@@ -274,10 +276,10 @@ void		clean_env(t_table *table);
 void		clean_mshell(t_allocs *allocs, t_table *table);
 void		setup_signals(void);
 void		set_signal_handler(t_ast *tree);
-void 		signal_handler_heredoc(int signum);
+void		signal_handler_heredoc(int signum);
 void		setup_signals(void);
 int			run_command(t_mshell *shell, t_allocs *allocs, t_table *table,
-						t_result result);
+				t_result result);
 int			handle_builtins(t_ast *node, t_mshell *shell,
-						t_table *table, t_allocs *alloc);
+				t_table *table, t_allocs *alloc);
 #endif

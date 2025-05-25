@@ -6,11 +6,13 @@
 /*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:33:25 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/24 18:11:26 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/25 16:32:49 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+volatile sig_atomic_t	g_in_child = 0;
 
 void	show_banner(void)
 {
