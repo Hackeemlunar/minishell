@@ -51,6 +51,8 @@ void	add_full_path(char **argv, t_allocs *allocs, t_table *table)
 	char	**paths;
 	t_result	result;
 
+	if (!argv || !argv[0])
+		return ;
 	result = get_paths(table, allocs);
 	if (result.is_error)
 		return ;
@@ -77,6 +79,11 @@ void	add_full_path(char **argv, t_allocs *allocs, t_table *table)
 int	space_or_quote(char c)
 {
 	return (c == ' ' || c == '\t' || c == '\n' || c == '\'' || c == '"');
+}
+
+int	is_valid_var_char(char c)
+{
+	return (ft_isalnum(c) || c == '_');
 }
 
 void	remove_leading_quote(t_ast *ast)

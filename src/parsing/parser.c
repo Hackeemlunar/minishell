@@ -26,9 +26,15 @@ t_result	parse_pipeline(t_token **current, t_allocs *allocs)
 	while (peek_token_type(*current) == TOKEN_PIPE)
 	{
 		*current = advance_token(*current);
+		if (peek_token_type(*current) == TOKEN_EOF)
+			return (create_error(INVALID_PIPE));
 		right_result = parse_command(current, allocs);
 		if (right_result.is_error)
 			return (right_result);
+		if (((t_ast*)right_result.data.value)->type == NODE_CMD && 
+			((t_ast*)right_result.data.value)->data.cmd_node.argc == 0 &&
+			!has_redirections((t_ast*)right_result.data.value))
+			return (create_error(INVALID_PIPE));
 		pipe_node = create_ast_node(NODE_PIPELINE, allocs);
 		if (!pipe_node)
 			return (create_error(NO_MEMORY));

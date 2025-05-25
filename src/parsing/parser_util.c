@@ -77,3 +77,15 @@ t_result	parse_redir(t_ast *cmd_node, t_token **current, t_allocs *allocs)
 	*current = advance_token(file_tok);
 	return (create_success(NULL));
 }
+
+bool	has_redirections(t_ast *cmd_node)
+{
+	t_in_out	*io;
+
+	if (!cmd_node || cmd_node->type != NODE_CMD)
+		return (false);
+	io = cmd_node->data.cmd_node.io;
+	if (!io)
+		return (false);
+	return (io->in_file || io->out_file || io->heredoc_delim);
+}
