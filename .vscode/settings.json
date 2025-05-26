@@ -1,9 +1,0 @@
-{
-    "files.associations": {
-        "minishell.h": "c",
-        "ostream": "c",
-        "__node_handle": "c",
-        "executor.h": "c",
-        "__locale": "c"
-    }
-}
