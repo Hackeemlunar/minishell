@@ -6,11 +6,27 @@
 /*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 20:57:58 by sngantch          #+#    #+#             */
-/*   Updated: 2025/05/26 18:35:39 by sngantch         ###   ########.fr       */
+/*   Updated: 2025/05/26 19:08:14 by sngantch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtins.h"
+
+int is_valid_digit(char *str)
+{
+	int	i;
+
+	i = 0;
+	if (str[i] == '-' || str[i] == '+')
+		i++;
+	while (str[i])
+	{
+		if (!ft_isdigit(str[i]))
+			return (0);
+		i++;
+	}
+	return (1);
+}
 
 void	ft_exit(t_allocs *allocs, t_table *table, t_ast *node, t_mshell *shell)
 { 
@@ -24,7 +40,7 @@ void	ft_exit(t_allocs *allocs, t_table *table, t_ast *node, t_mshell *shell)
 			set_exit_status(shell, 1);
 			return ;
 		}
-		if (ft_isalpha(node->data.cmd_node.argv[1][0]) == true)
+		if (!is_valid_digit(node->data.cmd_node.argv[1]))
 		{
 			ft_putstr_fd("minishell: exit: numeric argument required\n", STDERR_FILENO);
 			set_exit_status(shell, 255);
