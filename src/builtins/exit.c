@@ -6,7 +6,7 @@
 /*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 20:57:58 by sngantch          #+#    #+#             */
-/*   Updated: 2025/05/26 17:40:20 by sngantch         ###   ########.fr       */
+/*   Updated: 2025/05/26 18:35:39 by sngantch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,18 +24,25 @@ void	ft_exit(t_allocs *allocs, t_table *table, t_ast *node, t_mshell *shell)
 			set_exit_status(shell, 1);
 			return ;
 		}
-		exit_status = ft_atoi(node->data.cmd_node.argv[1]);
-		if (exit_status < 0 || exit_status > 255)
+		if (ft_isalpha(node->data.cmd_node.argv[1][0]) == true)
 		{
 			ft_putstr_fd("minishell: exit: numeric argument required\n", STDERR_FILENO);
-			set_exit_status(shell, 2);
-			return ;
+			set_exit_status(shell, 255);
 		}
+		else
+		{
+			exit_status = ft_atoi(node->data.cmd_node.argv[1]);
+			if (exit_status < 0 || exit_status > 255)
+				set_exit_status(shell, exit_status % 256);
+			else
+				set_exit_status(shell, exit_status);
+		}
+		
 	}
 	else
 		exit_status = get_exit_status(shell);
 	
 	clean_mshell(allocs, table);
 	printf("exit\n");
-	exit(exit_status);
+	exit(shell->exit_status);
 }
