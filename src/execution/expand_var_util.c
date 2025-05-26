@@ -22,8 +22,6 @@ void	process_variable_build(char **current, char **start,
 
 	(*current)++;
 	var_len = 0;
-	
-	// Handle bare $ character (with no variable name following)
 	if (!(*current)[var_len] || !is_valid_var_char((*current)[var_len]))
 	{
 		**dest = '$';
@@ -31,7 +29,6 @@ void	process_variable_build(char **current, char **start,
 		*start = *current;
 		return;
 	}
-	
 	while ((*current)[var_len] && is_valid_var_char((*current)[var_len]))
 		var_len++;
 	var_name = ft_substr(*current, 0, var_len);

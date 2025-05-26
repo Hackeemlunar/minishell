@@ -20,6 +20,7 @@
 # include <sys/types.h>
 # include <errno.h>
 # include <term.h>
+# include <signal.h>
 # include <termios.h>
 # include "../include/readline/readline.h"
 # include "../include/readline/history.h"

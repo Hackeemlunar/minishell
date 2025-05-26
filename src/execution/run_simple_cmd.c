@@ -25,7 +25,6 @@ static void	run_child_cmd(t_ast *ast, t_mshell *shell, t_allocs *allocs, t_table
 		if (set_out_fds(io, allocs, table))
 			exit(1);
 	}
-	
 	add_full_path(ast->data.cmd_node.argv, allocs, table);
 	execve(ast->data.cmd_node.argv[0], ast->data.cmd_node.argv, shell->env);
 	if (errno == ENOENT)

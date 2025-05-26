@@ -84,7 +84,6 @@ int	main(int argc, char **argv, char **envp)
 	t_allocs	allocs;
 	t_mshell	mshell;
 	t_table		env_table;
-	// t_result	result;
 
 	(void)argc;
 	(void)argv;
@@ -95,9 +94,6 @@ int	main(int argc, char **argv, char **envp)
 	if (init_env(&env_table, envp).is_error)
 		return (1);
 	mshell.env = envp;
-	// result = get_paths(&env_table, &mshell.paths, &allocs);
-	// if (result.is_error)
-	// 	return (1);
 	mshell.exit_status = 0;
 	command_loop(&mshell, &allocs, &env_table);
 	write(STDOUT_FILENO, "exit\n", 5);

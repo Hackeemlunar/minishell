@@ -97,10 +97,7 @@ void	remove_leading_quote(t_ast *ast)
 		if (ast->data.cmd_node.argv[idx][0] == '"'
 			|| ast->data.cmd_node.argv[idx][0] == '\'')
 		{
-			// Remove leading quote
 			ast->data.cmd_node.argv[idx] = ast->data.cmd_node.argv[idx] + 1;
-			
-			// Remove trailing quote if present
 			len = ft_strlen(ast->data.cmd_node.argv[idx]);
 			if (len > 0 && (ast->data.cmd_node.argv[idx][len - 1] == '"' 
 				|| ast->data.cmd_node.argv[idx][len - 1] == '\''))

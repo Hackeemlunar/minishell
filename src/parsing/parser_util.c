@@ -38,22 +38,8 @@ t_ast	*create_ast_node(t_node_type type, t_allocs *allocs)
 	return (node);
 }
 
-t_result	parse_redir(t_ast *cmd_node, t_token **current, t_allocs *allocs)
+static void	set_redir_params(t_in_out *io, t_token *redirect_tok, t_token *file_tok)
 {
-	t_token		*redirect_tok;
-	t_token		*file_tok;
-	t_in_out	*io;
-
-	(void)allocs;
-	redirect_tok = *current;
-	if (!redirect_tok || !(redirect_tok->type == TOKEN_REDIR_IN
-			|| redirect_tok->type == TOKEN_HEREDOC || redirect_tok->type
-			== TOKEN_REDIR_OUT || redirect_tok->type == TOKEN_APPEND))
-		return (create_error(INVALID_REDIRECT));
-	file_tok = advance_token(*current);
-	if (!file_tok || file_tok->type != TOKEN_WORD)
-		return (create_error(INVALID_REDIRECT));
-	io = cmd_node->data.cmd_node.io;
 	if (redirect_tok->type == TOKEN_REDIR_IN)
 	{
 		io->in_file = file_tok->value;
@@ -74,6 +60,25 @@ t_result	parse_redir(t_ast *cmd_node, t_token **current, t_allocs *allocs)
 		io->out_file = file_tok->value;
 		io->out_mode = 1;
 	}
+}
+
+t_result	parse_redir(t_ast *cmd_node, t_token **current, t_allocs *allocs)
+{
+	t_token		*redirect_tok;
+	t_token		*file_tok;
+	t_in_out	*io;
+
+	(void)allocs;
+	redirect_tok = *current;
+	if (!redirect_tok || !(redirect_tok->type == TOKEN_REDIR_IN
+			|| redirect_tok->type == TOKEN_HEREDOC || redirect_tok->type
+			== TOKEN_REDIR_OUT || redirect_tok->type == TOKEN_APPEND))
+		return (create_error(INVALID_REDIRECT));
+	file_tok = advance_token(*current);
+	if (!file_tok || file_tok->type != TOKEN_WORD)
+		return (create_error(INVALID_REDIRECT));
+	io = cmd_node->data.cmd_node.io;
+	set_redir_params(io, redirect_tok, file_tok);
 	*current = advance_token(file_tok);
 	return (create_success(NULL));
 }

@@ -51,7 +51,6 @@ int	collect_heredoc_input(const char *delim, char *temp_file, t_allocs *allocs, 
 			free(line);
 			break ;
 		}
-		// Expand variables in the heredoc content
 		if (strchr(line, '$') != NULL)
 		{
 			expanded_line = expand_variable(line, allocs, table);
@@ -72,44 +71,35 @@ int	collect_heredoc_input(const char *delim, char *temp_file, t_allocs *allocs, 
 
 static char *process_filename(char *filename, t_allocs *allocs, t_table *table)
 {
-	char *processed;
-	char *expanded;
-	int len;
-	
-	// Skip if filename is NULL or empty
+	char	*processed;
+	char	*expanded;
+	int		len;
+
 	if (!filename || !*filename)
-		return filename;
-	
-	// Check if the filename contains a $ and might need variable expansion
+		return (filename);
 	if (strchr(filename, '$') != NULL)
 	{
-		// Try to expand variables in the filename
 		expanded = expand_variable(filename, allocs, table);
 		if (expanded)
-			return expanded; // Return arena-allocated memory, should NOT be freed
+			return (expanded);
 	}
-	
-	// Handle quotes if present
 	if (filename[0] != '"' && filename[0] != '\'')
-		return filename;
-	
+		return (filename);
 	processed = ft_strdup(filename + 1);
 	if (!processed)
-		return filename; // Fall back to original on error
-	
+		return (filename);
 	len = ft_strlen(processed);
 	if (len > 0 && (processed[len - 1] == '"' || processed[len - 1] == '\''))
 		processed[len - 1] = '\0';
-	
-	return processed; // This is malloced and should be freed
+	return (processed);
 }
 
 int	set_in_fds(t_in_out *io, t_allocs *allocs, t_table *table)
 {
-	char *filename;
-	char *original_filename;
-	int has_dollar;
-	
+	char	*filename;
+	char	*original_filename;
+	int		has_dollar;
+
 	if (io->in_mode == 1 && io->heredoc_delim)
 	{
 		if (collect_heredoc_input(io->heredoc_delim, "/tmp/heredoc", allocs, table) < 0)
@@ -126,11 +116,8 @@ int	set_in_fds(t_in_out *io, t_allocs *allocs, t_table *table)
 		
 		filename = process_filename(original_filename, allocs, table);
 		io->in_fd = open(filename, O_RDONLY);
-		
-		// Only free if it's not from variable expansion and not the original
 		if (filename != original_filename && !has_dollar)
 			free(filename);
-		
 		if (io->in_fd < 0)
 			return (perror("open"), 1);
 		dup2(io->in_fd, STDIN_FILENO);
@@ -153,11 +140,8 @@ int	set_out_fds(t_in_out *io, t_allocs *allocs, t_table *table)
 		
 		filename = process_filename(original_filename, allocs, table);
 		io->out_fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		
-		// Only free if it's not from variable expansion and not the original
 		if (filename != original_filename && !has_dollar)
 			free(filename);
-		
 		if (io->out_fd < 0)
 			return (perror("open"), 1);
 		dup2(io->out_fd, STDOUT_FILENO);
@@ -166,14 +150,10 @@ int	set_out_fds(t_in_out *io, t_allocs *allocs, t_table *table)
 	{
 		original_filename = io->out_file;
 		has_dollar = (strchr(original_filename, '$') != NULL);
-		
 		filename = process_filename(original_filename, allocs, table);
 		io->out_fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
-		
-		// Only free if it's not from variable expansion and not the original
 		if (filename != original_filename && !has_dollar)
 			free(filename);
-		
 		if (io->out_fd < 0)
 			return (perror("open"), 1);
 		dup2(io->out_fd, STDOUT_FILENO);

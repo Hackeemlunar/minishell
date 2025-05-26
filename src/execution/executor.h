@@ -43,7 +43,6 @@ void		expand_substitutions(t_ast *ast, t_allocs *allocs, t_table *table);
 void		expand_wildcards(t_ast *ast, t_allocs *allocs);
 int			handle_pipes(t_ast *ast, t_mshell *sh, t_allocs *allcs, t_table *t);
 void		remove_leading_quote(t_ast *ast);
-// void		add_full_path(char **argv, char **paths, t_allocs *allocs);
 void		close_unused_pipes(t_pipe_ctx *ctx);
 void		setup_cmd_redirections(t_in_out *io, int in_fd, int out_fd, t_allocs *allocs, t_table *table);
 void		execute_node(t_exec_ctx *ctx);
