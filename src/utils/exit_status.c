@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   exit_status.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 10:00:00 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/15 15:44:55 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/26 14:50:12 by sngantch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "executor.h"
+#include "../minishell.h"
 
 /**
  * Set the exit status in the shell structure

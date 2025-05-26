@@ -71,6 +71,7 @@ t_result		parse_redir(t_ast *node, t_token **current, t_allocs *allocs);
 t_token			*advance_token(t_token *current);
 t_token_type	peek_token_type(t_token *current);
 t_ast			*create_ast_node(t_node_type type, t_allocs *allocs);
+bool			has_redirections(t_ast *cmd_node);
 t_result		handle_unit(t_lexer *lexer, char token);
 t_result		handle_substitution(t_lexer *lexer);
 

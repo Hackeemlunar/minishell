@@ -46,8 +46,7 @@ t_result	parse_command(t_token **current, t_allocs *allocs)
 	while (*current && peek_token_type(*current) != TOKEN_EOF)
 	{
 		type = peek_token_type(*current);
-		if (type == TOKEN_WORD || type == TOKEN_SUBSTITUTION
-			|| type == TOKEN_WILDCARD)
+		if (type == TOKEN_WORD || type == TOKEN_WILDCARD)
 		{
 			new_argv = arena_alloc(allocs->parse_alloc,
 					(cmd_node->data.cmd_node.argc + 2) * sizeof(char *));

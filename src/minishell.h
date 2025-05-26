@@ -6,7 +6,7 @@
 /*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 13:58:53 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/25 21:14:19 by sngantch         ###   ########.fr       */
+/*   Updated: 2025/05/26 14:51:42 by sngantch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <sys/types.h>
 # include <errno.h>
 # include <term.h>
+# include <signal.h>
 # include <termios.h>
 # include "../include/readline/readline.h"
 # include "../include/readline/history.h"
@@ -281,4 +282,7 @@ int			run_command(t_mshell *shell, t_allocs *allocs, t_table *table,
 				t_result result);
 int			handle_builtins(t_ast *node, t_mshell *shell,
 				t_table *table, t_allocs *alloc);
+void	set_exit_status(t_mshell *shell, int status);
+int	get_exit_status(t_mshell *shell);
+
 #endif

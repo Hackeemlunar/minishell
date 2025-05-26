@@ -6,7 +6,7 @@
 #    By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/04 19:20:15 by hmensah-          #+#    #+#              #
-#    Updated: 2025/05/26 11:28:47 by sngantch         ###   ########.fr        #
+#    Updated: 2025/05/26 14:47:05 by sngantch         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -44,8 +44,8 @@ SRC_FILES =\
 	execution/pipe_utils.c execution/pipe_utils1.c execution/pipe_utils2.c \
 	execution/pipe_exec.c \
 	execution/exec_utils.c execution/run_io.c execution/logical_ops.c \
-	execution/run_simple_cmd.c execution/run_command.c execution/exit_status.c execution/glob.c \
-	utils/res_helpers.c utils/main_utils.c \
+	execution/run_simple_cmd.c execution/run_command.c execution/glob.c \
+	utils/res_helpers.c utils/main_utils.c  utils/exit_status.c \
 	parsing/lexer.c parsing/parser.c parsing/lex_extract.c parsing/lex_token.c \
 	parsing/lex_token_util.c parsing/parser_cmd.c parsing/parser_util.c
 

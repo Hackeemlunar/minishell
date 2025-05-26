@@ -64,7 +64,7 @@ int	run_command(t_mshell *shell, t_allocs *allocs, t_table *table,
 		t_result res)
 {
 	char		*temp;
-	int		exit_status;
+	int			exit_status;
 
 	shell->ast = res.data.value;
 	exit_status = get_exit_status(shell);

@@ -60,8 +60,14 @@ static void	process_variable_length(char **current, char **start,
 
 	*total_len += *current - *start;
 	(*current)++;
+	if (!(**current) || !is_valid_var_char(**current))
+	{
+		(*total_len)++;
+		*start = *current;
+		return ;
+	}
 	var_len = 0;
-	while ((*current)[var_len] && !space_or_quote((*current)[var_len]))
+	while ((*current)[var_len] && is_valid_var_char((*current)[var_len]))
 		var_len++;
 	var_name = ft_substr(*current, 0, var_len);
 	value = get_env(table, var_name);
@@ -95,10 +101,8 @@ char	*expand_variable(char *str, t_allocs *allocs, t_table *table)
 	char	*expanded;
 	char	*current;
 	size_t	total_len;
-
-	if (str[0] != '"')
-		return (NULL);
-	str++;
+	if (str[0] == '"')
+		str++;
 	current = str;
 	total_len = calculate_total_length(current, table);
 	expanded = arena_alloc(allocs->exec_alloc, total_len + 1);

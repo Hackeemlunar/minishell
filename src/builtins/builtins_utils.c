@@ -6,7 +6,7 @@
 /*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 20:57:40 by sngantch          #+#    #+#             */
-/*   Updated: 2025/05/26 11:25:15 by sngantch         ###   ########.fr       */
+/*   Updated: 2025/05/26 15:39:37 by sngantch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	handle_builtins(t_ast *node, t_mshell *sh, t_table *table, t_allocs *alloc)
 	else if (ft_strcmp(argv[0], "unset") == 0)
 		unset(argv[1], table, &sh->exit_status);
 	else if (ft_strcmp(argv[0], "exit") == 0)
-		ft_exit(alloc, table);
+		ft_exit(alloc, table, node, sh);
 	else if (ft_strcmp(argv[0], "history") == 0)
 		history(&sh->exit_status);
 	else

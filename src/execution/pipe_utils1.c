@@ -15,7 +15,9 @@
 static void	exec_cmd_node(t_exec_ctx *ctx)
 {
 	setup_cmd_redirections(ctx->node->data.cmd_node.io,
-		ctx->in_fd, ctx->out_fd);
+		ctx->in_fd, ctx->out_fd, ctx->allocs, ctx->table);
+	if (!ctx->node->data.cmd_node.argv)
+		return ;
 	expand_substitutions(ctx->node, ctx->allocs, ctx->table);
 	remove_leading_quote(ctx->node);
 	add_full_path(ctx->node->data.cmd_node.argv, ctx->allocs, ctx->table);

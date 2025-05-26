@@ -51,6 +51,8 @@ void	add_full_path(char **argv, t_allocs *allocs, t_table *table)
 	char	**paths;
 	t_result	result;
 
+	if (!argv || !argv[0])
+		return ;
 	result = get_paths(table, allocs);
 	if (result.is_error)
 		return ;
@@ -79,16 +81,30 @@ int	space_or_quote(char c)
 	return (c == ' ' || c == '\t' || c == '\n' || c == '\'' || c == '"');
 }
 
+int	is_valid_var_char(char c)
+{
+	return (ft_isalnum(c) || c == '_');
+}
+
 void	remove_leading_quote(t_ast *ast)
 {
 	int	idx;
+	int	len;
 
 	idx = 0;
 	while (idx < ast->data.cmd_node.argc)
 	{
 		if (ast->data.cmd_node.argv[idx][0] == '"'
 			|| ast->data.cmd_node.argv[idx][0] == '\'')
+		{
 			ast->data.cmd_node.argv[idx] = ast->data.cmd_node.argv[idx] + 1;
+			len = ft_strlen(ast->data.cmd_node.argv[idx]);
+			if (len > 0 && (ast->data.cmd_node.argv[idx][len - 1] == '"' 
+				|| ast->data.cmd_node.argv[idx][len - 1] == '\''))
+			{
+				ast->data.cmd_node.argv[idx][len - 1] = '\0';
+			}
+		}
 		idx++;
 	}
 }

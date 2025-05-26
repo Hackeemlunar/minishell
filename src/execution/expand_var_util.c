@@ -22,7 +22,14 @@ void	process_variable_build(char **current, char **start,
 
 	(*current)++;
 	var_len = 0;
-	while ((*current)[var_len] && !space_or_quote((*current)[var_len]))
+	if (!(*current)[var_len] || !is_valid_var_char((*current)[var_len]))
+	{
+		**dest = '$';
+		(*dest)++;
+		*start = *current;
+		return;
+	}
+	while ((*current)[var_len] && is_valid_var_char((*current)[var_len]))
 		var_len++;
 	var_name = ft_substr(*current, 0, var_len);
 	value = get_env(table, var_name);
