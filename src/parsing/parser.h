@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/04 18:49:13 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/05 18:11:55 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/26 11:53:20 by sngantch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,7 @@
 typedef enum e_token_type
 {
 	TOKEN_WORD,
-	TOKEN_PIPE,
-	TOKEN_REDIR_IN,
+	TOKEN_PIPE,	TOKEN_REDIR_IN,
 	TOKEN_REDIR_OUT,
 	TOKEN_APPEND,
 	TOKEN_HEREDOC,

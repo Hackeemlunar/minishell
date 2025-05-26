@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 21:03:36 by sngantch          #+#    #+#             */
-/*   Updated: 2025/05/24 15:18:15 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/26 11:27:38 by sngantch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,4 +23,5 @@ void	unset(char *key, t_table *table, int *exit_status);
 void	pwd(int *exit_status);
 void	ft_exit(t_allocs *allocs, t_table *table);
 int		is_valid_variable_name(char *key);
+void    history(int *exit_status);
 #endif
