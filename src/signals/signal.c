@@ -6,20 +6,11 @@
 /*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 21:00:30 by sngantch          #+#    #+#             */
-/*   Updated: 2025/05/25 20:31:39 by sngantch         ###   ########.fr       */
+/*   Updated: 2025/05/27 18:25:49 by sngantch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "msh_signals.h"
-
-void disable_echoctl(void)
-{
-    struct termios term;
-
-    tcgetattr(STDIN_FILENO, &term);
-    term.c_lflag &= ~ECHOCTL;
-    tcsetattr(STDIN_FILENO, TCSANOW, &term);
-}
 
 void	signal_handler(int signum)
 {
@@ -37,7 +28,7 @@ void	signal_handler(int signum)
 	}
 	else if (signum == SIGQUIT)
 	{
-		if(g_in_child)
+		if (g_in_child)
 		{
 			ft_printf("Quit: %d\b", SIGQUIT);
 			write(STDERR_FILENO, "\n", 1);

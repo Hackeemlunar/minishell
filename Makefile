@@ -6,7 +6,7 @@
 #    By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/04 19:20:15 by hmensah-          #+#    #+#              #
-#    Updated: 2025/05/26 14:47:05 by sngantch         ###   ########.fr        #
+#    Updated: 2025/05/27 18:46:46 by sngantch         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -39,7 +39,7 @@ SRC_FILES =\
 	builtins/builtins_utils.c builtins/env.c builtins/cd.c \
 	builtins/echo.c builtins/exit.c builtins/export.c builtins/pwd.c \
 	builtins/unset.c environments/env.c builtins/history.c \
-	environments/env_util.c signals/signal.c  \
+	environments/env_util.c signals/signal.c signals/signal_utils.c \
 	execution/expand_var.c execution/expand_var_util.c execution/sub_var.c \
 	execution/pipe_utils.c execution/pipe_utils1.c execution/pipe_utils2.c \
 	execution/pipe_exec.c \

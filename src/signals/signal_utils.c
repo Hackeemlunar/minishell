@@ -1,21 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   msh_signals.h                                      :+:      :+:    :+:   */
+/*   signal_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/16 21:00:24 by sngantch          #+#    #+#             */
-/*   Updated: 2025/05/27 18:25:32 by sngantch         ###   ########.fr       */
+/*   Created: 2025/05/27 18:24:40 by sngantch          #+#    #+#             */
+/*   Updated: 2025/05/27 18:26:10 by sngantch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MSH_SIGNALS_H
-# define MSH_SIGNALS_H
+#include "msh_signals.h"
 
-# include "../minishell.h"
-# include <signal.h>
+void	disable_echoctl(void)
+{
+	struct termios	term;
 
-void	disable_echoctl(void);
-
-#endif
+	tcgetattr(STDIN_FILENO, &term);
+	term.c_lflag &= ~ECHOCTL;
+	tcsetattr(STDIN_FILENO, TCSANOW, &term);
+}

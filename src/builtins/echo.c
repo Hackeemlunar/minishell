@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 20:57:50 by sngantch          #+#    #+#             */
-/*   Updated: 2025/05/24 16:37:55 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/27 18:28:04 by sngantch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtins.h"
 
-static inline int open_fd(t_ast *node)
+static inline int	open_fd(t_ast *node)
 {
 	t_in_out	*io;
 	int			fd;
