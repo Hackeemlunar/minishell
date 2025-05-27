@@ -38,7 +38,16 @@ static void	build_expanded_string(char *dest, char *str, t_table *table)
 	start = current;
 	while (*current)
 	{
-		if (*current == '$')
+		if (*current == '\\' && *(current + 1) == '$')
+		{
+			copy_static_part(&dest, &start, current);
+			current++;
+			*dest = *current;
+			dest++;
+			current++;
+			start = current;
+		}
+		else if (*current == '$')
 		{
 			copy_static_part(&dest, &start, current);
 			process_variable_build(&current, &start, &dest, table);
@@ -87,7 +96,13 @@ static size_t	calculate_total_length(char *current, t_table *table)
 	start = current;
 	while (*current)
 	{
-		if (*current == '$')
+		if (*current == '\\' && *(current + 1) == '$')
+		{
+			total_len += current - start + 1;
+			current += 2;
+			start = current;
+		}
+		else if (*current == '$')
 			process_variable_length(&current, &start, &total_len, table);
 		else
 			current++;
@@ -96,18 +111,39 @@ static size_t	calculate_total_length(char *current, t_table *table)
 	return (total_len);
 }
 
+static char	*handle_quoted_string(char *str, t_allocs *allocs)
+{
+	char	*work_str;
+	size_t	str_len;
+
+	str_len = ft_strlen(str);
+	if (str_len >= 2 && str[str_len - 1] == '"')
+	{
+		work_str = arena_alloc(allocs->exec_alloc, str_len - 1);
+		if (!work_str)
+			return (NULL);
+		ft_strlcpy(work_str, str + 1, str_len - 1);
+		return (work_str);
+	}
+	return (str + 1);
+}
+
 char	*expand_variable(char *str, t_allocs *allocs, t_table *table)
 {
 	char	*expanded;
 	char	*current;
 	size_t	total_len;
+
 	if (str[0] == '"')
-		str++;
-	current = str;
+		current = handle_quoted_string(str, allocs);
+	else
+		current = str;
+	if (!current)
+		return (NULL);
 	total_len = calculate_total_length(current, table);
 	expanded = arena_alloc(allocs->exec_alloc, total_len + 1);
 	if (!expanded)
 		return (NULL);
-	build_expanded_string(expanded, str, table);
+	build_expanded_string(expanded, current, table);
 	return (expanded);
 }

@@ -74,9 +74,9 @@ size_t	quote_strcpy(char *dst, const char *src, size_t len)
 
 	i = 0;
 	j = 0;
-	while (j < len - 1)
+	while (j < len)
 	{
-		if (src[j] == '\\' && (src[j + 1] == '"' || src[j + 1] == '\''))
+		if (src[j] == '\\' && j + 1 < len && (src[j + 1] == '"' || src[j + 1] == '\''))
 		{
 			j++;
 			continue ;
@@ -85,7 +85,7 @@ size_t	quote_strcpy(char *dst, const char *src, size_t len)
 		i++;
 		j++;
 	}
-	dst[i++] = '\0';
+	dst[i] = '\0';
 	return (i);
 }
 

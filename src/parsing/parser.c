@@ -58,10 +58,17 @@ t_result	parse_logical_and(t_token **current, t_allocs *allocs)
 	left = left_result.data.value;
 	while (peek_token_type(*current) == TOKEN_AND)
 	{
+		if (left->type == NODE_CMD && left->data.cmd_node.argc == 0 &&
+			!has_redirections(left))
+			return (create_error(INVALID_SYNTAX));
 		*current = advance_token(*current);
 		right_result = parse_pipeline(current, allocs);
 		if (right_result.is_error)
 			return (right_result);
+		if (((t_ast*)right_result.data.value)->type == NODE_CMD && 
+			((t_ast*)right_result.data.value)->data.cmd_node.argc == 0 &&
+			!has_redirections((t_ast*)right_result.data.value))
+			return (create_error(INVALID_SYNTAX));
 		and_node = create_ast_node(NODE_AND, allocs);
 		if (!and_node)
 			return (create_error(NO_MEMORY));
@@ -85,10 +92,17 @@ t_result	parse_logical_or(t_token **current, t_allocs *allocs)
 	left = left_result.data.value;
 	while (peek_token_type(*current) == TOKEN_OR)
 	{
+		if (left->type == NODE_CMD && left->data.cmd_node.argc == 0 &&
+			!has_redirections(left))
+			return (create_error(INVALID_SYNTAX));
 		*current = advance_token(*current);
 		right_result = parse_logical_and(current, allocs);
 		if (right_result.is_error)
 			return (right_result);
+		if (((t_ast*)right_result.data.value)->type == NODE_CMD
+			&& ((t_ast*)right_result.data.value)->data.cmd_node.argc == 0
+			&& !has_redirections((t_ast*)right_result.data.value))
+			return (create_error(INVALID_SYNTAX));
 		or_node = create_ast_node(NODE_OR, allocs);
 		if (!or_node)
 			return (create_error(NO_MEMORY));

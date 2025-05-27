@@ -88,8 +88,9 @@ int	is_valid_var_char(char c)
 
 void	remove_leading_quote(t_ast *ast)
 {
-	int	idx;
-	int	len;
+	int		idx;
+	int		len;
+	char	quote_type;
 
 	idx = 0;
 	while (idx < ast->data.cmd_node.argc)
@@ -97,10 +98,10 @@ void	remove_leading_quote(t_ast *ast)
 		if (ast->data.cmd_node.argv[idx][0] == '"'
 			|| ast->data.cmd_node.argv[idx][0] == '\'')
 		{
+			quote_type = ast->data.cmd_node.argv[idx][0];
 			ast->data.cmd_node.argv[idx] = ast->data.cmd_node.argv[idx] + 1;
 			len = ft_strlen(ast->data.cmd_node.argv[idx]);
-			if (len > 0 && (ast->data.cmd_node.argv[idx][len - 1] == '"' 
-				|| ast->data.cmd_node.argv[idx][len - 1] == '\''))
+			if (len > 0 && ast->data.cmd_node.argv[idx][len - 1] == quote_type)
 			{
 				ast->data.cmd_node.argv[idx][len - 1] = '\0';
 			}

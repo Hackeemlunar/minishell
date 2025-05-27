@@ -92,6 +92,11 @@ void	expand_substitutions(t_ast *ast, t_allocs *allocs, t_table *table)
 		}
 		else
 		{
+			if (arg[0] == '\'' && arg[ft_strlen(arg) - 1] == '\'')
+			{
+				i++;
+				continue ;
+			}
 			expanded = expand_variable(arg, allocs, table);
 			if (expanded)
 				ast->data.cmd_node.argv[i] = expanded;
