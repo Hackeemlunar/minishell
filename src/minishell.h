@@ -156,6 +156,33 @@ typedef struct s_result
 }			t_result;
 
 /**
+ * @struct s_redir
+ * @brief Represents a single redirection in a linked list.
+ *
+ * This structure is used to manage multiple output redirections in a
+ * linked list format, supporting bash-like syntax such as "ls >> a.txt >> b.txt".
+ *
+ * @var s_redir::filename
+ * The name of the file for this redirection.
+ *
+ * @var s_redir::mode
+ * The mode for this redirection (0 for truncate, 1 for append).
+ *
+ * @var s_redir::fd
+ * The file descriptor for this redirection.
+ *
+ * @var s_redir::next
+ * Pointer to the next redirection in the linked list.
+ */
+typedef struct s_redir
+{
+	char			*filename;
+	int				mode;
+	int				fd;
+	struct s_redir	*next;
+}	t_redir;
+
+/**
  * @struct s_in_out
  * @brief Represents input and output file information and descriptors.
  *
@@ -189,6 +216,8 @@ typedef struct s_in_out
 	int		in_mode;
 	int		out_fd;
 	int		out_mode;
+	t_redir	*out_redirs;
+	pid_t	tee_pid;
 }	t_in_out;
 
 /**

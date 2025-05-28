@@ -54,9 +54,9 @@ t_result	get_paths(t_table *table, t_allocs *allocs)
 static inline void	copy_and_concatenate(char *full_path, char **paths,
 		int idx, char **argv)
 {
-	ft_strlcpy(full_path, paths[idx], sizeof(full_path));
-	ft_strlcat(full_path, "/", sizeof(full_path));
-	ft_strlcat(full_path, argv[0], sizeof(full_path));
+	ft_strlcpy(full_path, paths[idx], 512);
+	ft_strlcat(full_path, "/", 512);
+	ft_strlcat(full_path, argv[0], 512);
 }
 
 void	add_full_path(char **argv, t_allocs *allocs, t_table *table)

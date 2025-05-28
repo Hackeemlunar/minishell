@@ -75,5 +75,11 @@ t_ast			*create_ast_node(t_node_type type, t_allocs *allocs);
 bool			has_redirections(t_ast *cmd_node);
 t_result		handle_unit(t_lexer *lexer, char token);
 t_result		handle_substitution(t_lexer *lexer);
+t_result		init_cmd_node(t_ast **cmd_node, t_allocs *allocs);
+t_result		handle_subshell(t_token **current, t_ast *cmd_node,
+					t_allocs *allocs);
+t_result		add_word_to_argv(t_ast *cmd_node, t_token **current,
+					t_allocs *allocs);
+int				is_redirection_token(t_token_type type);
 
 #endif

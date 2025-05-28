@@ -12,41 +12,15 @@
 
 #include "builtins.h"
 
-static inline int	open_fd(t_ast *node)
-{
-	t_in_out	*io;
-	int			fd;
-
-	io = node->data.cmd_node.io;
-	if ((io->out_mode == 0) && io->out_file)
-		fd = open(io->out_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	else if ((io->out_mode == 1) && io->out_file)
-		fd = open(io->out_file, O_WRONLY | O_CREAT | O_APPEND, 0644);
-	else
-		fd = STDOUT_FILENO;
-	return (fd);
-}
-
-int	close_fd(int fd)
-{
-	if (fd > STDOUT_FILENO)
-		close(fd);
-	return (0);
-}
-
 int	echo(t_ast *node)
 {
 	int		i;
 	int		new_line;
-	int		fd;
 	char	**argv;
 
 	i = 1;
 	new_line = 1;
 	argv = node->data.cmd_node.argv;
-	fd = open_fd(node);
-	if (fd < 0)
-		return (perror(node->data.cmd_node.io->out_file), 1);
 	if (argv[i] && (ft_strncmp(argv[i], "-n", 2) == 0))
 	{
 		new_line = 0;
@@ -54,11 +28,11 @@ int	echo(t_ast *node)
 	}
 	while (i < node->data.cmd_node.argc)
 	{
-		ft_putstr_fd(argv[i], fd);
+		ft_putstr_fd(argv[i], STDOUT_FILENO);
 		if (argv[(i++) + 1])
-			ft_putstr_fd(" ", fd);
+			ft_putstr_fd(" ", STDOUT_FILENO);
 	}
 	if (new_line)
-		ft_putstr_fd("\n", fd);
-	return (close_fd(fd), 0);
+		ft_putstr_fd("\n", STDOUT_FILENO);
+	return (0);
 }

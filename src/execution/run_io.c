@@ -110,20 +110,98 @@ int	set_in_fds(t_in_out *io, t_allocs *allocs, t_table *table)
 	return (0);
 }
 
-int	set_out_fds(t_in_out *io, t_allocs *allocs, t_table *table)
+static int	open_single_output(char *filename, int mode, t_allocs *allocs,
+	t_table *table)
 {
-	char	*filename;
-	char	*original_filename;
+	char	*processed_filename;
+	int		fd;
+	int		flags;
 	int		has_dollar;
 
+	has_dollar = (strchr(filename, '$') != NULL);
+	processed_filename = process_filename(filename, allocs, table);
+	if (mode == 0)
+		flags = O_WRONLY | O_CREAT | O_TRUNC;
+	else
+		flags = O_WRONLY | O_CREAT | O_APPEND;
+	fd = open(processed_filename, flags, 0644);
+	if (processed_filename != filename && !has_dollar)
+		free(processed_filename);
+	return (fd);
+}
+
+static int	create_tee_process(t_in_out *io, t_allocs *allocs, t_table *table)
+{
+	int		pipe_fd[2];
+	pid_t	pid;
+	t_redir	*redir;
+	char	buffer[4096];
+	ssize_t	bytes;
+
+	if (pipe(pipe_fd) < 0)
+		return (perror("pipe"), 1);
+	pid = fork();
+	if (pid < 0)
+		return (perror("fork"), 1);
+	if (pid == 0)
+	{
+		close(pipe_fd[1]);
+		redir = io->out_redirs;
+		while (redir)
+		{
+			redir->fd = open_single_output(redir->filename, redir->mode,
+					allocs, table);
+			if (redir->fd < 0)
+				exit(1);
+			redir = redir->next;
+		}
+		while ((bytes = read(pipe_fd[0], buffer, sizeof(buffer))) > 0)
+		{
+			redir = io->out_redirs;
+			while (redir)
+			{
+				write(redir->fd, buffer, bytes);
+				redir = redir->next;
+			}
+		}
+		close(pipe_fd[0]);
+		exit(0);
+	}
+	close(pipe_fd[0]);
+	io->out_fd = pipe_fd[1];
+	io->tee_pid = pid;
+	return (0);
+}
+
+static int	setup_multiple_outputs(t_in_out *io, t_allocs *allocs,
+	t_table *table)
+{
+	if (!io->out_redirs->next)
+	{
+		io->out_fd = open_single_output(io->out_redirs->filename,
+				io->out_redirs->mode, allocs, table);
+		if (io->out_fd < 0)
+			return (perror("open"), 1);
+		return (0);
+	}
+	return (create_tee_process(io, allocs, table));
+}
+
+int	set_out_fds(t_in_out *io, t_allocs *allocs, t_table *table)
+{
+	char	*original_filename;
+
+	if (io->out_redirs)
+	{
+		if (setup_multiple_outputs(io, allocs, table))
+			return (1);
+		dup2(io->out_fd, STDOUT_FILENO);
+		return (0);
+	}
 	if (io->out_mode == 0 && io->out_file)
 	{
 		original_filename = io->out_file;
-		has_dollar = (strchr(original_filename, '$') != NULL);
-		filename = process_filename(original_filename, allocs, table);
-		io->out_fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if (filename != original_filename && !has_dollar)
-			free(filename);
+		io->out_fd = open_single_output(original_filename, 0, allocs, table);
 		if (io->out_fd < 0)
 			return (perror("open"), 1);
 		dup2(io->out_fd, STDOUT_FILENO);
@@ -131,11 +209,7 @@ int	set_out_fds(t_in_out *io, t_allocs *allocs, t_table *table)
 	else if (io->out_mode == 1 && io->out_file)
 	{
 		original_filename = io->out_file;
-		has_dollar = (strchr(original_filename, '$') != NULL);
-		filename = process_filename(original_filename, allocs, table);
-		io->out_fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
-		if (filename != original_filename && !has_dollar)
-			free(filename);
+		io->out_fd = open_single_output(original_filename, 1, allocs, table);
 		if (io->out_fd < 0)
 			return (perror("open"), 1);
 		dup2(io->out_fd, STDOUT_FILENO);
@@ -144,3 +218,34 @@ int	set_out_fds(t_in_out *io, t_allocs *allocs, t_table *table)
 		io->out_fd = STDOUT_FILENO;
 	return (0);
 }
+
+void	write_to_multiple_outputs(t_in_out *io, char *data, size_t len)
+{
+	t_redir	*redir;
+
+	if (!io || !io->out_redirs || !io->out_redirs->next)
+		return ;
+	redir = io->out_redirs->next;
+	while (redir)
+	{
+		if (redir->fd > 0)
+			write(redir->fd, data, len);
+		redir = redir->next;
+	}
+}
+
+void	close_multiple_outputs(t_in_out *io)
+{
+	t_redir	*redir;
+
+	if (!io || !io->out_redirs)
+		return ;
+	redir = io->out_redirs;
+	while (redir)
+	{
+		if (redir->fd > 0)
+			close(redir->fd);
+		redir = redir->next;
+	}
+}
+

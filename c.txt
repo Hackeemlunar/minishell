@@ -1,0 +1,13 @@
+LICENSE
+Makefile
+README.md
+a.txt
+b.txt
+c.txt
+histfile
+include
+libft
+libs
+minishell
+obj
+src

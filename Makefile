@@ -48,7 +48,10 @@ SRC_FILES =\
 	execution/exec_utils_path.c \
 	utils/res_helpers.c utils/main_utils.c  utils/exit_status.c \
 	parsing/lexer.c parsing/parser.c parsing/lex_extract.c parsing/lex_token.c \
-	parsing/lex_token_util.c parsing/parser_cmd.c parsing/parser_util.c
+	parsing/lex_token_util.c parsing/parser_cmd.c \
+	parsing/parser_ast.c parsing/parser_redir_utils.c \
+	parsing/parser_pipeline.c parsing/parser_cmd_utils.c \
+	parsing/parser_logical_and.c parsing/parser_logical_or.c
 
 # Object files# Object files
 OBJ_FILES = $(patsubst %.c,$(OBJ_DIR)/%.o,$(SRC_FILES))
