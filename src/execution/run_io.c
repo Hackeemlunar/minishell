@@ -1,35 +1,19 @@
-/* ************************************************************************int	set_in_fds(t_in_out *io, t_allocs *allocs, t_table *table)
-{
-	char *filename;
-	
-	if (io->in_mode == 1 && io->heredoc_delim)
-	{
-		if (collect_heredoc_input(io->heredoc_delim, "/tmp/heredoc", allocs, table) < 0)
-			return (1);
-		io->in_fd = open("/tmp/heredoc", O_RDONLY);
-		if (io->in_fd < 0)
-			return (perror("open"), 1);
-		dup2(io->in_fd, STDIN_FILENO);
-	}
-	else if (io->in_mode == 0 && io->in_file)
-	{
-		filename = process_filename(io->in_file, allocs, table);
-		io->in_fd = open(filename, O_RDONLY);
-		if (filename != io->in_file)
-			free(filename);                                                                 */
+/* ************************************************************************** */
+/*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   run_io.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/15 14:37:21 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/22 17:44:23 by hmensah-         ###   ########.fr       */
+/*   Created: 2025/05/28 20:34:13 by hmensah-          #+#    #+#             */
+/*   Updated: 2025/05/28 20:40:28 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 
-int	collect_heredoc_input(const char *delim, char *temp_file, t_allocs *allocs, t_table *table)
+static int	collect_hdoc(const char *delim, char *temp_file, t_allocs *allocs,
+	t_table *table)
 {
 	int		fd;
 	char	*line;
@@ -69,7 +53,7 @@ int	collect_heredoc_input(const char *delim, char *temp_file, t_allocs *allocs, 
 	return (close(fd), 0);
 }
 
-static char *process_filename(char *filename, t_allocs *allocs, t_table *table)
+static char	*process_filename(char *filename, t_allocs *allocs, t_table *table)
 {
 	char	*processed;
 	char	*expanded;
@@ -102,7 +86,7 @@ int	set_in_fds(t_in_out *io, t_allocs *allocs, t_table *table)
 
 	if (io->in_mode == 1 && io->heredoc_delim)
 	{
-		if (collect_heredoc_input(io->heredoc_delim, "/tmp/heredoc", allocs, table) < 0)
+		if (collect_hdoc(io->heredoc_delim, "/tmp/heredoc", allocs, table) < 0)
 			return (1);
 		io->in_fd = open("/tmp/heredoc", O_RDONLY);
 		if (io->in_fd < 0)
@@ -113,7 +97,6 @@ int	set_in_fds(t_in_out *io, t_allocs *allocs, t_table *table)
 	{
 		original_filename = io->in_file;
 		has_dollar = (strchr(original_filename, '$') != NULL);
-		
 		filename = process_filename(original_filename, allocs, table);
 		io->in_fd = open(filename, O_RDONLY);
 		if (filename != original_filename && !has_dollar)
@@ -129,15 +112,14 @@ int	set_in_fds(t_in_out *io, t_allocs *allocs, t_table *table)
 
 int	set_out_fds(t_in_out *io, t_allocs *allocs, t_table *table)
 {
-	char *filename;
-	char *original_filename;
-	int has_dollar;
-	
+	char	*filename;
+	char	*original_filename;
+	int		has_dollar;
+
 	if (io->out_mode == 0 && io->out_file)
 	{
 		original_filename = io->out_file;
 		has_dollar = (strchr(original_filename, '$') != NULL);
-		
 		filename = process_filename(original_filename, allocs, table);
 		io->out_fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (filename != original_filename && !has_dollar)

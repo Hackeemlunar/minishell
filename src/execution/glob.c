@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   glob.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 12:00:00 by sngantch          #+#    #+#             */
-/*   Updated: 2025/05/21 12:00:00 by sngantch         ###   ########.fr       */
+/*   Updated: 2025/05/28 21:05:24 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
-#include <dirent.h>
 
 static int	match_pattern(const char *pattern, const char *str)
 {
@@ -60,32 +59,22 @@ static int	expand_wildcard(char *pattern, char ***matches, t_allocs *allocs)
 	count = 0;
 	new_matches = arena_alloc(allocs->exec_alloc, sizeof(char *));
 	if (!new_matches)
-	{
-		closedir(dir);
-		return (0);
-	}
+		return (closedir(dir), 0);
 	new_matches[0] = NULL;
 	while ((entry = readdir(dir)) != NULL)
 	{
 		if (ft_strcmp(entry->d_name, ".") == 0 || ft_strcmp(entry->d_name, "..") == 0)
-			continue;
-		
+			continue ;
 		if (match_pattern(pattern, entry->d_name))
 		{
 			tmp = arena_alloc(allocs->exec_alloc, (count + 2) * sizeof(char *));
 			if (!tmp)
-			{
-				closedir(dir);
-				return (count);
-			}
+				return (closedir(dir), count);
 			if (count > 0)
 				ft_memcpy(tmp, new_matches, count * sizeof(char *));
 			tmp[count] = arena_alloc(allocs->exec_alloc, ft_strlen(entry->d_name) + 1);
 			if (!tmp[count])
-			{
-				closedir(dir);
-				return (count);
-			}
+				return (closedir(dir), count);
 			ft_strlcpy(tmp[count], entry->d_name, ft_strlen(entry->d_name) + 1);
 			tmp[count + 1] = NULL;
 			new_matches = tmp;
@@ -106,16 +95,16 @@ static int	expand_wildcard(char *pattern, char ***matches, t_allocs *allocs)
 static int	replace_wildcard(t_ast *ast, int idx, t_allocs *allocs)
 {
 	char	**matches;
-	int		match_count;
+	int		match_cnt;
 	char	**new_argv;
 	int		i;
 	int		j;
 	int		new_size;
-	
-	match_count = expand_wildcard(ast->data.cmd_node.argv[idx], &matches, allocs);
-	if (match_count == 0)
+
+	match_cnt = expand_wildcard(ast->data.cmd_node.argv[idx], &matches, allocs);
+	if (match_cnt == 0)
 		return (1);
-	new_size = ast->data.cmd_node.argc - 1 + match_count;
+	new_size = ast->data.cmd_node.argc - 1 + match_cnt;
 	new_argv = arena_alloc(allocs->exec_alloc, (new_size + 1) * sizeof(char *));
 	if (!new_argv)
 		return (0);
@@ -126,7 +115,7 @@ static int	replace_wildcard(t_ast *ast, int idx, t_allocs *allocs)
 		i++;
 	}
 	j = 0;
-	while (j < match_count)
+	while (j < match_cnt)
 	{
 		new_argv[i + j] = matches[j];
 		j++;
@@ -134,7 +123,7 @@ static int	replace_wildcard(t_ast *ast, int idx, t_allocs *allocs)
 	i = idx + 1;
 	while (i < ast->data.cmd_node.argc)
 	{
-		new_argv[i - 1 + match_count] = ast->data.cmd_node.argv[i];
+		new_argv[i - 1 + match_cnt] = ast->data.cmd_node.argv[i];
 		i++;
 	}
 	new_argv[new_size] = NULL;
@@ -149,13 +138,14 @@ void	expand_wildcards(t_ast *ast, t_allocs *allocs)
 	int	processed_args;
 
 	if (!ast || ast->type != NODE_CMD || !ast->data.cmd_node.argv)
-		return;
-	
+		return ;
 	i = 0;
 	processed_args = 0;
-	while (i < ast->data.cmd_node.argc && ast->data.cmd_node.argv[i] && processed_args < 1000)
+	while (i < ast->data.cmd_node.argc && ast->data.cmd_node.argv[i]
+		&& processed_args < 1000)
 	{
-		if (ast->data.cmd_node.argv[i] && ft_strchr(ast->data.cmd_node.argv[i], '*'))
+		if (ast->data.cmd_node.argv[i]
+			&& ft_strchr(ast->data.cmd_node.argv[i], '*'))
 		{
 			if (!replace_wildcard(ast, i, allocs))
 				return ;

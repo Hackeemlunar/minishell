@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   executor.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 18:55:23 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/25 21:30:50 by sngantch         ###   ########.fr       */
+/*   Updated: 2025/05/28 20:49:21 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef EXECUTOR_H
 # define EXECUTOR_H
-
+# include <dirent.h>
 # include "../minishell.h"
 
 typedef struct s_exec_ctx
@@ -36,15 +36,16 @@ typedef struct s_pipe_ctx
 
 void		walk_ast(t_ast *ast, t_mshell *sh, t_allocs *allcs, t_table *table);
 char		*expand_variable(char *str, t_allocs *allocs, t_table *table);
-int			collect_heredoc_input(const char *delim, char *temp_file, t_allocs *allocs, t_table *table);
-int			space_or_quote(char c);
 int			is_valid_var_char(char c);
 void		expand_substitutions(t_ast *ast, t_allocs *allocs, t_table *table);
 void		expand_wildcards(t_ast *ast, t_allocs *allocs);
 int			handle_pipes(t_ast *ast, t_mshell *sh, t_allocs *allcs, t_table *t);
 void		remove_leading_quote(t_ast *ast);
 void		close_unused_pipes(t_pipe_ctx *ctx);
-void		setup_cmd_redirections(t_in_out *io, int in_fd, int out_fd, t_allocs *allocs, t_table *table);
+void		setup_in_redirections(t_in_out *io, int in_fd, t_allocs *allocs,
+				t_table *table);
+void		setup_out_redirections(t_in_out *io, int out_fd, t_allocs *allocs,
+				t_table *table);
 void		execute_node(t_exec_ctx *ctx);
 int			set_in_fds(t_in_out *io, t_allocs *allocs, t_table *table);
 int			set_out_fds(t_in_out *io, t_allocs *allocs, t_table *table);
@@ -65,6 +66,6 @@ int			run_simple_cmd(t_ast *ast, t_mshell *shell, t_allocs *allocs,
 				t_table *table);
 t_exec_ctx	setup_exec_ctx(t_ast *node, t_mshell *shell, t_allocs *allocs,
 				t_table *table);
-void	add_full_path(char **argv, t_allocs *allocs, t_table *table);
+void		add_full_path(char **argv, t_allocs *allocs, t_table *table);
 
 #endif

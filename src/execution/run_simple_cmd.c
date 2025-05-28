@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   run_simple_cmd.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 14:38:27 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/25 21:26:24 by sngantch         ###   ########.fr       */
+/*   Updated: 2025/05/28 20:40:46 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 
-static void	run_child_cmd(t_ast *ast, t_mshell *shell, t_allocs *allocs, t_table *table)
+static void	run_child_cmd(t_ast *ast, t_mshell *shell, t_allocs *allocs,
+	t_table *table)
 {
 	t_in_out	*io;
 

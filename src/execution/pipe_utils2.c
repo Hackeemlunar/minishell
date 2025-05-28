@@ -6,13 +6,14 @@
 /*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 14:27:58 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/15 14:28:44 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/28 20:26:21 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 
-static void	setup_in_redirections(t_in_out *io, int in_fd, t_allocs *allocs, t_table *table)
+void	setup_in_redirections(t_in_out *io, int in_fd, t_allocs *allocs,
+	t_table *table)
 {
 	int	has_in;
 
@@ -36,7 +37,8 @@ static void	setup_in_redirections(t_in_out *io, int in_fd, t_allocs *allocs, t_t
 	}
 }
 
-static void	setup_out_redirections(t_in_out *io, int out_fd, t_allocs *allocs, t_table *table)
+void	setup_out_redirections(t_in_out *io, int out_fd, t_allocs *allocs,
+	t_table *table)
 {
 	int	has_out;
 
@@ -58,12 +60,6 @@ static void	setup_out_redirections(t_in_out *io, int out_fd, t_allocs *allocs, t
 		}
 		close(out_fd);
 	}
-}
-
-void	setup_cmd_redirections(t_in_out *io, int in_fd, int out_fd, t_allocs *allocs, t_table *table)
-{
-	setup_in_redirections(io, in_fd, allocs, table);
-	setup_out_redirections(io, out_fd, allocs, table);
 }
 
 int	create_pipes(t_pipe_ctx *ctx)

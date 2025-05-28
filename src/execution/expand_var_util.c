@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   expand_var copy.c                                  :+:      :+:    :+:   */
+/*   expand_var_util.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 14:09:59 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/15 14:48:35 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/28 20:32:55 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	process_variable_build(char **current, char **start,
 		**dest = '$';
 		(*dest)++;
 		*start = *current;
-		return;
+		return ;
 	}
 	while ((*current)[var_len] && is_valid_var_char((*current)[var_len]))
 		var_len++;

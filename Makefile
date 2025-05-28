@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+         #
+#    By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/04 19:20:15 by hmensah-          #+#    #+#              #
-#    Updated: 2025/05/27 18:46:46 by sngantch         ###   ########.fr        #
+#    Updated: 2025/05/28 20:00:32 by hmensah-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME = minishell
 
 # Compiler and flags
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g3 #-fsanitize=address
+CFLAGS = -Wall -Wextra -Werror -g3 -fsanitize=address
 
 # Directories
 SRC_DIR = src
@@ -45,6 +45,7 @@ SRC_FILES =\
 	execution/pipe_exec.c \
 	execution/exec_utils.c execution/run_io.c execution/logical_ops.c \
 	execution/run_simple_cmd.c execution/run_command.c execution/glob.c \
+	execution/exec_utils_path.c \
 	utils/res_helpers.c utils/main_utils.c  utils/exit_status.c \
 	parsing/lexer.c parsing/parser.c parsing/lex_extract.c parsing/lex_token.c \
 	parsing/lex_token_util.c parsing/parser_cmd.c parsing/parser_util.c

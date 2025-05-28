@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_utils1.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 14:25:37 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/25 21:26:13 by sngantch         ###   ########.fr       */
+/*   Updated: 2025/05/28 20:26:00 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,10 @@
 
 static void	exec_cmd_node(t_exec_ctx *ctx)
 {
-	setup_cmd_redirections(ctx->node->data.cmd_node.io,
-		ctx->in_fd, ctx->out_fd, ctx->allocs, ctx->table);
+	setup_in_redirections(ctx->node->data.cmd_node.io, ctx->in_fd, ctx->allocs,
+		ctx->table);
+	setup_out_redirections(ctx->node->data.cmd_node.io, ctx->out_fd,
+		ctx->allocs, ctx->table);
 	if (!ctx->node->data.cmd_node.argv)
 		return ;
 	expand_substitutions(ctx->node, ctx->allocs, ctx->table);
