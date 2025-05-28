@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 17:23:01 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/25 20:51:38 by sngantch         ###   ########.fr       */
+/*   Updated: 2025/05/28 19:07:13 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ void	clean_mshell(t_allocs *allocs, t_table *table)
 	arena_destroy(allocs->sh_alloc);
 	arena_destroy(allocs->exec_alloc);
 }
-
 
 int	check_all_white_space(char *str)
 {

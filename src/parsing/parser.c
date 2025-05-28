@@ -6,7 +6,7 @@
 /*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 18:05:45 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/05 18:02:16 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/28 19:15:47 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,9 @@ t_result	parse_pipeline(t_token **current, t_allocs *allocs)
 		right_result = parse_command(current, allocs);
 		if (right_result.is_error)
 			return (right_result);
-		if (((t_ast*)right_result.data.value)->type == NODE_CMD && 
-			((t_ast*)right_result.data.value)->data.cmd_node.argc == 0 &&
-			!has_redirections((t_ast*)right_result.data.value))
+		if (((t_ast *)right_result.data.value)->type == NODE_CMD
+			&& ((t_ast *)right_result.data.value)->data.cmd_node.argc == 0
+			&& !has_redirections((t_ast*)right_result.data.value))
 			return (create_error(INVALID_PIPE));
 		pipe_node = create_ast_node(NODE_PIPELINE, allocs);
 		if (!pipe_node)
@@ -58,16 +58,16 @@ t_result	parse_logical_and(t_token **current, t_allocs *allocs)
 	left = left_result.data.value;
 	while (peek_token_type(*current) == TOKEN_AND)
 	{
-		if (left->type == NODE_CMD && left->data.cmd_node.argc == 0 &&
-			!has_redirections(left))
+		if (left->type == NODE_CMD && left->data.cmd_node.argc == 0
+			&& !has_redirections(left))
 			return (create_error(INVALID_SYNTAX));
 		*current = advance_token(*current);
 		right_result = parse_pipeline(current, allocs);
 		if (right_result.is_error)
 			return (right_result);
-		if (((t_ast*)right_result.data.value)->type == NODE_CMD && 
-			((t_ast*)right_result.data.value)->data.cmd_node.argc == 0 &&
-			!has_redirections((t_ast*)right_result.data.value))
+		if (((t_ast *)right_result.data.value)->type == NODE_CMD
+			&& ((t_ast *)right_result.data.value)->data.cmd_node.argc == 0
+			&& !has_redirections((t_ast *)right_result.data.value))
 			return (create_error(INVALID_SYNTAX));
 		and_node = create_ast_node(NODE_AND, allocs);
 		if (!and_node)
@@ -92,16 +92,16 @@ t_result	parse_logical_or(t_token **current, t_allocs *allocs)
 	left = left_result.data.value;
 	while (peek_token_type(*current) == TOKEN_OR)
 	{
-		if (left->type == NODE_CMD && left->data.cmd_node.argc == 0 &&
-			!has_redirections(left))
+		if (left->type == NODE_CMD && left->data.cmd_node.argc == 0
+			&& !has_redirections(left))
 			return (create_error(INVALID_SYNTAX));
 		*current = advance_token(*current);
 		right_result = parse_logical_and(current, allocs);
 		if (right_result.is_error)
 			return (right_result);
-		if (((t_ast*)right_result.data.value)->type == NODE_CMD
-			&& ((t_ast*)right_result.data.value)->data.cmd_node.argc == 0
-			&& !has_redirections((t_ast*)right_result.data.value))
+		if (((t_ast *)right_result.data.value)->type == NODE_CMD
+			&& ((t_ast *)right_result.data.value)->data.cmd_node.argc == 0
+			&& !has_redirections((t_ast *)right_result.data.value))
 			return (create_error(INVALID_SYNTAX));
 		or_node = create_ast_node(NODE_OR, allocs);
 		if (!or_node)
