@@ -16,7 +16,7 @@ void	init_allocators(t_allocs *allocs)
 {
 	allocs->parse_alloc = arena_create(8192);
 	allocs->sh_alloc = arena_create(8192);
-	allocs->exec_alloc = arena_create(8192);
+	allocs->exec_alloc = arena_create(65536);
 }
 
 void	clean_mshell(t_allocs *allocs, t_table *table)

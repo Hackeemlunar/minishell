@@ -12,20 +12,6 @@
 
 #include "executor.h"
 
-static int	process_directory_entry(struct dirent *entry, char *pattern,
-	char ***matches, t_allocs *allocs)
-{
-	int	count;
-
-	count = 0;
-	if (ft_strcmp(entry->d_name, ".") == 0
-		|| ft_strcmp(entry->d_name, "..") == 0)
-		return (0);
-	if (match_pattern(pattern, entry->d_name))
-		count = add_match_to_array(matches, entry, allocs, count);
-	return (count);
-}
-
 static int	initialize_matches(char ***matches, t_allocs *allocs)
 {
 	*matches = arena_alloc(allocs->exec_alloc, sizeof(char *));
@@ -40,7 +26,6 @@ int	process_directory_entries(DIR *dir, char *pattern, char ***matches,
 {
 	struct dirent	*entry;
 	int				count;
-	int				entry_count;
 
 	if (!initialize_matches(matches, allocs))
 		return (0);
@@ -48,9 +33,10 @@ int	process_directory_entries(DIR *dir, char *pattern, char ***matches,
 	entry = readdir(dir);
 	while (entry != NULL)
 	{
-		entry_count = process_directory_entry(entry, pattern, matches, allocs);
-		if (entry_count > 0)
-			count = entry_count;
+		if (ft_strcmp(entry->d_name, ".") != 0
+			&& ft_strcmp(entry->d_name, "..") != 0
+			&& match_pattern(pattern, entry->d_name))
+			count = add_match_to_array(matches, entry, allocs, count);
 		entry = readdir(dir);
 	}
 	return (count);
