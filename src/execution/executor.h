@@ -67,5 +67,38 @@ int			run_simple_cmd(t_ast *ast, t_mshell *shell, t_allocs *allocs,
 t_exec_ctx	setup_exec_ctx(t_ast *node, t_mshell *shell, t_allocs *allocs,
 				t_table *table);
 void		add_full_path(char **argv, t_allocs *allocs, t_table *table);
+char		*process_filename(char *filename, t_allocs *allocs, t_table *table);
+int			setup_input_redirection(t_in_out *io, t_allocs *allocs,
+				t_table *table);
+int			create_tee_process(t_in_out *io, t_allocs *allocs, t_table *table);
+int			open_single_output(char *filename, int mode, t_allocs *allocs,
+				t_table *table);
+void		copy_remaining_part(char *dest, char *start, char *current);
+void		build_expanded_string(char *dest, char *str, t_table *table);
+void		process_variable_length(char **current, char **start,
+				size_t *total_len, t_table *table);
+size_t		calculate_total_length(char *current, t_table *table);
+char		*handle_quoted_string(char *str, t_allocs *allocs);
+void		write_to_multiple_outputs(t_in_out *io, char *data, size_t len);
+void		close_multiple_outputs(t_in_out *io);
+void		handle_substitution_arg(t_ast *ast, t_allocs *allocs,
+				t_table *table, int *i);
+int			match_pattern(const char *pattern, const char *str);
+int			add_match_to_array(char ***matches, struct dirent *entry,
+				t_allocs *allocs, int count);
+int			process_directory_entries(DIR *dir, char *pattern,
+				char ***matches, t_allocs *allocs);
+void		copy_args_before_wildcard(char **new_argv, char **old_argv,
+				int idx);
+void		copy_matches_to_argv(char **new_argv, char **matches,
+				int start_idx, int match_cnt);
+void		copy_args_after_wildcard(char **new_argv, char **old_argv,
+				int old_idx, int match_cnt);
+int			collect_hdoc(const char *delim, char *temp_file, t_allocs *allocs,
+				t_table *table);
+void		copy_static_part(char **dest, char **start, char *end);
+void		process_variable_build(char **current, char **start,
+				char **dest, t_table *table);
+void		process_escape_sequence(char **current, char **dest, char **start);
 
 #endif

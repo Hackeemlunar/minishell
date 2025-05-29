@@ -46,6 +46,11 @@ SRC_FILES =\
 	execution/exec_utils.c execution/run_io.c execution/logical_ops.c \
 	execution/run_simple_cmd.c execution/run_command.c execution/glob.c \
 	execution/exec_utils_path.c \
+	execution/run_io_utils.c execution/run_io_helpers.c execution/glob_helpers.c \
+	execution/expand_var_helpers.c execution/sub_var_helpers.c \
+	execution/glob_utils.c execution/run_io_output.c \
+	execution/glob_processing.c execution/run_io_core.c \
+	execution/expand_var_utils.c \
 	utils/res_helpers.c utils/main_utils.c  utils/exit_status.c \
 	parsing/lexer.c parsing/parser.c parsing/lex_extract.c parsing/lex_token.c \
 	parsing/lex_token_util.c parsing/parser_cmd.c \

@@ -43,7 +43,7 @@ void	setup_out_redirections(t_in_out *io, int out_fd, t_allocs *allocs,
 	int	has_out;
 
 	has_out = io && (io->out_redirs || ((io->out_mode == 0 || io->out_mode == 1)
-			&& io->out_file));
+				&& io->out_file));
 	if (has_out)
 	{
 		if (out_fd != STDOUT_FILENO)
