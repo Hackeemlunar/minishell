@@ -6,7 +6,7 @@
 /*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 14:38:27 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/28 20:40:46 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/29 20:00:16 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ static void	run_child_cmd(t_ast *ast, t_mshell *shell, t_allocs *allocs,
 		if (set_out_fds(io, allocs, table))
 			exit(1);
 	}
+	if (io->in_mode == 1 && !ast->data.cmd_node.argv)
+		exit(0);
 	add_full_path(ast->data.cmd_node.argv, allocs, table);
 	execve(ast->data.cmd_node.argv[0], ast->data.cmd_node.argv, shell->env);
 	if (errno == ENOENT)
