@@ -1,19 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   unset.c                                            :+:      :+:    :+:   */
+/*   signal_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/16 20:58:20 by sngantch          #+#    #+#             */
-/*   Updated: 2025/05/16 20:58:21 by sngantch         ###   ########.fr       */
+/*   Created: 2025/05/27 18:24:40 by sngantch          #+#    #+#             */
+/*   Updated: 2025/05/27 18:26:10 by sngantch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "builtins.h"
+#include "msh_signals.h"
 
-void	unset(char *key, t_table *table, int *exit_status)
+void	disable_echoctl(void)
 {
-	delete_env(table, key);
-	*exit_status = 0;
+	struct termios	term;
+
+	tcgetattr(STDIN_FILENO, &term);
+	term.c_lflag &= ~ECHOCTL;
+	tcsetattr(STDIN_FILENO, TCSANOW, &term);
 }

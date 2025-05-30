@@ -1,19 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   unset.c                                            :+:      :+:    :+:   */
+/*   exit_status.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/16 20:58:20 by sngantch          #+#    #+#             */
-/*   Updated: 2025/05/16 20:58:21 by sngantch         ###   ########.fr       */
+/*   Created: 2025/05/12 10:00:00 by hmensah-          #+#    #+#             */
+/*   Updated: 2025/05/26 14:50:12 by sngantch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "builtins.h"
+#include "../minishell.h"
 
-void	unset(char *key, t_table *table, int *exit_status)
+/**
+ * Set the exit status in the shell structure
+ */
+void	set_exit_status(t_mshell *shell, int status)
 {
-	delete_env(table, key);
-	*exit_status = 0;
+	if (shell)
+		shell->exit_status = status & 0xFF;
+}
+
+/**
+ * Get the current exit status from the shell structure
+ */
+int	get_exit_status(t_mshell *shell)
+{
+	if (shell)
+		return (shell->exit_status);
+	return (0);
 }

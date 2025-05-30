@@ -3,14 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:33:25 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/16 16:48:15 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/25 21:31:15 by sngantch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+volatile sig_atomic_t	g_in_child = 0;
 
 void	show_banner(void)
 {
@@ -22,17 +24,17 @@ void	show_banner(void)
 		"|*                Created by \033[31m%s and %s\033[0m              "
 		" *|\n"
 		"|*                                                               *|\n"
-		"|*               Type 'help' for a list of commands.             *|\n"
+		"|*               This is just a simple minishell                 *|\n"
+		"|*                Relax and have fun evaluating                  *|\n"
 		"|*                                                               *|\n"
 		"|*                     Type 'exit' to quit.                      *|\n"
-		"|*                                                               *|\n"
 		"|*                                                               *|\n"
 		"|*                           Born2Code                           *|\n"
 		"|*****************************************************************|\n"
 		"\n", "Sngantch", "Hmensah-");
 }
 
-void print_parse_error(t_result result)
+void	print_parse_error(t_result result)
 {
 	if (result.data.error == INVALID_PIPE)
 		ft_putendl_fd("minishell: invalid pipe", 2);
@@ -55,7 +57,7 @@ static void	command_loop(t_mshell *shell, t_allocs *allocs, t_table *table)
 
 	while (true)
 	{
-		setup_signals();
+		rl_already_prompted = 0;
 		str = readline("$minishell-> ");
 		if (!str)
 			return ;
@@ -77,24 +79,22 @@ static void	command_loop(t_mshell *shell, t_allocs *allocs, t_table *table)
 	}
 }
 
-int main(int argc, char **argv, char **envp)
+int	main(int argc, char **argv, char **envp)
 {
 	t_allocs	allocs;
 	t_mshell	mshell;
 	t_table		env_table;
-	t_result	result;
 
 	(void)argc;
 	(void)argv;
 	show_banner();
 	init_allocators(&allocs);
+	setup_signals();
 	read_history("./histfile");
 	if (init_env(&env_table, envp).is_error)
 		return (1);
 	mshell.env = envp;
-	result = get_paths(&env_table, &mshell.paths, &allocs);
-	if (result.is_error)
-		return (1);
+	mshell.exit_status = 0;
 	command_loop(&mshell, &allocs, &env_table);
 	write(STDOUT_FILENO, "exit\n", 5);
 	write_history("./histfile");

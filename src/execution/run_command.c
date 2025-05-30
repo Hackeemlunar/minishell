@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   run_command.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 14:30:01 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/16 16:47:27 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/25 20:55:19 by sngantch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,14 +63,13 @@ void	walk_ast(t_ast *ast, t_mshell *shell, t_allocs *allocs, t_table *table)
 int	run_command(t_mshell *shell, t_allocs *allocs, t_table *table,
 		t_result res)
 {
-	t_result	result;
 	char		*temp;
+	int			exit_status;
 
 	shell->ast = res.data.value;
-	result = get_env(table, "PATH");
-	if (result.is_error)
-		return (1);
-	temp = ft_itoa(get_exit_status(shell));
+	exit_status = get_exit_status(shell);
+	exit_status = exit_status & 0xFF;
+	temp = ft_itoa(exit_status);
 	add_env(table, "?", temp);
 	free(temp);
 	walk_ast(shell->ast, shell, allocs, table);

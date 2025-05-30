@@ -6,7 +6,7 @@
 #    By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/04 19:20:15 by hmensah-          #+#    #+#              #
-#    Updated: 2025/05/16 15:59:08 by hmensah-         ###   ########.fr        #
+#    Updated: 2025/05/28 20:00:32 by hmensah-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME = minishell
 
 # Compiler and flags
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g3 -fsanitize=address
 
 # Directories
 SRC_DIR = src
@@ -36,16 +36,27 @@ endif
 #pipe_handler.c pipe_exec.c 
 SRC_FILES =\
 	main.c \
-	environments/env.c environments/env_util.c \
-	signals/signal.c  \
+	builtins/builtins_utils.c builtins/env.c builtins/cd.c \
+	builtins/echo.c builtins/exit.c builtins/export.c builtins/pwd.c \
+	builtins/unset.c environments/env.c builtins/history.c \
+	environments/env_util.c signals/signal.c signals/signal_utils.c \
 	execution/expand_var.c execution/expand_var_util.c execution/sub_var.c \
 	execution/pipe_utils.c execution/pipe_utils1.c execution/pipe_utils2.c \
 	execution/pipe_exec.c \
 	execution/exec_utils.c execution/run_io.c execution/logical_ops.c \
-	execution/run_simple_cmd.c execution/run_command.c execution/exit_status.c \
-	utils/res_helpers.c utils/main_utils.c \
+	execution/run_simple_cmd.c execution/run_command.c execution/glob.c \
+	execution/exec_utils_path.c \
+	execution/run_io_utils.c execution/run_io_helpers.c execution/glob_helpers.c \
+	execution/expand_var_helpers.c execution/sub_var_helpers.c \
+	execution/glob_utils.c execution/run_io_output.c \
+	execution/glob_processing.c execution/run_io_core.c \
+	execution/expand_var_utils.c \
+	utils/res_helpers.c utils/main_utils.c  utils/exit_status.c \
 	parsing/lexer.c parsing/parser.c parsing/lex_extract.c parsing/lex_token.c \
-	parsing/lex_token_util.c parsing/parser_cmd.c parsing/parser_util.c
+	parsing/lex_token_util.c parsing/parser_cmd.c \
+	parsing/parser_ast.c parsing/parser_redir_utils.c \
+	parsing/parser_pipeline.c parsing/parser_cmd_utils.c \
+	parsing/parser_logical_and.c parsing/parser_logical_or.c
 
 # Object files# Object files
 OBJ_FILES = $(patsubst %.c,$(OBJ_DIR)/%.o,$(SRC_FILES))

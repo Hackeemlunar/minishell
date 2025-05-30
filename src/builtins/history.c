@@ -1,38 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.c                                              :+:      :+:    :+:   */
+/*   history.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/16 20:57:54 by sngantch          #+#    #+#             */
-/*   Updated: 2025/05/27 18:28:18 by sngantch         ###   ########.fr       */
+/*   Created: 2025/05/26 11:18:41 by sngantch          #+#    #+#             */
+/*   Updated: 2025/05/27 19:17:05 by sngantch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtins.h"
 
-void	env(char **argv, t_table *table)
+void	history(int *exit_status)
 {
-	int		i;
-	t_env	*node;
+	int		fd;
+	char	*line;
 
-	if (argv[1])
+	fd = open("../.././histfile", O_RDONLY);
+	if (fd < 0)
 	{
-		ft_printf("env: %s: No such file or directory", argv[1]);
-		write(STDERR_FILENO, "\n", 1);
-		add_env(table, "?", "127");
+		perror("minishell: history");
+		if (exit_status)
+			*exit_status = 1;
+		else
+			ft_putendl_fd("minishell: history: could not open history file",
+				STDERR_FILENO);
 		return ;
 	}
-	i = -1;
-	while (++i < HASH_SIZE)
+	line = get_next_line(fd);
+	while (line != NULL)
 	{
-		node = table->bucket[i];
-		while (node)
-		{
-			if (node->value && node->key && (ft_strcmp(node->key, "?") != 0))
-				ft_printf("%s=%s\n", node->key, node->value);
-			node = node->next;
-		}
+		ft_putstr_fd(line, STDOUT_FILENO);
+		free(line);
+		line = get_next_line(fd);
 	}
+	close(fd);
+	if (exit_status)
+		*exit_status = 0;
 }

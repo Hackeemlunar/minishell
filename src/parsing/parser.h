@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/04 18:49:13 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/05 18:11:55 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/26 11:53:20 by sngantch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,14 @@ t_result		parse_redir(t_ast *node, t_token **current, t_allocs *allocs);
 t_token			*advance_token(t_token *current);
 t_token_type	peek_token_type(t_token *current);
 t_ast			*create_ast_node(t_node_type type, t_allocs *allocs);
+bool			has_redirections(t_ast *cmd_node);
 t_result		handle_unit(t_lexer *lexer, char token);
 t_result		handle_substitution(t_lexer *lexer);
+t_result		init_cmd_node(t_ast **cmd_node, t_allocs *allocs);
+t_result		handle_subshell(t_token **current, t_ast *cmd_node,
+					t_allocs *allocs);
+t_result		add_word_to_argv(t_ast *cmd_node, t_token **current,
+					t_allocs *allocs);
+int				is_redirection_token(t_token_type type);
 
 #endif

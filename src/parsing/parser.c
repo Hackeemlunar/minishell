@@ -6,92 +6,11 @@
 /*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 18:05:45 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/05 18:02:16 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/29 00:00:00 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
-
-t_result	parse_pipeline(t_token **current, t_allocs *allocs)
-{
-	t_result	left_result;
-	t_result	right_result;
-	t_ast		*left;
-	t_ast		*pipe_node;
-
-	left_result = parse_command(current, allocs);
-	if (left_result.is_error)
-		return (left_result);
-	left = left_result.data.value;
-	while (peek_token_type(*current) == TOKEN_PIPE)
-	{
-		*current = advance_token(*current);
-		right_result = parse_command(current, allocs);
-		if (right_result.is_error)
-			return (right_result);
-		pipe_node = create_ast_node(NODE_PIPELINE, allocs);
-		if (!pipe_node)
-			return (create_error(NO_MEMORY));
-		pipe_node->data.bin_op_node.left = left;
-		pipe_node->data.bin_op_node.right = right_result.data.value;
-		left = pipe_node;
-	}
-	return (create_success(left));
-}
-
-t_result	parse_logical_and(t_token **current, t_allocs *allocs)
-{
-	t_result	left_result;
-	t_result	right_result;
-	t_ast		*left;
-	t_ast		*and_node;
-
-	left_result = parse_pipeline(current, allocs);
-	if (left_result.is_error)
-		return (left_result);
-	left = left_result.data.value;
-	while (peek_token_type(*current) == TOKEN_AND)
-	{
-		*current = advance_token(*current);
-		right_result = parse_pipeline(current, allocs);
-		if (right_result.is_error)
-			return (right_result);
-		and_node = create_ast_node(NODE_AND, allocs);
-		if (!and_node)
-			return (create_error(NO_MEMORY));
-		and_node->data.bin_op_node.left = left;
-		and_node->data.bin_op_node.right = right_result.data.value;
-		left = and_node;
-	}
-	return (create_success(left));
-}
-
-t_result	parse_logical_or(t_token **current, t_allocs *allocs)
-{
-	t_result	left_result;
-	t_result	right_result;
-	t_ast		*left;
-	t_ast		*or_node;
-
-	left_result = parse_logical_and(current, allocs);
-	if (left_result.is_error)
-		return (left_result);
-	left = left_result.data.value;
-	while (peek_token_type(*current) == TOKEN_OR)
-	{
-		*current = advance_token(*current);
-		right_result = parse_logical_and(current, allocs);
-		if (right_result.is_error)
-			return (right_result);
-		or_node = create_ast_node(NODE_OR, allocs);
-		if (!or_node)
-			return (create_error(NO_MEMORY));
-		or_node->data.bin_op_node.left = left;
-		or_node->data.bin_op_node.right = right_result.data.value;
-		left = or_node;
-	}
-	return (create_success(left));
-}
 
 t_result	parse_expression(t_token **current, t_allocs *allocs)
 {

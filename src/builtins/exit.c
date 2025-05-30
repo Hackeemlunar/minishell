@@ -1,100 +1,67 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exit.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/16 20:57:58 by sngantch          #+#    #+#             */
+/*   Updated: 2025/05/30 12:23:41 by sngantch         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "builtins.h"
-// #include <limits.h>
-// #include <errno.h>
 
-static int	check_overflow(long long num, int sign, int digit)
+int	is_valid_digit(char *str)
 {
-	if (num > LONG_MAX / 10 || (num == LONG_MAX / 10 && digit > LLONG_MAX % 10))
-	{
-		if (sign == 1 || (sign == -1 && (digit > 8)))
-			return (1);
-	}
-	return (0);
-}
-
-long long	ft_atoll(const char *str, int *over_under_flow)
-{
-	int			i;
-	int			sign;
-	long long	num;
+	int	i;
 
 	i = 0;
-	sign = 1;
-	num = 0;
-	while (str[i] && ((str[i] >= 9 && str[i] <= 13) || str[i] == 32))
+	if (str[i] == '-' || str[i] == '+')
 		i++;
-	if (str[i] && (str[i] == '+' || str[i] == '-'))
+	while (str[i])
 	{
-		if (str[i] == '-')
-			sign = -1;
-		i++;
-	}
-	while (str[i] && (str[i] >= '0' && str[i] <= '9'))
-	{
-		if (check_overflow(num, sign, str[i] - '0'))
-			return (*over_under_flow = 1, 0);
-		num = (num * 10) + (str[i] - '0');
-		i++;
-	}
-	return (*over_under_flow = 0, num * sign);
-}
-
-
-static int	is_numeric(const char *str)
-{
-	if (!str || *str == '\0')
-		return (0);
-	if (*str == '-' || *str == '+')
-		str++;
-	while (*str)
-	{
-		if (!ft_isdigit(*str))
+		if (!ft_isdigit(str[i]))
 			return (0);
-		str++;
+		i++;
 	}
 	return (1);
 }
 
-static void	exit_cleanup_and_exit(t_mshell *shell, int status)
+void	set_digit_exit_status(t_ast *node, int *exit_status, t_mshell *shell)
 {
-	(void)shell;
-	ft_printf("exit\n");
-	exit(status);
+	*exit_status = ft_atoi(node->data.cmd_node.argv[1]);
+	if (*exit_status < 0 || *exit_status > 255)
+		set_exit_status(shell, *exit_status % 256);
+	else
+		set_exit_status(shell, *exit_status);
 }
 
-void	ft_exit(char **argv, t_mshell *shell)
+void	ft_exit(t_allocs *allocs, t_table *table, t_ast *node, t_mshell *shell)
 {
-	long long	exit_code;
-	int			overflow_flag;
+	int	exit_status;
 
-	if (!shell)
+	if (node && node->data.cmd_node.argv && node->data.cmd_node.argv[1])
 	{
-		ft_printf("exit\n");
-		exit(1);
+		if (!is_valid_digit(node->data.cmd_node.argv[1]))
+		{
+			ft_putstr_fd("minishell: exit: numeric argument required\n",
+				STDERR_FILENO);
+			set_exit_status(shell, 255);
+		}
+		else if (node->data.cmd_node.argv[2])
+		{
+			ft_putstr_fd("exit\nminishell: exit: too many arguments\n",
+				STDERR_FILENO);
+			set_exit_status(shell, 1);
+			return ;
+		}
+		else
+			set_digit_exit_status(node, &exit_status, shell);
 	}
-
-	if (!argv[1])
-		exit_cleanup_and_exit(shell, 0);
-
-	if (!is_numeric(argv[1]))
-	{
-		ft_printf("exit\n minishell: exit: %s: numeric argument required", argv[1]);
-		write(STDERR_FILENO, "\n", 1);
-		exit_cleanup_and_exit(shell, 255);
-	}
-	if (argv[2])
-	{
-		ft_printf("exit\n");
-		write(STDERR_FILENO, "minishell: exit: too many arguments\n", 36);
-		// Do not exit immediately: shell stays alive (Bash behavior)
-		return ;
-	}
-	exit_code = ft_atoll(argv[1], &overflow_flag);
-	if (overflow_flag)
-	{
-		ft_printf("minishell: exit: %s: numeric argument required\n", argv[1]);
-		write(STDERR_FILENO, "\n", 1);
-		exit_cleanup_and_exit(shell, 255);
-	}
-	exit_cleanup_and_exit(shell, (unsigned char)exit_code);
+	else
+		exit_status = get_exit_status(shell);
+	clean_mshell(allocs, table);
+	printf("exit\n");
+	exit(shell->exit_status);
 }

@@ -6,7 +6,7 @@
 /*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 13:58:53 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/16 16:44:48 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/28 19:05:00 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 # include <sys/types.h>
 # include <errno.h>
 # include <term.h>
+# include <signal.h>
+# include <termios.h>
 # include "../include/readline/readline.h"
 # include "../include/readline/history.h"
 # include "../libft/libft.h"
@@ -27,10 +29,12 @@
 
 # define HASH_SIZE 128
 
+extern volatile sig_atomic_t	g_in_child;
+
 typedef struct s_env
 {
-	char		*key;
-	char		*value;
+	char			*key;
+	char			*value;
 	struct s_env	*next;
 }			t_env;
 
@@ -152,6 +156,33 @@ typedef struct s_result
 }			t_result;
 
 /**
+ * @struct s_redir
+ * @brief Represents a single redirection in a linked list.
+ *
+ * This structure is used to manage multiple output redirections in a
+ * linked list format, supporting bash-like syntax such as "ls >> a.txt >> b.txt".
+ *
+ * @var s_redir::filename
+ * The name of the file for this redirection.
+ *
+ * @var s_redir::mode
+ * The mode for this redirection (0 for truncate, 1 for append).
+ *
+ * @var s_redir::fd
+ * The file descriptor for this redirection.
+ *
+ * @var s_redir::next
+ * Pointer to the next redirection in the linked list.
+ */
+typedef struct s_redir
+{
+	char			*filename;
+	int				mode;
+	int				fd;
+	struct s_redir	*next;
+}	t_redir;
+
+/**
  * @struct s_in_out
  * @brief Represents input and output file information and descriptors.
  *
@@ -185,6 +216,8 @@ typedef struct s_in_out
 	int		in_mode;
 	int		out_fd;
 	int		out_mode;
+	t_redir	*out_redirs;
+	pid_t	tee_pid;
 }	t_in_out;
 
 /**
@@ -261,7 +294,6 @@ bool		is_special_char(char c);
 void		init_allocators(t_allocs *allocs);
 void		clean_mshell(t_allocs *allocs, t_table *table);
 int			check_all_white_space(char *str);
-t_result 	get_paths(t_table *table, char ***paths, t_allocs *allocs);
 t_result	create_success(void *value);
 t_result	create_error(t_error error_code);
 t_result	parse_cmdln(char *cmdln, t_mshell *shell, t_allocs *allocs);
@@ -273,9 +305,13 @@ void		clean_env(t_table *table);
 void		clean_mshell(t_allocs *allocs, t_table *table);
 void		setup_signals(void);
 void		set_signal_handler(t_ast *tree);
-void 		signal_handler_heredoc(int signum);
+void		signal_handler_heredoc(int signum);
 void		setup_signals(void);
 int			run_command(t_mshell *shell, t_allocs *allocs, t_table *table,
-						t_result result);
-int			handle_builtins(t_mshell *shell, t_table *table);
+				t_result result);
+int			handle_builtins(t_ast *node, t_mshell *shell,
+				t_table *table, t_allocs *alloc);
+void		set_exit_status(t_mshell *shell, int status);
+int			get_exit_status(t_mshell *shell);
+
 #endif

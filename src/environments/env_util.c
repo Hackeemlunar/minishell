@@ -6,7 +6,7 @@
 /*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 18:27:57 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/05 19:31:56 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/22 20:12:10 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,10 @@ static inline t_result	add_new(t_table *table, int index, char *key, char *val)
 	new_env->value = ft_strdup(val);
 	if (!new_env->key || !new_env->value)
 	{
-		free(new_env->key);
-		free(new_env->value);
+		if (new_env->key)
+			free(new_env->key);
+		if (new_env->value)
+			free(new_env->value);
 		free(new_env);
 		return (create_error(NO_MEMORY));
 	}

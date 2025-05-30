@@ -6,7 +6,7 @@
 /*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 14:01:06 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/05 18:22:28 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/28 19:10:21 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,9 +74,10 @@ size_t	quote_strcpy(char *dst, const char *src, size_t len)
 
 	i = 0;
 	j = 0;
-	while (j < len - 1)
+	while (j < len)
 	{
-		if (src[j] == '\\' && (src[j + 1] == '"' || src[j + 1] == '\''))
+		if (src[j] == '\\' && j + 1 < len && (src[j + 1] == '"'
+				|| src[j + 1] == '\''))
 		{
 			j++;
 			continue ;
@@ -85,7 +86,7 @@ size_t	quote_strcpy(char *dst, const char *src, size_t len)
 		i++;
 		j++;
 	}
-	dst[i++] = '\0';
+	dst[i] = '\0';
 	return (i);
 }
 

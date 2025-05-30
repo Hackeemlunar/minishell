@@ -25,10 +25,8 @@ t_result	handle_unit(t_lexer *lexer, char token)
 	value[1] = '\0';
 	if (token == '(')
 		token_type = TOKEN_LPAREN;
-	else if (token == ')')
-		token_type = TOKEN_RPAREN;
 	else
-		token_type = TOKEN_WILDCARD;
+		token_type = TOKEN_RPAREN;
 	return (new_token(token_type, value, lexer->alloc));
 }
 

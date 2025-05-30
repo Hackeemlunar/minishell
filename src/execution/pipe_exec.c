@@ -6,7 +6,7 @@
 /*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 14:10:10 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/15 14:19:15 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/25 16:53:55 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ static int	wait_for_children(t_pipe_ctx *ctx, t_mshell *shell)
 		}
 		i++;
 	}
+	g_in_child = 0;
 	return (last_status);
 }
 
@@ -65,6 +66,7 @@ static int	execute_pipeline_cmd(t_pipe_ctx *ctx, t_mshell *shell,
 	}
 	if (ctx->pid == 0)
 	{
+		set_signal_handler(ctx->cmds[ctx->index]);
 		exec_ctx = setup_exec_ctx(ctx->cmds[ctx->index], shell, allocs, table);
 		setup_child_pipes(ctx, &exec_ctx);
 		execute_node(&exec_ctx);
@@ -80,6 +82,7 @@ static int	execute_pipeline_cmd(t_pipe_ctx *ctx, t_mshell *shell,
 static int	execute_pipeline_cmds(t_pipe_ctx *ctx, t_mshell *shell,
 								t_allocs *allocs, t_table *table)
 {
+	g_in_child = 1;
 	while (ctx->index < ctx->count)
 	{
 		if (execute_pipeline_cmd(ctx, shell, allocs, table))
