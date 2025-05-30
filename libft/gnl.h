@@ -1,19 +1,23 @@
-﻿/* ************************************************************************** */
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   gnl_private.h                                      :+:      :+:    :+:   */
+/*   gnl.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hmensah- <hmensah-@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/11 00:00:00 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/04/11 00:00:00 by hmensah-         ###   ########.fr       */
+/*   Created: 2025/05/30 17:17:34 by hmensah-          #+#    #+#             */
+/*   Updated: 2025/05/30 17:22:55 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GNL_PRIVATE_H
-# define GNL_PRIVATE_H
+#ifndef GNL_H
+# define GNL_H
 
 # include "libft.h"
+
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 1024
+# endif
 
 /**
  * @brief Context structure for get_next_line function.
@@ -23,15 +27,15 @@
  */
 typedef struct s_context
 {
-	int		err;            /**< Error flag */
-	int		nl;             /**< Newline indicator */
-	size_t	buf_cap;        /**< Buffer capacity */
-	size_t	buf_pos;        /**< Current position in buffer */
-	size_t	buf_pos_prv;    /**< Previous position in buffer */
-	size_t	stash_len;      /**< Length of stashed data */
-	size_t	stash_st;       /**< Start position in stash */
-	char	stash[BUFFER_SIZE]; /**< Temporary storage for partial reads */
-	char	buffer[4096];   /**< Main buffer for constructing lines */
+	int		err;
+	int		nl;
+	size_t	buf_cap;
+	size_t	buf_pos;
+	size_t	buf_pos_prv;
+	size_t	stash_len;
+	size_t	stash_st;
+	char	stash[BUFFER_SIZE];
+	char	buffer[4096];
 }			t_context;
 
 /**

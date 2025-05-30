@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_arena.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hmensah- <hmensah-@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/01 19:15:28 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/03/01 19:16:24 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/30 17:12:09 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,30 +32,17 @@ t_arena	*arena_create(size_t size)
 
 void	*arena_alloc(t_arena *arena, size_t size)
 {
+	size_t	alignment;
+	size_t	current_aligned_used;
 	void	*ptr;
 
-	if (arena->used + size > arena->size)
+	alignment = sizeof(void *);
+	current_aligned_used = (arena->used + alignment - 1) & ~(alignment - 1);
+	if (current_aligned_used + size > arena->size)
 		return (NULL);
-	ptr = arena->buffer + arena->used;
-	arena->used += size;
+	ptr = arena->buffer + current_aligned_used;
+	arena->used = current_aligned_used + size;
 	return (ptr);
-}
-
-void	*arena_realloc(t_arena *arena, size_t new_size)
-{
-	void	*new_ptr;
-
-	if (new_size > arena->size)
-	{
-		new_ptr = malloc(new_size);
-		if (!new_ptr)
-			return (NULL);
-		ft_memcpy(new_ptr, arena->buffer, arena->used);
-		free(arena->buffer);
-		arena->buffer = new_ptr;
-		arena->size = new_size;
-	}
-	return (arena->buffer);
 }
 
 void	arena_reset(t_arena *arena)

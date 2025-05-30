@@ -1,12 +1,12 @@
-﻿/* ************************************************************************** */
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   printf_private.h                                   :+:      :+:    :+:   */
+/*   ft_printf.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hmensah- <hmensah-@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/11 00:00:00 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/04/11 00:00:00 by hmensah-         ###   ########.fr       */
+/*   Created: 2025/05/30 17:23:37 by hmensah-          #+#    #+#             */
+/*   Updated: 2025/05/30 17:25:13 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@
  */
 typedef struct s_formated_data
 {
-	int		count;         /**< Count of characters written */
-	char	*fstring;      /**< Formatted string */
+	char	*fstring;
+	int		count;
 }				t_fdata;
 
 /**
@@ -36,11 +36,11 @@ typedef struct s_formated_data
  */
 typedef struct s_modifiers_info
 {
-	char	flags[5];       /**< Flags (-, +, ' ', #, 0) */
-	int		width;          /**< Field width */
-	int		precision;      /**< Precision */
-	char	specifier;      /**< Conversion specifier */
-	int		flags_count;    /**< Number of flags */
+	char	flags[5];
+	int		width;
+	int		precision;
+	int		flags_count;
+	char	specifier;
 }				t_modinfo;
 
 /**

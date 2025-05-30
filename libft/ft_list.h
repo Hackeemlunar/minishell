@@ -1,17 +1,17 @@
-﻿/* ************************************************************************** */
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   list_private.h                                     :+:      :+:    :+:   */
+/*   ft_list.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hmensah- <hmensah-@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/11 00:00:00 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/04/11 00:00:00 by hmensah-         ###   ########.fr       */
+/*   Created: 2025/05/30 17:26:14 by hmensah-          #+#    #+#             */
+/*   Updated: 2025/05/30 17:26:44 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIST_PRIVATE_H
-# define LIST_PRIVATE_H
+#ifndef FT_LIST_H
+# define FT_LIST_H
 
 # include "libft.h"
 
@@ -23,8 +23,8 @@
  */
 typedef struct s_list
 {
-	void			*content;  /**< Pointer to the content stored in the node */
-	struct s_list	*next;     /**< Pointer to the next node in the list */
+	void			*content;
+	struct s_list	*next;
 }	t_list;
 
 /**

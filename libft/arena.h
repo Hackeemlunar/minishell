@@ -1,12 +1,12 @@
-﻿/* ************************************************************************** */
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   arena_private.h                                    :+:      :+:    :+:   */
+/*   arena.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hmensah- <hmensah-@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/11 00:00:00 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/04/11 00:00:00 by hmensah-         ###   ########.fr       */
+/*   Created: 2025/05/30 17:27:23 by hmensah-          #+#    #+#             */
+/*   Updated: 2025/05/30 17:28:19 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,9 @@
  */
 typedef struct s_arena
 {
-	size_t	size;    /**< Total size of the arena */
-	size_t	used;    /**< Amount of memory currently used */
-	char	*buffer; /**< Pointer to the allocated memory */
+	size_t	size;
+	size_t	used;
+	char	*buffer;
 }			t_arena;
 
 /**
@@ -62,22 +62,10 @@ void	arena_reset(t_arena *arena);
 void	*arena_alloc(t_arena *arena, size_t size);
 
 /**
- * @brief Reallocate memory in an arena
- *
- * Reallocates a block of memory in the arena. If the new size is larger than
- * the current size, the memory is expanded. If the new size is smaller, the
- * memory is returned.
- *
- * @param arena Pointer to the arena to reallocate from
- * @param new_size New size of the memory block
- * @return Pointer to the reallocated memory, or NULL if the arena is full
- */
-void	*arena_realloc(t_arena *arena, size_t new_size);
-
-/**
  * @brief Destroy a memory arena
  *
- * Frees all memory associated with the arena, including the arena structure itself.
+ * Frees all memory associated with the arena,
+ * including the arena structure itself.
  *
  * @param arena Pointer to the arena to destroy
  */

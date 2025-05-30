@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 21:03:36 by sngantch          #+#    #+#             */
-/*   Updated: 2025/05/27 18:27:31 by sngantch         ###   ########.fr       */
+/*   Updated: 2025/05/30 16:13:39 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,10 @@
 # define BUILTINS_H
 
 # include "../minishell.h"
+
+// Forward declaration of set_fds. Defined in execution
+int		set_in_fds(t_in_out *io, t_allocs *allocs, t_table *table);
+int		set_out_fds(t_in_out *io, t_allocs *allocs, t_table *table);
 
 void	cd(char **argv, t_table *table, int *exit_status);
 int		echo(t_ast *node);

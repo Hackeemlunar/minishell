@@ -3,42 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 20:57:40 by sngantch          #+#    #+#             */
-/*   Updated: 2025/05/27 18:27:06 by sngantch         ###   ########.fr       */
+/*   Updated: 2025/05/30 16:17:10 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtins.h"
-#include "../execution/executor.h"
 
-static int	setup_builtin_redirections(t_in_out *io, t_allocs *alloc,
-	t_table *table, int *fds)
-{
-	fds[0] = dup(STDOUT_FILENO);
-	fds[1] = dup(STDIN_FILENO);
-	if (io)
-	{
-		if (set_in_fds(io, alloc, table))
-		{
-			dup2(fds[0], STDOUT_FILENO);
-			dup2(fds[1], STDIN_FILENO);
-			close(fds[0]);
-			close(fds[1]);
-			return (1);
-		}
-		if (set_out_fds(io, alloc, table))
-		{
-			dup2(fds[0], STDOUT_FILENO);
-			dup2(fds[1], STDIN_FILENO);
-			close(fds[0]);
-			close(fds[1]);
-			return (1);
-		}
-	}
-	return (0);
-}
+int	setup_builtin_redirections(t_in_out *io, t_allocs *alloc,
+		t_table *table, int *fds);
 
 static void	restore_fds(int *fds)
 {
@@ -103,11 +78,8 @@ int	handle_builtins(t_ast *node, t_mshell *sh, t_table *table, t_allocs *alloc)
 	argv = node->data.cmd_node.argv;
 	if (!argv || !argv[0] || !sh || !table)
 		return (1);
-		
-	// Check if it's a builtin before setting up redirections
 	if (!is_builtin_command(argv[0]))
 		return (1);
-		
 	io = node->data.cmd_node.io;
 	if (setup_builtin_redirections(io, alloc, table, fds))
 		return (1);
@@ -119,10 +91,7 @@ int	handle_builtins(t_ast *node, t_mshell *sh, t_table *table, t_allocs *alloc)
 	}
 	result = execute_builtin_cmd(argv, node, sh, table);
 	if (result)
-	{
-		restore_fds(fds);
-		return (1);
-	}
+		return (restore_fds(fds), 1);
 	restore_fds(fds);
 	return (0);
 }

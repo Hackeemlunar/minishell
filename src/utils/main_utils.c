@@ -6,7 +6,7 @@
 /*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 17:23:01 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/28 19:07:13 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/30 17:41:54 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 void	init_allocators(t_allocs *allocs)
 {
-	allocs->parse_alloc = arena_create(8192);
-	allocs->sh_alloc = arena_create(8192);
-	allocs->exec_alloc = arena_create(65536);
+	allocs->parse_alloc = arena_create(65536);
+	allocs->sh_alloc = arena_create(65536);
+	allocs->exec_alloc = arena_create(131072);
 }
 
 void	clean_mshell(t_allocs *allocs, t_table *table)

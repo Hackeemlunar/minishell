@@ -6,7 +6,7 @@
 /*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 13:58:53 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/28 19:05:00 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/30 16:14:37 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,7 +160,8 @@ typedef struct s_result
  * @brief Represents a single redirection in a linked list.
  *
  * This structure is used to manage multiple output redirections in a
- * linked list format, supporting bash-like syntax such as "ls >> a.txt >> b.txt".
+ * linked list format, supporting bash-like syntax such as
+ * "ls >> a.txt >> b.txt".
  *
  * @var s_redir::filename
  * The name of the file for this redirection.

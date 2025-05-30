@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hmensah- <hmensah-@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 18:32:15 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/04/11 00:00:00 by hmensah-         ###   ########.fr       */
+/*   Updated: 2025/05/30 17:21:00 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,16 +25,12 @@
 # include <stdarg.h>
 # include <stdbool.h>
 
-# ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 1024
-# endif
-
 /**
  * @brief Forward declarations of internal data structures
  * Internal implementation details are hidden in private headers
  */
-typedef struct s_list t_list;
-typedef struct s_arena t_arena;
+typedef struct s_list	t_list;
+typedef struct s_arena	t_arena;
 
 /**
  * ************** Part 1 - Libc functions **************
