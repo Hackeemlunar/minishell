@@ -6,7 +6,7 @@
 /*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:33:25 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/25 21:31:15 by sngantch         ###   ########.fr       */
+/*   Updated: 2025/05/30 19:16:31 by sngantch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,22 +16,28 @@ volatile sig_atomic_t	g_in_child = 0;
 
 void	show_banner(void)
 {
-	printf("\n"
-		"|************************** MiniShell v1.0 ***********************|\n"
-		"|*                                                               *|\n"
-		"|*                   Welcome to the MiniShell!                   *|\n"
-		"|*                                                               *|\n"
-		"|*                Created by \033[31m%s and %s\033[0m              "
-		" *|\n"
-		"|*                                                               *|\n"
-		"|*               This is just a simple minishell                 *|\n"
-		"|*                Relax and have fun evaluating                  *|\n"
-		"|*                                                               *|\n"
-		"|*                     Type 'exit' to quit.                      *|\n"
-		"|*                                                               *|\n"
-		"|*                           Born2Code                           *|\n"
-		"|*****************************************************************|\n"
-		"\n", "Sngantch", "Hmensah-");
+	printf("\n");
+	printf(MG "|******************************************|\n");
+	printf(MG "|    " GN "   WELCOME TO " CY "MINISHELL!" MG " %13s|\n", " ");
+	printf(MG "|                                          |\n");
+	printf(MG "|       Created by " BL "%-9s" MG " and " BL "%-9s" MG " |\n",
+		"Sngantch",
+		"Hmensah-");
+	printf(MG "|                                          |\n");
+	printf(MG "|       " YL "This is just a simple minishell" MG "    |\n");
+	printf(MG "|       " YL "Relax and have fun evaluating" MG "      |\n");
+	printf(MG "|                                          |\n");
+	printf(MG "| %9s" CY "Type " MG "" RD "exit"MG" " CY"to quit." MG "%14s|\n",
+		" ", " ");
+	printf(MG "|                                          |\n");
+	printf(MG "|           " MG "Born2Code - 42 Network" MG "         |\n");
+	printf(MG "|******************************************|\n");
+	printf(RS "\n");
+	printf(GN
+		"██▄█ █ █▄██ █ █▀▀▀ █ █ █▀▀▀ █   █\n"
+		"█▀▀█ █ █▀██ █ ▀▀▀█ ███ █▀▀▀ █   █\n"
+		"█  █ █ █ ██ █ ▀▀▀▀ █ █ ▀▀▀▀ ▀▀▀ ▀▀▀\n\n\n"
+		RS);
 }
 
 void	print_parse_error(t_result result)
