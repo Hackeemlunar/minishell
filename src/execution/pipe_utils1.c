@@ -21,6 +21,7 @@ static void	exec_cmd_node(t_exec_ctx *ctx)
 	if (!ctx->node->data.cmd_node.argv)
 		return ;
 	expand_substitutions(ctx->node, ctx->allocs, ctx->table);
+	expand_wildcards(ctx->node, ctx->allocs);
 	remove_leading_quote(ctx->node);
 	add_full_path(ctx->node->data.cmd_node.argv, ctx->allocs, ctx->table);
 	execve(ctx->node->data.cmd_node.argv[0], ctx->node->data.cmd_node.argv,

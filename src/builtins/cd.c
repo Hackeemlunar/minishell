@@ -34,9 +34,8 @@ static void	change_to_home_directory(int *exit_status, t_table *table)
 
 static void	update_pwd(t_table *table)
 {
-	char	*pwd;
-	t_env	old_pwd_node;
-	t_env	*tmp;
+	char		*pwd;
+	t_result	old_pwd_result;
 
 	pwd = getcwd(NULL, 0);
 	if (!pwd)
@@ -45,20 +44,11 @@ static void	update_pwd(t_table *table)
 		write(STDERR_FILENO, "\n", 1);
 		return ;
 	}
-	tmp = table->bucket[0];
-	while (tmp)
-	{
-		if (ft_strcmp(tmp->key, "PWD") == 0)
-		{
-			old_pwd_node.key = ft_strdup("OLDPWD");
-			old_pwd_node.value = tmp->value;
-			add_env(table, old_pwd_node.key, old_pwd_node.value);
-			tmp->value = ft_strdup(pwd);
-			free(pwd);
-			return ;
-		}
-		tmp = tmp->next;
-	}
+	old_pwd_result = get_env(table, "PWD");
+	if (!old_pwd_result.is_error)
+		add_env(table, "OLDPWD", old_pwd_result.data.value);
+	add_env(table, "PWD", pwd);
+	free(pwd);
 }
 
 static void	cd_oldpwd_check(t_table *table, int *exit_status)

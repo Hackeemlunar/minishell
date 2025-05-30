@@ -45,7 +45,10 @@ char	*process_filename(char *filename, t_allocs *allocs, t_table *table)
 
 static int	handle_heredoc(t_in_out *io, t_allocs *allocs, t_table *table)
 {
-	if (collect_hdoc(io->heredoc_delim, "/tmp/heredoc", allocs, table) < 0)
+	char	*processed_delim;
+
+	processed_delim = process_filename(io->heredoc_delim, allocs, table);
+	if (collect_hdoc(processed_delim, "/tmp/heredoc", allocs, table) < 0)
 		return (1);
 	io->in_fd = open("/tmp/heredoc", O_RDONLY);
 	if (io->in_fd < 0)

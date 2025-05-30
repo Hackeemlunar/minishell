@@ -70,6 +70,29 @@ static int	execute_builtin_cmd(char **argv, t_ast *node, t_mshell *sh,
 	return (0);
 }
 
+static int	is_builtin_command(char *cmd)
+{
+	if (!cmd)
+		return (0);
+	if (ft_strcmp(cmd, "echo") == 0)
+		return (1);
+	else if (ft_strcmp(cmd, "pwd") == 0)
+		return (1);
+	else if (ft_strcmp(cmd, "env") == 0)
+		return (1);
+	else if (ft_strcmp(cmd, "export") == 0)
+		return (1);
+	else if (ft_strcmp(cmd, "cd") == 0)
+		return (1);
+	else if (ft_strcmp(cmd, "unset") == 0)
+		return (1);
+	else if (ft_strcmp(cmd, "history") == 0)
+		return (1);
+	else if (ft_strcmp(cmd, "exit") == 0)
+		return (1);
+	return (0);
+}
+
 int	handle_builtins(t_ast *node, t_mshell *sh, t_table *table, t_allocs *alloc)
 {
 	char		**argv;
@@ -80,6 +103,11 @@ int	handle_builtins(t_ast *node, t_mshell *sh, t_table *table, t_allocs *alloc)
 	argv = node->data.cmd_node.argv;
 	if (!argv || !argv[0] || !sh || !table)
 		return (1);
+		
+	// Check if it's a builtin before setting up redirections
+	if (!is_builtin_command(argv[0]))
+		return (1);
+		
 	io = node->data.cmd_node.io;
 	if (setup_builtin_redirections(io, alloc, table, fds))
 		return (1);

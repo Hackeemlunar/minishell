@@ -1,0 +1,10 @@
+LICENSE
+Makefile
+README.md
+a.txt
+b.txt
+include
+libft
+libs
+obj
+src
