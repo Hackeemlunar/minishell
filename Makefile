@@ -6,7 +6,7 @@
 #    By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/04 19:20:15 by hmensah-          #+#    #+#              #
-#    Updated: 2025/05/30 16:55:10 by hmensah-         ###   ########.fr        #
+#    Updated: 2025/05/30 19:25:59 by hmensah-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME = minishell
 
 # Compiler and flags
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g3 -fsanitize=address,undefined
+CFLAGS = -Wall -Wextra -Werror
 
 # Directories
 SRC_DIR = src

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
+/*   By: hmensah- <hmensah-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 13:58:53 by hmensah-          #+#    #+#             */
-/*   Updated: 2025/05/30 18:51:34 by sngantch         ###   ########.fr       */
+/*   Updated: 2025/05/30 19:24:58 by hmensah-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,16 @@
 # include "../include/readline/history.h"
 # include "../libft/libft.h"
 # include "../libft/arena.h"
-# include "colors_banner.h"
 
 # define HASH_SIZE 128
+
+# define RD  "\033[1;31m" // red
+# define GN  "\033[1;32m" // green
+# define YL  "\033[1;33m" // yellow
+# define BL  "\033[1;34m" // blue
+# define MG  "\033[1;35m" // magenta
+# define CY  "\033[1;36m" // cyan
+# define RS  "\033[0m"    // reset
 
 extern volatile sig_atomic_t	g_in_child;
 
