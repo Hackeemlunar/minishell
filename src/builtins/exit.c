@@ -6,7 +6,7 @@
 /*   By: sngantch <sngantch@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 20:57:58 by sngantch          #+#    #+#             */
-/*   Updated: 2025/05/27 18:49:29 by sngantch         ###   ########.fr       */
+/*   Updated: 2025/05/30 12:23:41 by sngantch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,18 +43,18 @@ void	ft_exit(t_allocs *allocs, t_table *table, t_ast *node, t_mshell *shell)
 
 	if (node && node->data.cmd_node.argv && node->data.cmd_node.argv[1])
 	{
-		if (node->data.cmd_node.argv[2])
-		{
-			ft_putstr_fd("minishell: exit: too many arguments\n",
-				STDERR_FILENO);
-			set_exit_status(shell, 1);
-			return ;
-		}
 		if (!is_valid_digit(node->data.cmd_node.argv[1]))
 		{
 			ft_putstr_fd("minishell: exit: numeric argument required\n",
 				STDERR_FILENO);
 			set_exit_status(shell, 255);
+		}
+		else if (node->data.cmd_node.argv[2])
+		{
+			ft_putstr_fd("exit\nminishell: exit: too many arguments\n",
+				STDERR_FILENO);
+			set_exit_status(shell, 1);
+			return ;
 		}
 		else
 			set_digit_exit_status(node, &exit_status, shell);
